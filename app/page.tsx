@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ExternalLink, Rocket, List, Grid } from "lucide-react";
 import { DIRECTORIES } from "@/constants/directories";
+import { cn } from "@/lib/utils";
 
 export default function StartupDirectories() {
   const [isListView, setIsListView] = useState(false);
@@ -56,18 +57,6 @@ export default function StartupDirectories() {
             Discover the best platforms to launch your startup and reach early
             adopters, investors, and potential customers.
           </p>
-          <a
-            href="https://startupfa.me/s/launch-list?utm_source=www.launch-list.org"
-            target="_blank"
-          >
-            <img
-              src="https://startupfa.me/badges/featured-badge.webp"
-              alt="Featured on Startup Fame"
-              width="171"
-              height="54"
-              className="mx-auto"
-            />
-          </a>
           <div className="flex items-center justify-center gap-4 md:gap-2 mt-6 flex-col md:flex-row">
             <Badge variant="secondary" className="text-sm gap-2">
               <div className="flex items-center gap-2 pl-1">
@@ -79,8 +68,16 @@ export default function StartupDirectories() {
               {DIRECTORIES.length} Platforms Available
             </Badge>
             <div className="flex items-center space-x-2 ml-4">
+              <span
+                className={cn(
+                  "text-sm",
+                  isListView ? "text-muted-foreground" : "text-foreground",
+                )}
+              >
+                Grid
+              </span>
               <Grid
-                className={`h-4 w-4 ${!isListView ? "text-primary" : "text-muted-foreground"}`}
+                className={`size-4 ${!isListView ? "text-primary" : "text-muted-foreground"}`}
               />
               <Switch
                 checked={isListView}
@@ -88,10 +85,15 @@ export default function StartupDirectories() {
                 id="view-mode"
               />
               <List
-                className={`h-4 w-4 ${isListView ? "text-primary" : "text-muted-foreground"}`}
+                className={`size-4 ${isListView ? "text-primary" : "text-muted-foreground"}`}
               />
-              <span className="text-sm text-muted-foreground">
-                {isListView ? "Checklist View" : "Grid View"}
+              <span
+                className={cn(
+                  "text-sm",
+                  isListView ? "text-foreground" : "text-muted-foreground",
+                )}
+              >
+                Checklist
               </span>
             </div>
           </div>
