@@ -112,15 +112,6 @@ export const DIRECTORIES = [
     iconColor: "#fafafa",
   },
   {
-    name: "Uneed",
-    description: "Discover tools you never knew you needed",
-    url: "https://www.uneed.best",
-    icon: Search,
-    category: "Tool Discovery",
-    bgColor: "#1abc9c",
-    iconColor: "#fafafa",
-  },
-  {
     name: "OpenLaunch",
     description: "Startup launch platform",
     url: "https://open-launch.com/",
