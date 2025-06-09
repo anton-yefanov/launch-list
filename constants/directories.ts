@@ -7,6 +7,7 @@ import {
   Compass,
   Database,
   Eye,
+  CakeSlice,
   Hash,
   Layers,
   Fan,
@@ -91,6 +92,15 @@ export const DIRECTORIES = [
     icon: Eye,
     category: "Solo Founders",
     bgColor: "#e67e22",
+    iconColor: "#fafafa",
+  },
+  {
+    name: "It's Launched!",
+    description: "ProductHunt alternative",
+    url: "hhttps://itslaunched.com",
+    icon: CakeSlice,
+    category: "Launch Platform",
+    bgColor: "#fb1153",
     iconColor: "#fafafa",
   },
   {
