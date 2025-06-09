@@ -56,6 +56,18 @@ export default function StartupDirectories() {
             Discover the best platforms to launch your startup and reach early
             adopters, investors, and potential customers.
           </p>
+          <a
+            href="https://startupfa.me/s/launch-list?utm_source=www.launch-list.org"
+            target="_blank"
+          >
+            <img
+              src="https://startupfa.me/badges/featured-badge.webp"
+              alt="Featured on Startup Fame"
+              width="171"
+              height="54"
+              className="mx-auto"
+            />
+          </a>
           <div className="flex items-center justify-center gap-4 md:gap-2 mt-6 flex-col md:flex-row">
             <Badge variant="secondary" className="text-sm gap-2">
               <div className="flex items-center gap-2 pl-1">
