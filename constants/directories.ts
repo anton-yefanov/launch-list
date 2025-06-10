@@ -14,6 +14,7 @@ import {
   Rocket,
   Circle,
   Search,
+  Umbrella,
   Shield,
   Star,
   Target,
@@ -65,6 +66,15 @@ export const DIRECTORIES = [
     icon: Zap,
     category: "Side Projects",
     bgColor: "#7e26b8",
+    iconColor: "#fafafa",
+  },
+  {
+    name: "Firsto",
+    description: "Launch platform / Alternative to ProductHunt",
+    url: "https://firsto.co",
+    icon: Umbrella,
+    category: "Launch Platform",
+    bgColor: "#ff6100",
     iconColor: "#fafafa",
   },
   {
