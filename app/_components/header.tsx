@@ -79,7 +79,7 @@ export default function Header({
               isListView ? "text-foreground" : "text-muted-foreground",
             )}
           >
-            Launch Checklist
+            Checklist
           </span>
         </div>
       </div>
