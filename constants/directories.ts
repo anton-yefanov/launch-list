@@ -122,15 +122,6 @@ export const DIRECTORIES = [
     iconColor: "#fafafa",
   },
   {
-    name: "Startups.fyi",
-    description: "Directory of startups and their key information",
-    url: "https://startups.fyi",
-    icon: BookOpen,
-    category: "Startup Directory",
-    bgColor: "#2ecc71",
-    iconColor: "#fafafa",
-  },
-  {
     name: "Huzzler",
     description: "Launch your startup and get discovered by early adopters",
     url: "https://huzzler.so",
