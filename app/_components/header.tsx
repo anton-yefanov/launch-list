@@ -24,7 +24,7 @@ export default function Header({
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
         Best Startup Launch Directories 2025
       </h1>
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-center items-center gap-2 flex-wrap">
         <h2 className="text-2xl md:text-3xl font-semibold text-muted-foreground">
           Where to Launch Your Startup
         </h2>
