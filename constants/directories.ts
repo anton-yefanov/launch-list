@@ -20,6 +20,7 @@ import {
   Target,
   Users,
   Zap,
+  Earth,
 } from "lucide-react";
 
 export const DIRECTORIES = [
@@ -42,30 +43,21 @@ export const DIRECTORIES = [
     iconColor: "#ffffff",
   },
   {
-    name: "DevHunt",
-    description: "A platform for developers to showcase their latest projects",
-    url: "https://devhunt.org",
-    icon: Code,
-    category: "Developer Tools",
-    bgColor: "#3456a8",
-    iconColor: "#fafafa",
-  },
-  {
-    name: "Peerlist",
-    description: "Professional network for creators and builders",
-    url: "https://peerlist.io",
-    icon: Users,
-    category: "Community",
-    bgColor: "#00aa45",
-    iconColor: "#fafafa",
-  },
-  {
     name: "TinyStartups",
     description: "Directory of profitable side projects and small startups",
     url: "https://www.tinystartups.com",
     icon: Zap,
-    category: "Side Projects",
+    category: "Launch Platform",
     bgColor: "#7e26b8",
+    iconColor: "#fafafa",
+  },
+  {
+    name: "StartupsFm",
+    description: "Directory to launch your product",
+    url: "https://www.startups.fm",
+    icon: Earth,
+    category: "Launch Platform",
+    bgColor: "#26b843",
     iconColor: "#fafafa",
   },
   {
@@ -264,6 +256,24 @@ export const DIRECTORIES = [
     icon: Target,
     category: "Product Hunt",
     bgColor: "#3498db",
+    iconColor: "#fafafa",
+  },
+  {
+    name: "DevHunt",
+    description: "A platform for developers to showcase their latest projects",
+    url: "https://devhunt.org",
+    icon: Code,
+    category: "Developer Tools",
+    bgColor: "#3456a8",
+    iconColor: "#fafafa",
+  },
+  {
+    name: "Peerlist",
+    description: "Professional network for creators and builders",
+    url: "https://peerlist.io",
+    icon: Users,
+    category: "Community",
+    bgColor: "#00aa45",
     iconColor: "#fafafa",
   },
 ];
