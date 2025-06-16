@@ -42,35 +42,6 @@ export default function Header({
         curated list includes Product Hunt, Hacker News, and dozens of other
         proven launch platforms.
       </p>
-      <div className="max-w-4xl mx-auto text-left mt-8 p-6 bg-muted/30 rounded-lg">
-        <h3 className="text-lg font-semibold mb-3">
-          Why Use Startup Launch Directories?
-        </h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Launching your startup on the right platforms can make the difference
-          between success and obscurity. These directories help you reach your
-          target audience, gain early traction, and build credibility in the
-          startup ecosystem.
-        </p>
-        <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <h4 className="font-medium mb-2">For Early-Stage Startups:</h4>
-            <ul className="text-muted-foreground space-y-1">
-              <li>• Gain initial user feedback</li>
-              <li>• Build brand awareness</li>
-              <li>• Attract early adopters</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium mb-2">For Growth-Stage Startups:</h4>
-            <ul className="text-muted-foreground space-y-1">
-              <li>• Scale customer acquisition</li>
-              <li>• Find potential investors</li>
-              <li>• Establish market presence</li>
-            </ul>
-          </div>
-        </div>
-      </div>
       <div className="flex items-center justify-center gap-4 md:gap-2 mt-6 flex-col md:flex-row">
         <Badge variant="secondary" className="text-sm gap-2">
           <div className="flex items-center gap-2 pl-1">
