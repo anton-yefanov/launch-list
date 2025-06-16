@@ -3,6 +3,7 @@ import { DIRECTORIES } from "@/constants/directories";
 import { cn } from "@/lib/utils";
 import { Grid, List } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Header({
   isListView,
@@ -23,9 +24,18 @@ export default function Header({
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
         Best Startup Launch Directories 2025
       </h1>
-      <h2 className="text-2xl md:text-3xl font-semibold text-muted-foreground">
-        Where to Launch Your Startup
-      </h2>
+      <div className="flex justify-center items-center gap-2">
+        <h2 className="text-2xl md:text-3xl font-semibold text-muted-foreground">
+          Where to Launch Your Startup
+        </h2>
+        <div
+          onClick={() => setIsListView(!isListView)}
+          className="flex items-center gap-1 1bottom-2 right-0 text-sm font-medium px-2 py-1 rounded-lg border bg-gray-100 -rotate-2 cursor-pointer hover:bg-gray-200/70 active:bg-gray-200/90 select-none"
+        >
+          <Checkbox checked={isListView} className="bg-white" />
+          <span>with checklist!</span>
+        </div>
+      </div>
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
         Discover the best platforms and directories to launch your startup,
         reach early adopters, find investors, and grow your customer base. Our
