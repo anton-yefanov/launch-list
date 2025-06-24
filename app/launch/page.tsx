@@ -34,8 +34,8 @@ export default function LaunchPage() {
         <FeaturedProduct />
         <FeaturedProduct />
       </div>
-      <div className="flex justify-between items-center px-2.5 my-4">
-        <h1 className="text-3xl font-semibold ">Launching now</h1>
+      <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
+        <h1 className="text-4xl font-semibold">Launching now</h1>
         <div className="flex flex-col gap-2 items-center">
           <div className="text-xs">Next launch week in</div>
           <FlipClockCountdown
