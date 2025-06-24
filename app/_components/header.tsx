@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { Grid, List } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import Image from "next/image";
 
 export default function Header({
   isListView,
@@ -15,20 +14,6 @@ export default function Header({
 }) {
   return (
     <header className="text-center mb-12 space-y-6">
-      <a
-        href="https://x.com/anton_yefanov"
-        target="_blank"
-        className="flex gap-2 bg-gray-100 p-1 pl-3 border hover:scale-105 rounded-full mb-4 w-fit mx-auto transition cursor-pointer hover:bg-gray-200/70 active:bg-gray-200/90 select-none font-medium"
-      >
-        by Anton
-        <Image
-          src="/avatar.jpg"
-          alt="avatar"
-          width={25}
-          height={25}
-          className="rounded-full"
-        />
-      </a>
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
         Best Startup Launch Directories 2025
       </h1>

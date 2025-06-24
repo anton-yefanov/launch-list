@@ -9,6 +9,8 @@ import { DIRECTORIES } from "@/constants/directories";
 import SEO from "@/app/_components/seo";
 import Footer from "@/app/_components/footer";
 import Header from "@/app/_components/header";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function StartupDirectories() {
   const [isListView, setIsListView] = useState(false);

@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Plus, ChevronUp, Dot } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 import scss from "./styles.module.scss";
+import Link from "next/link";
 
 export default function LaunchPage() {
   return (
@@ -23,10 +24,18 @@ export default function LaunchPage() {
             className="rounded"
           />
         </div>
-        <Button className="bg-primary-orange hover:bg-primary-orange/90 cursor-pointer active:scale-90 transition-all duration-120">
-          <Plus />
-          Submit
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button className="bg-primary-color hover:bg-primary-color/90 cursor-pointer active:scale-90 transition-all duration-120">
+            <Plus />
+            Submit
+          </Button>
+          <Link
+            href="/login"
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            Login
+          </Link>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <FeaturedProduct />
@@ -120,7 +129,7 @@ const FeaturedProduct = () => {
       <div className="flex flex-col space-y-1 w-full">
         <div className="flex justify-between">
           <div className="font-semibold text-lg">Flex</div>
-          <span className="text-xs py-1 px-2 rounded bg-sky-100 h-fit">
+          <span className="text-xs py-1 px-2 rounded bg-primary-color/10 h-fit">
             Featured
           </span>
         </div>
@@ -163,7 +172,7 @@ const Product = () => {
         className={cn(
           "cursor-pointer size-12.5 ml-auto active:scale-90 flex flex-col gap-0 transition-all duration-120",
           upvoted
-            ? "border-primary-orange text-primary-orange hover:text-primary-orange"
+            ? "border-primary-color text-primary-color hover:text-primary-color"
             : "",
         )}
         onClick={() => setUpvoted(!upvoted)}
