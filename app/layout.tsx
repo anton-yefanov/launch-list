@@ -43,7 +43,7 @@ export default function RootLayout({
             }}
           />
         )}
-        <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-12 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
           <div className="max-w-2xl mx-auto">{children}</div>
         </div>
         <Analytics />

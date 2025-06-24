@@ -2,14 +2,38 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ChevronUp, Dot } from "lucide-react";
+import { Plus, ChevronUp, Dot } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export default function LaunchPage() {
   return (
-    <>
-      <h1 className="text-xl font-semibold mb-4">Launching this week</h1>
+    <div>
+      <div className="pb-8 flex justify-between">
+        <div className="shrink-0 select-none">
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={36}
+            height={36}
+            draggable={false}
+            className="rounded"
+          />
+        </div>
+        <Button className="bg-primary-orange hover:bg-primary-orange/90 cursor-pointer active:scale-90 transition-all duration-120">
+          <Plus />
+          Submit
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <FeaturedProduct />
+        <FeaturedProduct />
+        <FeaturedProduct />
+        <FeaturedProduct />
+      </div>
+      <h1 className="text-3xl font-semibold my-4 px-2.5">
+        Launching this week
+      </h1>
       <Product />
       <Product />
       <Product />
@@ -19,9 +43,83 @@ export default function LaunchPage() {
       <Product />
       <Product />
       <Product />
-    </>
+      <h2 className="text-3xl font-semibold my-4 px-2.5">Last week winners</h2>
+      <WinnerProduct place={1} />
+      <WinnerProduct place={2} />
+      <WinnerProduct place={3} />
+    </div>
   );
 }
+
+const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
+  return (
+    <div className="relative rounded-lg p-2.5 flex gap-2 select-none">
+      <div className="shrink-0 pt-1">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={50}
+          height={50}
+          draggable={false}
+          className="rounded"
+        />
+      </div>
+      <div className="flex flex-col space-y-1">
+        <div className="font-semibold">Flex</div>
+        <div>The ultimate AI social media scheduling tool</div>
+        <div className="flex text-xs items-center">
+          <div>by Anton</div>
+          <Dot size={16} className="text-gray-300" />
+          <div>AI</div>
+          <Dot size={16} className="text-gray-300" />
+          <div>Directory</div>
+        </div>
+      </div>
+      <Image
+        src={getCupByPlace(place)}
+        alt="logo"
+        width={50}
+        height={50}
+        draggable={false}
+        className="rounded absolute -left-5 top-2 -rotate-10"
+      />
+      <Button
+        variant="outline"
+        className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background"
+      >
+        12
+      </Button>
+    </div>
+  );
+};
+
+const FeaturedProduct = () => {
+  return (
+    <div className="border rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50 cursor-pointer">
+      <div className="shrink-0">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={75}
+          height={75}
+          draggable={false}
+          className="rounded"
+        />
+      </div>
+      <div className="flex flex-col space-y-1 w-full">
+        <div className="flex justify-between">
+          <div className="font-semibold text-lg">Flex</div>
+          <span className="text-xs py-1 px-2 rounded bg-sky-100 h-fit">
+            Featured
+          </span>
+        </div>
+        <div className="text-sm">
+          The ultimate AI social media scheduling tool
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Product = () => {
   const [upvoted, setUpvoted] = useState<boolean>(false);
@@ -64,4 +162,15 @@ const Product = () => {
       </Button>
     </div>
   );
+};
+
+const getCupByPlace = (place: 1 | 2 | 3): string => {
+  switch (place) {
+    case 1:
+      return "/golden_cup.png";
+    case 2:
+      return "/silver_cup.png";
+    case 3:
+      return "/bronze_cup.png";
+  }
 };
