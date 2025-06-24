@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Plus, ChevronUp, Dot } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
+import "@leenguyen/react-flip-clock-countdown/dist/index.css";
+import scss from "./styles.module.scss";
 
 export default function LaunchPage() {
   return (
@@ -31,9 +34,17 @@ export default function LaunchPage() {
         <FeaturedProduct />
         <FeaturedProduct />
       </div>
-      <h1 className="text-3xl font-semibold my-4 px-2.5">
-        Launching this week
-      </h1>
+      <div className="flex justify-between items-center px-2.5 my-4">
+        <h1 className="text-3xl font-semibold ">Launching now</h1>
+        <div className="flex flex-col gap-2 items-center">
+          <div className="text-xs">Next launch week in</div>
+          <FlipClockCountdown
+            to={new Date().getTime() + 24 * 3600 * 1000 + 5000}
+            renderOnServer
+            className={scss.flipclock}
+          />
+        </div>
+      </div>
       <Product />
       <Product />
       <Product />
