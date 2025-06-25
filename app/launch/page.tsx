@@ -25,7 +25,7 @@ export default function LaunchPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <Button className="bg-primary-color hover:bg-primary-color/90 cursor-pointer active:scale-90 transition-all duration-120">
+          <Button className="bg-primary-color hover:bg-primary-color/90 active:scale-90 transition-all duration-120">
             <Plus />
             Submit
           </Button>
@@ -37,12 +37,29 @@ export default function LaunchPage() {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <FeaturedProduct />
-        <FeaturedProduct />
-        <FeaturedProduct />
-        <FeaturedProduct />
+      <div className="border rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group">
+        <div>
+          <div className="text-3xl font-medium mb-4">
+            Don&#39;t forget
+            <br /> to launch
+            <br /> everywhere!
+          </div>
+          <Button className="px-10 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120">
+            Browse collection
+          </Button>
+        </div>
+        <div className="w-full h-full min-w-1 relative">
+          <div className="h-45 w-80 border p-4 shadow-lg group-hover:shadow-xl rounded-t-lg absolute -right-0 -bottom-11 group-hover:-bottom-9 transition-all duration-125">
+            Top directories 2025
+          </div>
+        </div>
       </div>
+      {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-2">*/}
+      {/*  <FeaturedProduct />*/}
+      {/*  <FeaturedProduct />*/}
+      {/*  <FeaturedProduct />*/}
+      {/*  <FeaturedProduct />*/}
+      {/*</div>*/}
       <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
         <h1 className="text-4xl font-semibold">Launching now</h1>
         <div className="flex flex-col gap-2 items-center">

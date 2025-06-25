@@ -52,7 +52,7 @@ function Button({
       data-slot="button"
       className={cn(
         buttonVariants({ variant, size, className }),
-        "select-none",
+        "cursor-pointer select-none",
       )}
       {...props}
     />
