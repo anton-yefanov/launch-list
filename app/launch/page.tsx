@@ -38,19 +38,36 @@ export default function LaunchPage() {
         </div>
       </div>
       <div className="border rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group">
-        <div>
-          <div className="text-3xl font-medium mb-4">
+        <div className="flex flex-col items-center sm:items-start ">
+          <div className="text-3xl text-center sm:text-left font-medium mb-4">
             Don&#39;t forget
-            <br /> to launch
+            <br /> to launch,
             <br /> everywhere!
           </div>
-          <Button className="px-10 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120">
-            Browse collection
+          <Button className="px-16 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120">
+            Browse all
           </Button>
         </div>
-        <div className="w-full h-full min-w-1 relative">
-          <div className="h-45 w-80 border p-4 shadow-lg group-hover:shadow-xl rounded-t-lg absolute -right-0 -bottom-11 group-hover:-bottom-9 transition-all duration-125">
-            Top directories 2025
+        <div className="h-40 w-full relative">
+          <div className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-125">
+            <div className="flex gap-1.5 mb-2">
+              <Image
+                src="/star_icon.png"
+                alt="star"
+                width={20}
+                height={20}
+                draggable={false}
+                className="select-none"
+              />
+              <span className="text-sm select-none font-semibold">
+                Best directories 2025
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Directory title="Product Hunt" bgColor="bg-orange-600" />
+              <Directory title="Tiny Launch" bgColor="bg-rose-600" />
+              <Directory title="Launch List" bgColor="bg-slate-600" />
+            </div>
           </div>
         </div>
       </div>
@@ -87,6 +104,45 @@ export default function LaunchPage() {
     </div>
   );
 }
+
+const Directory = ({
+  title,
+  bgColor = "bg-primary-color",
+}: {
+  title: string;
+  bgColor?: string;
+}) => {
+  return (
+    <div className="flex select-none justify-between gap-1.5 bg-white border p-1 pr-3 rounded-md">
+      <div className="flex gap-1.5">
+        <div
+          className={`${bgColor} text-black font-extrabold p-2 size-10 border rounded-md grid place-items-center`}
+        >
+          <div className="relative">
+            <div className="bg-white relative rounded-xs text-sm px-1 border border-black -rotate-6 z-10">
+              {title[0]}
+            </div>
+            <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12" />
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="text-sm font-semibold">{title}</div>
+          <div className="text-xs">Free</div>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <div className="grid place-items-center">
+          <span className="font-bold h-[10px]">200k</span>
+          <span className="text-[8px]">Views</span>
+        </div>
+        <div className="grid place-items-center">
+          <span className="font-bold h-[10px]">96</span>
+          <span className="text-[8px]">DR</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
   return (
