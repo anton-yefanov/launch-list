@@ -51,7 +51,11 @@ export default function CollectionPage() {
           </Tooltip>
         </div>
       </div>
-      <Directory title="Product Hunt" bgColor="bg-orange-600" />
+      <div className="flex flex-col gap-2">
+        <Directory title="Product Hunt" bgColor="bg-orange-600" />
+        <Directory title="Product Hunt" bgColor="bg-orange-600" />
+        <Directory title="Product Hunt" bgColor="bg-orange-600" />
+      </div>
     </div>
   );
 }
