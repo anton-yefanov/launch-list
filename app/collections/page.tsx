@@ -1,7 +1,12 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { FilterIcon as Funnel, ListFilter, Plus, Save } from "lucide-react";
+import {
+  FilterIcon as Funnel,
+  ListFilter,
+  Plus,
+  FileInput,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -47,8 +52,8 @@ export default function CollectionPage() {
           <div className="flex items-center gap-2">
             <div className="text-xl font-semibold">75 Directories</div>
             <Button variant="outline" size="sm">
-              <Save />
-              Save as Launch List
+              <FileInput />
+              Save all to Launch List
             </Button>
           </div>
           <div className="flex gap-2">
