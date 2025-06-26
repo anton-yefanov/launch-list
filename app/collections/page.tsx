@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Funnel, ListFilter, Save, Plus } from "lucide-react";
+import { Funnel, ListFilter, Save, Plus, DollarSign, Gem } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -58,7 +58,7 @@ export default function CollectionPage() {
 
 const Card = ({ title, category }: { title: string; category: string }) => {
   return (
-    <div className="rounded-lg border p-4 select-none">
+    <div className="bg-gradient-to-br from-white to-purple-50/70 rounded-lg border p-4 select-none">
       <div className="font-semibold">{title}</div>
       <div className="text-xs mt-2">{category}</div>
     </div>
@@ -76,7 +76,7 @@ const Directory = ({
     <div className="flex select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md">
       <div className="flex gap-2">
         <div
-          className={`${bgColor} cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group`}
+          className={`${bgColor} shrink-0 cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group`}
         >
           <div className="relative">
             <div className="bg-white relative rounded-xs text-sm px-1 border border-black -rotate-6 z-10">
@@ -91,27 +91,63 @@ const Directory = ({
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <div className="flex gap-4 items-center">
-          <div className="grid place-items-center h-fit">
-            <span className="font-bold">200k</span>
-            <span className="text-[8px]">Views</span>
-          </div>
-          <div className="grid place-items-center h-fit">
-            <span className="font-bold">96</span>
-            <span className="text-[8px]">DR</span>
-          </div>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger>
+              <DollarSign
+                className="size-6 p-1 text-green-400 bg-green-300/30 rounded-full"
+                size={25}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Launch for Free</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Gem
+                className="size-6 p-1 text-yellow-400 bg-yellow-300/30 rounded-full"
+                size={25}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Website offers Paid features</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="text-xs font-semibold size-6 p-1 text-rose-400 bg-rose-300/30 rounded-full">
+                10
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Top 10</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
-        <Tooltip>
-          <TooltipTrigger className="h-fit">
-            <Button variant="outline" size="sm">
-              <Plus />
-              Add
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>Add to Launch List</p>
-          </TooltipContent>
-        </Tooltip>
+        <div className="flex items-center gap-4">
+          <div className="flex gap-4 items-center">
+            <div className="grid place-items-center h-fit">
+              <span className="font-bold">200k</span>
+              <span className="text-[8px]">Views</span>
+            </div>
+            <div className="grid place-items-center h-fit">
+              <span className="font-bold">96</span>
+              <span className="text-[8px]">DR</span>
+            </div>
+          </div>
+          <Tooltip>
+            <TooltipTrigger className="h-fit">
+              <Button variant="outline" size="sm">
+                <Plus />
+                Add
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Add to Launch List</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </div>
   );
