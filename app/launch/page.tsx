@@ -13,30 +13,6 @@ import Link from "next/link";
 export default function LaunchPage() {
   return (
     <div>
-      <div className="pb-8 flex justify-between">
-        <div className="shrink-0 select-none">
-          <Image
-            src="/logo.png"
-            alt="logo"
-            width={36}
-            height={36}
-            draggable={false}
-            className="rounded"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button className="bg-primary-color hover:bg-primary-color/90 active:scale-90 transition-all duration-120">
-            <Plus />
-            Submit
-          </Button>
-          <Link
-            href="/login"
-            className={cn(buttonVariants({ variant: "outline" }))}
-          >
-            Login
-          </Link>
-        </div>
-      </div>
       <div className="border rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group">
         <div className="flex flex-col items-center sm:items-start ">
           <div className="text-3xl text-center sm:text-left font-medium mb-4">
@@ -44,9 +20,15 @@ export default function LaunchPage() {
             <br /> to launch,
             <br /> everywhere!
           </div>
-          <Button className="px-16 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120">
+          <Link
+            href="/collections"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "px-16 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120",
+            )}
+          >
             Browse all
-          </Button>
+          </Link>
         </div>
         <div className="h-40 w-full relative">
           <div className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-125">
