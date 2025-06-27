@@ -4,8 +4,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
   FilterIcon as Funnel,
   ListFilter,
-  Plus,
   FileInput,
+  FilePlus,
 } from "lucide-react";
 import {
   Tooltip,
@@ -16,15 +16,28 @@ import {
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
 import { useMemo } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CollectionPage() {
+  const router = useRouter();
+
   const AddButton = useMemo(() => {
     return (
       <Tooltip>
         <TooltipTrigger
+          onClick={() => {
+            toast("Directory Added to Launch List", {
+              description: "View now or later",
+              action: {
+                label: "View",
+                onClick: () => router.push("/my-launch-list"),
+              },
+            });
+          }}
           className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
         >
-          <Plus />
+          <FilePlus />
           Add
         </TooltipTrigger>
         <TooltipContent side="bottom">
@@ -53,7 +66,7 @@ export default function CollectionPage() {
             <div className="text-xl font-semibold">75 Directories</div>
             <Button variant="outline" size="sm">
               <FileInput />
-              Save all to Launch List
+              Add all to Launch List
             </Button>
           </div>
           <div className="flex gap-2">

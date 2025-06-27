@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Plus, ChevronUp, Dot } from "lucide-react";
+import { ChevronUp, Dot } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
@@ -31,7 +31,7 @@ export default function LaunchPage() {
           </Link>
         </div>
         <div className="h-40 w-full relative">
-          <div className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-125">
+          <div className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100">
             <div className="flex gap-1.5 mb-2">
               <Image
                 src="/star_icon.png"

@@ -14,7 +14,7 @@ export default function MyLaunchListPage() {
     return (
       <div className="relative">
         <Button
-          className={`active:scale-95 transition-all duration-120 items-center ${
+          className={`active:scale-95 transition-all duration-100 items-center ${
             isLaunched
               ? "bg-green-600 hover:bg-green-600/80"
               : "bg-primary-color hover:bg-primary-color/90"

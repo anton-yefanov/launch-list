@@ -5,7 +5,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { File } from "lucide-react";
+import { File, List } from "lucide-react";
 
 export const LayoutHeader = () => {
   const pathname = usePathname();
@@ -26,7 +26,7 @@ export const LayoutHeader = () => {
         </Link>
         <Button
           variant="outline"
-          className="active:scale-90 transition-all duration-120"
+          className="active:scale-95 transition-all duration-100"
         >
           Launch here!
         </Button>
@@ -34,14 +34,20 @@ export const LayoutHeader = () => {
       <div className="flex items-center gap-2">
         <Link
           href={isMyLaunchListPage ? "/collections" : "/my-launch-list"}
-          className={cn(buttonVariants({ variant: "outline" }), "group")}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "group active:scale-95 transition-all duration-100",
+          )}
         >
-          <File />
-          {isMyLaunchListPage ? "Browse collection" : "My Launch List"}
+          {isMyLaunchListPage ? <List /> : <File />}
+          {isMyLaunchListPage ? "Browse collection" : "Launch List"}
         </Link>
         <Link
           href="/login"
-          className={cn(buttonVariants({ variant: "outline" }))}
+          className={cn(
+            buttonVariants({ variant: "default" }),
+            "active:scale-95 transition-all duration-100 bg-primary-color hover:bg-primary-color/90",
+          )}
         >
           Login
         </Link>

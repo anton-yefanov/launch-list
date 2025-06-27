@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Script from "next/script";
 import { LayoutHeader } from "@/app/_components/layout-header";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,6 +52,7 @@ export default function RootLayout({
           </div>
         </div>
         <Analytics />
+        <Toaster richColors />
       </body>
     </html>
   );
