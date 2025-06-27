@@ -42,12 +42,12 @@ export const Directory = ({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center -space-x-2">
             {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
               <Tooltip>
                 <TooltipTrigger>
                   <DollarSign
-                    className="size-6 p-1 text-green-400 bg-green-300/30 rounded-full"
+                    className="size-6 p-1 text-green-400 bg-green-100 rounded-full border-2 border-white relative"
                     size={25}
                   />
                 </TooltipTrigger>
@@ -62,7 +62,7 @@ export const Directory = ({
               <Tooltip>
                 <TooltipTrigger>
                   <Gem
-                    className="size-6 p-1 text-yellow-400 bg-yellow-300/30 rounded-full"
+                    className="size-6 p-1 text-yellow-400 bg-yellow-100 rounded-full border-2 border-white relative"
                     size={25}
                   />
                 </TooltipTrigger>
@@ -71,27 +71,31 @@ export const Directory = ({
                 </TooltipContent>
               </Tooltip>
             )}
-            {/*<Tooltip>*/}
-            {/*  <TooltipTrigger>*/}
-            {/*    <div className="text-xs font-semibold size-6 p-1 text-rose-400 bg-rose-300/30 rounded-full">*/}
-            {/*      10*/}
-            {/*    </div>*/}
-            {/*  </TooltipTrigger>*/}
-            {/*  <TooltipContent side="bottom">*/}
-            {/*    <p>Top 10</p>*/}
-            {/*  </TooltipContent>*/}
-            {/*</Tooltip>*/}
+            {directory.tags.find((tag) => tag === DirectoryTag.AI) && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="text-xs font-semibold size-6 grid place-items-center p-0 text-purple-400 bg-purple-100 rounded-full border-2 border-white relative">
+                    AI
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Focus on AI</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex gap-4 items-center">
-              <div className="grid place-items-center h-fit">
-                <span className="font-bold">
+            <div className="flex gap-3 items-center">
+              <div className="grid place-items-center h-fit w-10">
+                <span className="font-bold text-sm">
                   {formatNumber(directory.viewsPerMonth)}
                 </span>
                 <span className="text-[8px]">Views</span>
               </div>
               <div className="grid place-items-center h-fit">
-                <span className="font-bold">{directory.domainRating}</span>
+                <span className="font-bold text-sm">
+                  {directory.domainRating}
+                </span>
                 <span className="text-[8px]">DR</span>
               </div>
             </div>

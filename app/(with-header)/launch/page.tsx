@@ -10,8 +10,11 @@ import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 import scss from "./styles.module.scss";
 import Link from "next/link";
 import { LoginDialog } from "@/components/login-dialog";
+import { useRouter } from "next/navigation";
 
 export default function LaunchPage() {
+  const router = useRouter();
+
   return (
     <div>
       <div className="border rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group">
@@ -32,7 +35,12 @@ export default function LaunchPage() {
           </Link>
         </div>
         <div className="h-40 w-full relative">
-          <div className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100">
+          <div
+            onClick={() => {
+              router.push("/collections");
+            }}
+            className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"
+          >
             <div className="flex gap-1.5 mb-2">
               <Image
                 src="/star_icon.png"

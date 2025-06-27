@@ -19,6 +19,7 @@ import { useMemo } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { DIRECTORIES_V2 } from "@/constants/directories_v2";
+import Image from "next/image";
 
 export default function CollectionPage() {
   const router = useRouter();
@@ -52,7 +53,7 @@ export default function CollectionPage() {
     <TooltipProvider>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <Card title="I launched on 100+ directories" category="Blog" />
+          <Card title="I launched on 100+ directories" category="Article" />
           <Card
             title="Best directories for Smalls Startup (75+)"
             category="Collection"
@@ -64,7 +65,9 @@ export default function CollectionPage() {
         </div>
         <div className="flex items-center justify-between my-4">
           <div className="flex items-center gap-2">
-            <div className="text-xl font-semibold">75 Directories</div>
+            <div className="text-xl font-semibold">
+              {DIRECTORIES_V2.length} Directories
+            </div>
             <Button variant="outline" size="sm">
               <FileInput />
               Add all to Launch List
@@ -94,9 +97,9 @@ export default function CollectionPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          {DIRECTORIES_V2.map((directory) => (
+          {DIRECTORIES_V2.map((directory, index) => (
             <Directory
-              key={directory.name}
+              key={index}
               directory={directory}
               buttonComponent={AddButton}
             />
@@ -109,9 +112,20 @@ export default function CollectionPage() {
 
 const Card = ({ title, category }: { title: string; category: string }) => {
   return (
-    <div className="bg-gradient-to-br from-white to-purple-50/70 rounded-lg border p-4 select-none">
-      <div className="font-semibold">{title}</div>
-      <div className="text-xs mt-2">{category}</div>
+    <div className="relative bg-gradient-to-br from-white to-purple-50/70 rounded-lg border overflow-hidden select-none">
+      <Image
+        src="/me.png"
+        alt="star"
+        width={100}
+        height={30}
+        draggable={false}
+        className="absolute inset-0 w-full h-full object-cover select-none"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+      <div className="relative z-10 p-4 pt-14 pb-2 h-full flex flex-col justify-end">
+        <div className="font-semibold text-white">{title}</div>
+        <div className="text-xs mt-1 text-white/90">{category}</div>
+      </div>
     </div>
   );
 };

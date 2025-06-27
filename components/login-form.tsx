@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signIn } from "next-auth/react";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export const LoginForm = () => {
   return (
@@ -25,6 +29,11 @@ export const LoginForm = () => {
       </div>
       <Card className="shadow-none p-7 gap-2">
         <Button
+          onClick={() =>
+            signIn("google", {
+              redirectTo: DEFAULT_LOGIN_REDIRECT,
+            })
+          }
           variant="outline"
           size="lg"
           className="active:scale-98 transition-all duration-100"
