@@ -14,7 +14,7 @@ export const LayoutHeader = () => {
   return (
     <div className="pb-8 flex justify-between">
       <div className="flex items-center gap-2">
-        <Link href="/" className="shrink-0 select-none">
+        <Link href="/public" className="shrink-0 select-none">
           <Image
             src="/logo.png"
             alt="logo"

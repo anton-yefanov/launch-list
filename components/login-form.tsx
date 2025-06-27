@@ -1,22 +1,26 @@
+import Link from "next/link";
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 
-export default function LoginPage() {
+export const LoginForm = () => {
   return (
-    <div className="max-w-md mx-auto">
+    <>
       <div className="mb-6 text-center select-none">
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={50}
-          height={50}
-          draggable={false}
-          className="rounded mx-auto mb-4"
-        />
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            draggable={false}
+            className="rounded mx-auto mb-4"
+          />
+        </Link>
         <h1 className="text-2xl font-semibold">
-          Let&#39;s launch your product, <br /> everywhere!
+          <span className="font-normal">Let&#39;s launch your product,</span>
+          <br /> everywhere!
         </h1>
       </div>
       <Card className="shadow-none p-7 gap-2">
@@ -64,6 +68,6 @@ export default function LoginPage() {
           Continue with email
         </Button>
       </Card>
-    </div>
+    </>
   );
-}
+};

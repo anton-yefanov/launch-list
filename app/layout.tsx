@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Script from "next/script";
-import { LayoutHeader } from "@/app/_components/layout-header";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -46,10 +45,7 @@ export default function RootLayout({
           />
         )}
         <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8 px-4">
-          <div className="max-w-2xl mx-auto">
-            <LayoutHeader />
-            {children}
-          </div>
+          <div className="max-w-2xl mx-auto">{children}</div>
         </div>
         <Analytics />
         <Toaster richColors />

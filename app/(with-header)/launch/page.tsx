@@ -9,6 +9,7 @@ import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 import scss from "./styles.module.scss";
 import Link from "next/link";
+import { LoginDialog } from "@/components/login-dialog";
 
 export default function LaunchPage() {
   return (
@@ -60,7 +61,9 @@ export default function LaunchPage() {
       {/*  <FeaturedProduct />*/}
       {/*</div>*/}
       <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
-        <h1 className="text-4xl font-semibold">Launching now</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-semibold">Launching now</h1>
+        </div>
         <div className="flex flex-col gap-2 items-center">
           <div className="text-xs">Next launch week in</div>
           <FlipClockCountdown
@@ -151,7 +154,7 @@ const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
         </div>
       </div>
       <Image
-        src={getCupByPlace(place)}
+        src={getCupByPlace(place) || "/placeholder.svg"}
         alt="logo"
         width={50}
         height={50}
@@ -160,7 +163,7 @@ const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
       />
       <Button
         variant="outline"
-        className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background"
+        className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background bg-transparent"
       >
         12
       </Button>
@@ -222,19 +225,20 @@ const Product = () => {
           <div>Directory</div>
         </div>
       </div>
-      <Button
-        variant="outline"
-        className={cn(
-          "cursor-pointer size-12.5 ml-auto active:scale-90 flex flex-col gap-0 transition-all duration-120",
-          upvoted
-            ? "border-primary-color text-primary-color hover:text-primary-color"
-            : "",
-        )}
-        onClick={() => setUpvoted(!upvoted)}
-      >
-        <ChevronUp strokeWidth={2} />
-        12
-      </Button>
+      <LoginDialog>
+        <Button
+          variant="outline"
+          className={cn(
+            "cursor-pointer size-12.5 ml-auto active:scale-90 flex flex-col gap-0 transition-all duration-120",
+            upvoted
+              ? "border-primary-color text-primary-color hover:text-primary-color"
+              : "",
+          )}
+        >
+          <ChevronUp strokeWidth={2} />
+          12
+        </Button>
+      </LoginDialog>
     </div>
   );
 };

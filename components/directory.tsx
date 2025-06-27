@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DollarSign, Gem } from "lucide-react";
-import { ProductCardDialog } from "@/app/collections/_components/product-card-dialog";
+import { ProductCardDialog } from "@/app/(with-header)/collections/_components/product-card-dialog";
 
 export const Directory = ({
   title,
