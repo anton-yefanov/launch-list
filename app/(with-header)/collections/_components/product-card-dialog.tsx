@@ -23,27 +23,16 @@ import {
   Gem,
   ExternalLink,
   Plus,
-  Star,
   Users,
   TrendingUp,
   Globe,
 } from "lucide-react";
-
-interface DirectoryData {
-  title: string;
-  bgColor: string;
-  description: string;
-  views: string;
-  domainRating: string;
-  isFree: boolean;
-  hasPaidFeatures: boolean;
-  ranking: number;
-}
+import { DirectoryTag, DirectoryType } from "@/constants/directories_v2";
 
 interface ProductCardDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  directory: DirectoryData;
+  directory: DirectoryType;
 }
 
 export function ProductCardDialog({
@@ -57,17 +46,18 @@ export function ProductCardDialog({
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div
-          className={`${directory.bgColor} shrink-0 text-black font-extrabold p-3 size-16 border rounded-lg grid place-items-center`}
+          style={{ backgroundColor: directory.bgColor }}
+          className="shrink-0 text-black font-extrabold p-3 size-16 border rounded-lg grid place-items-center"
         >
           <div className="relative">
             <div className="bg-white relative rounded-xs text-lg px-2 py-1 border border-black -rotate-6 z-10">
-              {directory.title[0]}
+              {directory.name[0]}
             </div>
             <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12" />
           </div>
         </div>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">{directory.title}</h2>
+          <h2 className="text-2xl font-bold">{directory.name}</h2>
           <p className="text-base mt-1 text-muted-foreground">
             {directory.description}
           </p>
@@ -78,7 +68,7 @@ export function ProductCardDialog({
           <div className="flex items-center justify-center mb-2">
             <Users className="size-5 text-blue-600" />
           </div>
-          <div className="font-bold text-lg">{directory.views}</div>
+          <div className="font-bold text-lg">{directory.viewsPerMonth}</div>
           <div className="text-xs text-gray-600">Monthly Views</div>
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -87,13 +77,6 @@ export function ProductCardDialog({
           </div>
           <div className="font-bold text-lg">{directory.domainRating}</div>
           <div className="text-xs text-gray-600">Domain Rating</div>
-        </div>
-        <div className="text-center p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-center mb-2">
-            <Star className="size-5 text-yellow-600" />
-          </div>
-          <div className="font-bold text-lg">#{directory.ranking}</div>
-          <div className="text-xs text-gray-600">Ranking</div>
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-center mb-2">
@@ -110,13 +93,13 @@ export function ProductCardDialog({
       <div>
         <h3 className="font-semibold mb-3">Features & Pricing</h3>
         <div className="flex flex-wrap gap-2">
-          {directory.isFree && (
+          {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
             <Badge variant="secondary" className="bg-green-100 text-green-800">
               <DollarSign className="size-3 mr-1" />
               Free Submission
             </Badge>
           )}
-          {directory.hasPaidFeatures && (
+          {directory.tags.find((tag) => tag === DirectoryTag.PaidFeatures) && (
             <Badge
               variant="secondary"
               className="bg-yellow-100 text-yellow-800"
@@ -125,31 +108,20 @@ export function ProductCardDialog({
               Premium Features
             </Badge>
           )}
-          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-            High Traffic
-          </Badge>
-          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-            Tech Audience
-          </Badge>
+          {directory.tags.find((tag) => tag === DirectoryTag.HighTraffic) && (
+            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              High Traffic
+            </Badge>
+          )}
         </div>
       </div>
-
       <Separator />
-
-      {/* Description */}
       <div>
         <h3 className="font-semibold mb-3">About</h3>
         <p className="text-sm text-gray-600 leading-relaxed">
-          {directory.title} is one of the most popular platforms for launching
-          and discovering new products. With over {directory.views} monthly
-          views and a strong community of makers and early adopters, it's an
-          excellent place to get your product in front of the right audience.
-          The platform offers both free and premium submission options to
-          maximize your product's visibility.
+          {directory.description}
         </p>
       </div>
-
-      {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
         <Button className="bg-primary-color hover:bg-primary-color/90 flex-1">
           <Plus className="size-4 mr-2" />
@@ -168,7 +140,7 @@ export function ProductCardDialog({
       <Drawer open={isOpen} onOpenChange={onClose}>
         <DrawerContent className="max-h-[85vh]">
           <DrawerHeader className="text-left p-1">
-            <DrawerTitle className="sr-only">{directory.title}</DrawerTitle>
+            <DrawerTitle className="sr-only">{directory.name}</DrawerTitle>
             <DrawerDescription className="sr-only">
               {directory.description}
             </DrawerDescription>
@@ -183,7 +155,7 @@ export function ProductCardDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="sr-only">{directory.title}</DialogTitle>
+          <DialogTitle className="sr-only">{directory.name}</DialogTitle>
           <DialogDescription className="sr-only">
             {directory.description}
           </DialogDescription>

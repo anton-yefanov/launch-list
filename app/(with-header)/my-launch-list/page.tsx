@@ -1,12 +1,28 @@
 "use client";
 
 import { Directory } from "@/components/directory";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ConfettiExplosion from "react-confetti-explosion";
+import { DIRECTORIES_V2, DirectoryType } from "@/constants/directories_v2";
 
 export default function MyLaunchListPage() {
+  return (
+    <div>
+      <h1 className="font-semibold text-2xl">
+        Dont forget to launch everywhere!
+      </h1>
+      <div className="mb-4">Check directories you launched on</div>
+      <div className="flex flex-col gap-2">
+        {DIRECTORIES_V2.slice(0, 4).map((directory) => (
+          <LaunchListItem key={directory.name} directory={directory} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const LaunchListItem = ({ directory }: { directory: DirectoryType }) => {
   const [isLaunched, setIsLaunched] = useState(false);
   const [isExploding, setIsExploding] = useState(false);
 
@@ -25,7 +41,6 @@ export default function MyLaunchListPage() {
             setIsLaunched(!isLaunched);
           }}
         >
-          {/* Use a visual indicator instead of actual Checkbox component */}
           <div
             className={`w-4 h-4 rounded border-2 border-white bg-white flex items-center justify-center ${
               isLaunched ? "bg-white" : "bg-transparent"
@@ -53,18 +68,10 @@ export default function MyLaunchListPage() {
   }, [isExploding, isLaunched]);
 
   return (
-    <div>
-      <h1 className="font-semibold text-2xl">
-        Dont forget to launch everywhere!
-      </h1>
-      <div className="mb-4">Check directories you launched on</div>
-      <div className="flex flex-col gap-2">
-        <Directory
-          title="Product Hunt"
-          bgColor="bg-orange-600"
-          buttonComponent={LaunchedButton}
-        />
-      </div>
-    </div>
+    <Directory
+      key={directory.name}
+      directory={directory}
+      buttonComponent={LaunchedButton}
+    />
   );
-}
+};

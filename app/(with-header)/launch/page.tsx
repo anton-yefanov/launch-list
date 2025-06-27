@@ -25,7 +25,7 @@ export default function LaunchPage() {
             href="/collections"
             className={cn(
               buttonVariants({ variant: "default" }),
-              "px-16 bg-primary-color hover:bg-primary-color/90 active:scale-95 transition-all duration-120",
+              "px-16 bg-primary-color hover:bg-primary-color/90 hover:scale-102 active:scale-95 transition-all duration-120",
             )}
           >
             Browse all

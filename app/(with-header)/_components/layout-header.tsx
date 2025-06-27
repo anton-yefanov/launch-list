@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -14,7 +14,7 @@ export const LayoutHeader = () => {
   return (
     <div className="pb-8 flex justify-between">
       <div className="flex items-center gap-2">
-        <Link href="/public" className="shrink-0 select-none">
+        <Link href="/launch" className="shrink-0 select-none">
           <Image
             src="/logo.png"
             alt="logo"
@@ -24,12 +24,15 @@ export const LayoutHeader = () => {
             className="rounded"
           />
         </Link>
-        <Button
-          variant="outline"
-          className="active:scale-95 transition-all duration-100"
-        >
-          Launch here!
-        </Button>
+        {/*<Link*/}
+        {/*  href="/pricing"*/}
+        {/*  className={cn(*/}
+        {/*    buttonVariants({ variant: "outline" }),*/}
+        {/*    "active:scale-95 transition-all duration-100",*/}
+        {/*  )}*/}
+        {/*>*/}
+        {/*  Get featured*/}
+        {/*</Link>*/}
       </div>
       <div className="flex items-center gap-2">
         <Link

@@ -18,6 +18,7 @@ import { Directory } from "@/components/directory";
 import { useMemo } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { DIRECTORIES_V2 } from "@/constants/directories_v2";
 
 export default function CollectionPage() {
   const router = useRouter();
@@ -93,21 +94,13 @@ export default function CollectionPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <Directory
-            title="Product Hunt"
-            bgColor="bg-orange-600"
-            buttonComponent={AddButton}
-          />
-          <Directory
-            title="Indie Hackers"
-            bgColor="bg-blue-600"
-            buttonComponent={AddButton}
-          />
-          <Directory
-            title="Hacker News"
-            bgColor="bg-orange-500"
-            buttonComponent={AddButton}
-          />
+          {DIRECTORIES_V2.map((directory) => (
+            <Directory
+              key={directory.name}
+              directory={directory}
+              buttonComponent={AddButton}
+            />
+          ))}
         </div>
       </div>
     </TooltipProvider>
