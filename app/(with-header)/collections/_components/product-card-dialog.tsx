@@ -15,7 +15,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useMobile } from "@/hooks/use-mobile";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -28,6 +28,8 @@ import {
   Globe,
 } from "lucide-react";
 import { DirectoryTag, DirectoryType } from "@/constants/directories_v2";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface ProductCardDialogProps {
   isOpen: boolean;
@@ -127,10 +129,14 @@ export function ProductCardDialog({
           <Plus className="size-4 mr-2" />
           Add to Launch List
         </Button>
-        <Button variant="outline" className="flex-1">
+        <Link
+          href={directory.url}
+          className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
+          target="_blank"
+        >
           <ExternalLink className="size-4 mr-2" />
           Visit Website
-        </Button>
+        </Link>
       </div>
     </div>
   );
