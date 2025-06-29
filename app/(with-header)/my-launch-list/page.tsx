@@ -4,7 +4,8 @@ import { Directory } from "@/components/directory";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ConfettiExplosion from "react-confetti-explosion";
-import { DIRECTORIES_V2, DirectoryType } from "@/constants/directories_v2";
+import { DIRECTORIES_V2 } from "@/constants/directories_v2";
+import { DirectoryType } from "@/types/DirectoryType";
 
 export default function MyLaunchListPage() {
   return (

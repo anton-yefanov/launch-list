@@ -27,9 +27,10 @@ import {
   TrendingUp,
   Globe,
 } from "lucide-react";
-import { DirectoryTag, DirectoryType } from "@/constants/directories_v2";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { DirectoryTag } from "@/types/DirectoryTag";
+import { DirectoryType } from "@/types/DirectoryType";
 
 interface ProductCardDialogProps {
   isOpen: boolean;

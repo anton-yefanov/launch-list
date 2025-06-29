@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/tooltip";
 import { DollarSign, Gem } from "lucide-react";
 import { ProductCardDialog } from "@/app/(with-header)/collections/_components/product-card-dialog";
-import { DirectoryTag, DirectoryType } from "@/constants/directories_v2";
 import { formatNumber } from "@/lib/formatNumber";
+import { DirectoryTag } from "@/types/DirectoryTag";
+import { DirectoryType } from "@/types/DirectoryType";
 
 export const Directory = ({
   directory,

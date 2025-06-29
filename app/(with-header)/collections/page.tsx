@@ -37,7 +37,10 @@ export default function CollectionPage() {
               },
             });
           }}
-          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+          className={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "active:scale-92 transition-all duration-100",
+          )}
         >
           <FilePlus />
           Add
@@ -53,7 +56,7 @@ export default function CollectionPage() {
     <TooltipProvider>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <Card title="I launched on 100+ directories" category="Article" />
+          <Card title="I launched on 100+ websites" category="Article" />
           <Card
             title="Best directories for Smalls Startup (75+)"
             category="Collection"
@@ -66,7 +69,7 @@ export default function CollectionPage() {
         <div className="flex items-center justify-between my-4">
           <div className="flex items-center gap-2">
             <div className="text-xl font-semibold">
-              {DIRECTORIES_V2.length} Directories
+              {DIRECTORIES_V2.length} Websites
             </div>
             <Button variant="outline" size="sm">
               <FileInput />
