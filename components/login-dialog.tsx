@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { useMobile } from "@/hooks/use-mobile";
 import {
@@ -10,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -18,21 +15,15 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { LoginForm } from "@/components/login-form";
 
 interface LoginDialogProps {
-  children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export function LoginDialog({
-  children,
-  open,
-  onOpenChange,
-}: LoginDialogProps) {
+export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isMobile = useMobile();
 
@@ -42,7 +33,6 @@ export function LoginDialog({
   if (isMobile) {
     return (
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
-        <DrawerTrigger asChild>{children}</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader className="text-left">
             <DrawerTitle>Sign in to continue</DrawerTitle>
@@ -60,7 +50,6 @@ export function LoginDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Sign in to continue</DialogTitle>

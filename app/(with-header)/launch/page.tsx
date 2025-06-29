@@ -11,6 +11,7 @@ import scss from "./styles.module.scss";
 import Link from "next/link";
 import { LoginDialog } from "@/components/login-dialog";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function LaunchPage() {
   const router = useRouter();
@@ -208,34 +209,50 @@ const FeaturedProduct = () => {
 };
 
 const Product = () => {
+  const { status } = useSession();
   const [upvoted, setUpvoted] = useState<boolean>(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
+
+  const isAuthenticated = status === "authenticated";
+
+  const handleUpvoteClick = () => {
+    if (!isAuthenticated) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
+    setUpvoted(!upvoted);
+
+    console.log("User is authenticated - add your upvote logic here");
+  };
 
   return (
-    <div className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50">
-      <div className="shrink-0 pt-1">
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={50}
-          height={50}
-          draggable={false}
-          className="rounded"
-        />
-      </div>
-      <div className="flex flex-col space-y-1">
-        <div className="font-semibold">Flex</div>
-        <div>The ultimate AI social media scheduling tool</div>
-        <div className="flex text-xs items-center">
-          <div>by Anton</div>
-          <Dot size={16} className="text-gray-300" />
-          <div>AI</div>
-          <Dot size={16} className="text-gray-300" />
-          <div>Directory</div>
+    <>
+      <div className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50">
+        <div className="shrink-0 pt-1">
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            draggable={false}
+            className="rounded"
+          />
         </div>
-      </div>
-      <LoginDialog>
+        <div className="flex flex-col space-y-1">
+          <div className="font-semibold">Flex</div>
+          <div>The ultimate AI social media scheduling tool</div>
+          <div className="flex text-xs items-center">
+            <div>by Anton</div>
+            <Dot size={16} className="text-gray-300" />
+            <div>AI</div>
+            <Dot size={16} className="text-gray-300" />
+            <div>Directory</div>
+          </div>
+        </div>
         <Button
           variant="outline"
+          onClick={handleUpvoteClick}
           className={cn(
             "cursor-pointer size-12.5 ml-auto active:scale-90 flex flex-col gap-0 transition-all duration-120",
             upvoted
@@ -246,8 +263,9 @@ const Product = () => {
           <ChevronUp strokeWidth={2} />
           12
         </Button>
-      </LoginDialog>
-    </div>
+      </div>
+      <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
+    </>
   );
 };
 
