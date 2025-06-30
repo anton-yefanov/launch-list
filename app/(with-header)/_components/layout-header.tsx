@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { File, List, HelpCircle, LogOut } from "lucide-react";
+import { File, List, HelpCircle, LogOut, Plus } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
@@ -37,6 +37,14 @@ export const LayoutHeader = () => {
             draggable={false}
             className="rounded"
           />
+        </Link>
+        <Link
+          href="https://tally.so/r/nW6pYJ"
+          target="_blank"
+          className={cn(buttonVariants({ variant: "outline" }))}
+        >
+          <Plus />
+          Submit
         </Link>
         {/*<Link*/}
         {/*  href="/pricing"*/}

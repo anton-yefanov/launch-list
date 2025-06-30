@@ -27,7 +27,7 @@ export const Directory = ({
         <div className="flex gap-2">
           <div
             style={{ backgroundColor: directory.bgColor }}
-            className="shrink-0 cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
+            className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
             onClick={() => setIsDialogOpen(true)}
           >
             <div className="relative">
