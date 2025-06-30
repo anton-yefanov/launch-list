@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { LayoutHeader } from "@/app/(with-header)/_components/layout-header";
+import { LayoutHeader } from "@/components/layout-header";
 
 export default function LayoutWithHeader({
   children,

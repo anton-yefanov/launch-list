@@ -1,17 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { File, List, HelpCircle, LogOut, Plus } from "lucide-react";
+import { File, List, HelpCircle, LogOut, Plus, Rocket } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -88,10 +89,20 @@ export const LayoutHeader = () => {
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
                 <Link
+                  href="/my-startups"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <Rocket className="size-4" />
+                  My startups
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link
                   href="/help"
                   className="flex items-center gap-2 cursor-pointer"
                 >
-                  <HelpCircle className="h-4 w-4" />
+                  <HelpCircle className="size-4" />
                   Get help
                 </Link>
               </DropdownMenuItem>
@@ -99,7 +110,7 @@ export const LayoutHeader = () => {
                 onClick={handleSignOut}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="size-4" />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
