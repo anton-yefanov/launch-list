@@ -1,6 +1,6 @@
-import { DirectoryTag } from "@/types/DirectoryTag";
+import mongoose from "mongoose";
+import Directory, { DirectoryTag, SubmitDifficulty } from "../models/Directory";
 import { DirectoryType } from "@/types/DirectoryType";
-import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 
 export const DIRECTORIES_V2: Array<DirectoryType> = [
   {
@@ -1715,3 +1715,51 @@ export const DIRECTORIES_V2: Array<DirectoryType> = [
     tags: [DirectoryTag.FreeLaunch],
   },
 ];
+
+async function seedDirectories() {
+  try {
+    const mongoUri =
+      "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+    if (!mongoUri) {
+      throw new Error("MONGODB_URI environment variable is not defined");
+    }
+
+    console.log("Connecting to MongoDB...");
+    await mongoose.connect(mongoUri);
+    console.log("Connected to MongoDB successfully");
+
+    // Clear existing directories (optional - remove if you want to keep existing data)
+    console.log("Clearing existing directories...");
+    await Directory.deleteMany({});
+    console.log("Existing directories cleared");
+
+    // Insert new directories
+    console.log("Seeding directories...");
+    const insertedDirectories = await Directory.insertMany(DIRECTORIES_V2);
+    console.log(
+      `Successfully seeded ${insertedDirectories.length} directories`,
+    );
+
+    // Log inserted directories for verification
+    insertedDirectories.forEach((dir, index) => {
+      console.log(`${index + 1}. ${dir.name} - ${dir.url}`);
+    });
+
+    console.log("Seeding completed successfully!");
+  } catch (error) {
+    console.error("Error seeding directories:", error);
+    process.exit(1);
+  } finally {
+    // Close MongoDB connection
+    await mongoose.connection.close();
+    console.log("MongoDB connection closed");
+    process.exit(0);
+  }
+}
+
+// Run the seed function
+if (require.main === module) {
+  seedDirectories();
+}
+
+export default seedDirectories;

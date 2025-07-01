@@ -15,28 +15,127 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { DIRECTORIES_V2 } from "@/constants/directories_v2";
 import Image from "next/image";
+
+interface DirectoryType {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+  bgColor: string;
+  domainRating: number;
+  viewsPerMonth: number;
+  tags: string[];
+  submitDifficulty: string;
+}
+
+interface DirectoriesResponse {
+  directories: DirectoryType[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
 
 export default function CollectionPage() {
   const router = useRouter();
+  const [directories, setDirectories] = useState<DirectoryType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalDirectories, setTotalDirectories] = useState(0);
+
+  // Fetch directories from API
+  useEffect(() => {
+    const fetchDirectories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/directories");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch directories");
+        }
+
+        const data: DirectoriesResponse = await response.json();
+        setDirectories(data.directories);
+        setTotalDirectories(data.pagination.total);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        toast.error("Failed to load directories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDirectories();
+  }, []);
+
+  // Add single directory to launch list
+  const addToLaunchList = async (directoryId: string) => {
+    try {
+      const response = await fetch("/api/user/launch-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ directoryId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to add to launch list");
+      }
+
+      toast("Directory Added to Launch List", {
+        description: "View now or later",
+        action: {
+          label: "View",
+          onClick: () => router.push("/my-launch-list"),
+        },
+      });
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to add to launch list",
+      );
+    }
+  };
+
+  // Add all directories to launch list
+  const addAllToLaunchList = async () => {
+    try {
+      const promises = directories.map((directory) =>
+        fetch("/api/user/launch-list", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ directoryId: directory._id }),
+        }),
+      );
+
+      await Promise.all(promises);
+
+      toast(`All ${directories.length} directories added to Launch List`, {
+        description: "View now or later",
+        action: {
+          label: "View",
+          onClick: () => router.push("/my-launch-list"),
+        },
+      });
+    } catch (err) {
+      toast.error("Failed to add all directories to launch list");
+    }
+  };
 
   const AddButton = useMemo(() => {
-    return (
+    return (directoryId: string) => (
       <Tooltip>
         <TooltipTrigger
-          onClick={() => {
-            toast("Directory Added to Launch List", {
-              description: "View now or later",
-              action: {
-                label: "View",
-                onClick: () => router.push("/my-launch-list"),
-              },
-            });
-          }}
+          onClick={() => addToLaunchList(directoryId)}
           className={cn(
             buttonVariants({ variant: "outline", size: "sm" }),
             "active:scale-92 transition-all duration-100",
@@ -52,26 +151,54 @@ export default function CollectionPage() {
     );
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">Error: {error}</p>
+        <Button
+          onClick={() => window.location.reload()}
+          variant="outline"
+          className="mt-4"
+        >
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <TooltipProvider>
       <div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Card title="I launched on 100+ websites" category="Article" />
           <Card
-            title="Best directories for Smalls Startup (75+)"
+            title="Best directories for Small Startups (75+)"
             category="Collection"
           />
           <Card
-            title="Best directories for Smalls Startup (75+)"
+            title="Best directories for Small Startups (75+)"
             category="Collection"
           />
         </div>
         <div className="flex items-center justify-between my-4">
           <div className="flex items-center gap-2">
             <div className="text-xl font-semibold">
-              {DIRECTORIES_V2.length} Websites
+              {totalDirectories} Websites
             </div>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={addAllToLaunchList}
+              disabled={directories.length === 0}
+            >
               <FileInput />
               Add all to Launch List
             </Button>
@@ -100,11 +227,11 @@ export default function CollectionPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          {DIRECTORIES_V2.map((directory, index) => (
+          {directories.map((directory) => (
             <Directory
-              key={index}
+              key={directory._id}
               directory={directory}
-              buttonComponent={AddButton}
+              buttonComponent={AddButton(directory._id)}
             />
           ))}
         </div>

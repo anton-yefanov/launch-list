@@ -24,14 +24,21 @@ import {
   ExternalLink,
   Plus,
   Users,
-  TrendingUp,
   Globe,
+  Hexagon,
+  Frown,
+  Meh,
+  Smile,
+  Check,
+  TrendingUp,
+  PawPrint,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { DirectoryType } from "@/types/DirectoryType";
 import { formatNumber } from "@/lib/formatNumber";
+import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 
 interface ProductCardDialogProps {
   isOpen: boolean;
@@ -79,7 +86,7 @@ export function ProductCardDialog({
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-center mb-2">
-            <TrendingUp className="size-5 text-green-600" />
+            <Hexagon className="size-5 text-green-600" />
           </div>
           <div className="font-bold text-lg">{directory.domainRating}</div>
           <div className="text-xs text-gray-600">Domain Rating</div>
@@ -93,9 +100,9 @@ export function ProductCardDialog({
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-center mb-2">
-            <Globe className="size-5 text-purple-600" />
+            {getSubmitDifficultyIcon(directory.submitDifficulty)}
           </div>
-          <div className="font-bold text-lg">Ok</div>
+          <div className="font-bold text-lg">{directory.submitDifficulty}</div>
           <div className="text-xs text-gray-600">Submit Difficulty</div>
         </div>
       </div>
@@ -104,23 +111,42 @@ export function ProductCardDialog({
         <h3 className="font-semibold mb-3">Features & Pricing</h3>
         <div className="flex flex-wrap gap-2">
           {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              <DollarSign className="size-3 mr-1" />
-              Free Submission
+            <Badge
+              variant="secondary"
+              className="text-green-500 bg-green-100/70"
+            >
+              <Check className="size-3 mr-1" />
+              Launch for Free
             </Badge>
           )}
           {directory.tags.find((tag) => tag === DirectoryTag.PaidFeatures) && (
             <Badge
               variant="secondary"
-              className="bg-yellow-100 text-yellow-800"
+              className="text-yellow-500 bg-yellow-100/70"
             >
-              <Gem className="size-3 mr-1" />
-              Premium Features
+              <DollarSign className="size-3 mr-1" />
+              Website offers Paid features
             </Badge>
           )}
           {directory.tags.find((tag) => tag === DirectoryTag.HighTraffic) && (
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="text-rose-400 bg-rose-100">
+              <TrendingUp className="size-3 mr-1" />
               High Traffic
+            </Badge>
+          )}
+          {directory.tags.find((tag) => tag === DirectoryTag.SmallStartups) && (
+            <Badge variant="secondary" className="text-sky-400 bg-sky-100">
+              <PawPrint className="size-3 mr-1" />
+              Perfect for small startups
+            </Badge>
+          )}
+          {directory.tags.find((tag) => tag === DirectoryTag.AI) && (
+            <Badge
+              variant="secondary"
+              className="text-purple-400 bg-purple-100"
+            >
+              <div className="text-xs font-semibold p-0">AI</div>
+              Focus on AI
             </Badge>
           )}
         </div>
@@ -179,3 +205,14 @@ export function ProductCardDialog({
     </Dialog>
   );
 }
+
+const getSubmitDifficultyIcon = (it: SubmitDifficulty) => {
+  switch (it) {
+    case SubmitDifficulty.High:
+      return <Frown className="size-5 text-red-400" />;
+    case SubmitDifficulty.Ok:
+      return <Meh className="size-5 text-yellow-500" />;
+    case SubmitDifficulty.Low:
+      return <Smile className="size-5 text-green-600" />;
+  }
+};

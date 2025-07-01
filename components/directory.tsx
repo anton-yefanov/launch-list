@@ -11,7 +11,18 @@ import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
 import { ProductCardDialog } from "@/app/(with-header)/collections/_components/product-card-dialog";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
-import type { DirectoryType } from "@/types/DirectoryType";
+
+interface DirectoryType {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+  bgColor: string;
+  domainRating: number;
+  viewsPerMonth: number;
+  tags: string[];
+  submitDifficulty: string;
+}
 
 export const Directory = ({
   directory,
@@ -41,7 +52,7 @@ export const Directory = ({
                   <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
                 </div>
               </div>
-              <div className="flex flex-col flex-1 min-w-0">
+              <div className="flex flex-col flex-1">
                 <div className="font-semibold text-base truncate">
                   {directory.name}
                 </div>
@@ -146,8 +157,6 @@ export const Directory = ({
           </div>
         </div>
       </TooltipProvider>
-
-      {/* Desktop Layout (unchanged) */}
       <TooltipProvider>
         <div className="hidden sm:flex select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md">
           <div className="flex gap-2">
@@ -218,7 +227,7 @@ export const Directory = ({
                 <Tooltip>
                   <TooltipTrigger>
                     <DollarSign
-                      className="size-6 p-1 text-yellow-400 bg-yellow-100 rounded-full border-2 border-white relative"
+                      className="size-6 p-1 text-yellow-500 bg-yellow-100/70 rounded-full border-2 border-white relative"
                       size={25}
                     />
                   </TooltipTrigger>
@@ -233,7 +242,7 @@ export const Directory = ({
                 <Tooltip>
                   <TooltipTrigger>
                     <Check
-                      className="size-6 p-1 text-green-400 bg-green-100 rounded-full border-2 border-white relative"
+                      className="size-6 p-1 text-green-500 bg-green-100/70 rounded-full border-2 border-white relative"
                       size={25}
                     />
                   </TooltipTrigger>

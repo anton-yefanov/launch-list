@@ -1,45 +1,194 @@
 "use client";
 
 import { Directory } from "@/components/directory";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import ConfettiExplosion from "react-confetti-explosion";
-import { DIRECTORIES_V2 } from "@/constants/directories_v2";
-import { DirectoryType } from "@/types/DirectoryType";
+import { toast } from "sonner";
+import Link from "next/link";
+
+interface DirectoryType {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+  bgColor: string;
+  domainRating: number;
+  viewsPerMonth: number;
+  tags: string[];
+  submitDifficulty: string;
+}
+
+interface LaunchListData {
+  launchList: DirectoryType[];
+  launchedDirectories: string[]; // Array of directory IDs
+}
 
 export default function MyLaunchListPage() {
+  const [launchList, setLaunchList] = useState<DirectoryType[]>([]);
+  const [launchedDirectories, setLaunchedDirectories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch user's launch list
+  useEffect(() => {
+    const fetchLaunchList = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/user/launch-list");
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error("Please sign in to view your launch list");
+          }
+          throw new Error("Failed to fetch launch list");
+        }
+
+        const data: LaunchListData = await response.json();
+        setLaunchList(data.launchList);
+        setLaunchedDirectories(data.launchedDirectories);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to load launch list",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLaunchList();
+  }, []);
+
+  // Toggle launched status
+  const toggleLaunched = async (
+    directoryId: string,
+    currentStatus: boolean,
+  ) => {
+    try {
+      const response = await fetch("/api/user/launched", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          directoryId,
+          launched: !currentStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update launched status");
+      }
+
+      // Update local state
+      if (!currentStatus) {
+        setLaunchedDirectories((prev) => [...prev, directoryId]);
+      } else {
+        setLaunchedDirectories((prev) =>
+          prev.filter((id) => id !== directoryId),
+        );
+      }
+
+      if (!currentStatus) {
+        toast.success("Marked as launched! 🎉");
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update status",
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">Error: {error}</p>
+        <Button
+          onClick={() => window.location.reload()}
+          variant="outline"
+          className="mt-4"
+        >
+          Retry
+        </Button>
+      </div>
+    );
+  }
+
+  if (launchList.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <h1 className="font-semibold text-2xl mb-4">
+          Your Launch List is Empty
+        </h1>
+        <p className="text-gray-600 mb-4">
+          Add directories from the collection to start building your launch
+          list!
+        </p>
+        <Link href="/collections">Browse Directories</Link>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1 className="font-semibold text-2xl">
-        Dont forget to launch everywhere!
+        Don&#39;t forget to launch everywhere!
       </h1>
-      <div className="mb-4">Check directories you launched on</div>
+      <div className="mb-4">
+        Check directories you launched on ({launchedDirectories.length}/
+        {launchList.length} completed)
+      </div>
       <div className="flex flex-col gap-2">
-        {DIRECTORIES_V2.slice(0, 4).map((directory) => (
-          <LaunchListItem key={directory.name} directory={directory} />
+        {launchList.map((directory) => (
+          <LaunchListItem
+            key={directory._id}
+            directory={directory}
+            isLaunched={launchedDirectories.includes(directory._id)}
+            onToggleLaunched={toggleLaunched}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-const LaunchListItem = ({ directory }: { directory: DirectoryType }) => {
-  const [isLaunched, setIsLaunched] = useState(false);
+const LaunchListItem = ({
+  directory,
+  isLaunched,
+  onToggleLaunched,
+}: {
+  directory: DirectoryType;
+  isLaunched: boolean;
+  onToggleLaunched: (directoryId: string, currentStatus: boolean) => void;
+}) => {
   const [isExploding, setIsExploding] = useState(false);
 
   const LaunchedButton = useMemo(() => {
     return (
       <div className="relative">
         <Button
-          className={`active:scale-95 transition-all duration-100 items-center ${
+          className={`min-w-26 justify-start relative active:scale-95 transition-all duration-100 items-center ${
             isLaunched
               ? "bg-green-600 hover:bg-green-600/80"
               : "bg-primary-color hover:bg-primary-color/90"
           }`}
           variant="outline"
           onClick={() => {
-            setIsExploding(!isLaunched);
-            setIsLaunched(!isLaunched);
+            if (!isLaunched) {
+              setIsExploding(true);
+              setTimeout(() => setIsExploding(false), 1000);
+            }
+            onToggleLaunched(directory._id, isLaunched);
           }}
         >
           <div
@@ -61,16 +210,24 @@ const LaunchListItem = ({ directory }: { directory: DirectoryType }) => {
               </svg>
             )}
           </div>
-          <div className="text-white">Launched!</div>
+          <div className="text-white">{isLaunched ? "Done!" : "Launch"}</div>
         </Button>
-        {isExploding && <ConfettiExplosion className="absolute top-0 left-0" />}
+        {isExploding && (
+          <ConfettiExplosion
+            className="absolute top-0 left-0"
+            force={0.4}
+            duration={2000}
+            particleCount={30}
+            width={400}
+          />
+        )}
       </div>
     );
-  }, [isExploding, isLaunched]);
+  }, [isLaunched, isExploding, directory._id, onToggleLaunched]);
 
   return (
     <Directory
-      key={directory.name}
+      key={directory._id}
       directory={directory}
       buttonComponent={LaunchedButton}
     />

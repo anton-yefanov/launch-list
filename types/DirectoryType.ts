@@ -1,10 +1,5 @@
 import { DirectoryTag } from "@/types/DirectoryTag";
-
-enum SubmitDifficulty {
-  High = "High",
-  Ok = "Ok",
-  Low = "Low",
-}
+import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 
 export interface DirectoryType {
   name: string;
