@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DollarSign, Gem } from "lucide-react";
+import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
 import { ProductCardDialog } from "@/app/(with-header)/collections/_components/product-card-dialog";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
@@ -31,8 +31,8 @@ export const Directory = ({
             onClick={() => setIsDialogOpen(true)}
           >
             <div className="relative">
-              <div className="bg-white relative rounded-xs text-sm px-1 border border-black -rotate-6 z-10">
-                {directory.name[0]}
+              <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">
+                {directory.name[0].toUpperCase()}
               </div>
               <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
             </div>
@@ -43,32 +43,30 @@ export const Directory = ({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center -space-x-2">
-            {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
+          <div className="flex items-center -space-x-1">
+            {true && (
               <Tooltip>
                 <TooltipTrigger>
-                  <DollarSign
-                    className="size-6 p-1 text-green-400 bg-green-100 rounded-full border-2 border-white relative"
+                  <PawPrint
+                    className="size-6 p-1 text-sky-400 bg-sky-100 rounded-full border-2 border-white relative"
                     size={25}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>Launch for Free</p>
+                  <p>Perfect for small startups</p>
                 </TooltipContent>
               </Tooltip>
             )}
-            {directory.tags.find(
-              (tag) => tag === DirectoryTag.PaidFeatures,
-            ) && (
+            {directory.tags.find((tag) => tag === DirectoryTag.HighTraffic) && (
               <Tooltip>
                 <TooltipTrigger>
-                  <Gem
-                    className="size-6 p-1 text-yellow-400 bg-yellow-100 rounded-full border-2 border-white relative"
+                  <TrendingUp
+                    className="size-6 p-1 text-rose-400 bg-rose-100 rounded-full border-2 border-white relative"
                     size={25}
                   />
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>Website offers Paid features</p>
+                  <p>High traffic</p>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -81,6 +79,34 @@ export const Directory = ({
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
                   <p>Focus on AI</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {directory.tags.find(
+              (tag) => tag === DirectoryTag.PaidFeatures,
+            ) && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <DollarSign
+                    className="size-6 p-1 text-yellow-400 bg-yellow-100 rounded-full border-2 border-white relative"
+                    size={25}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Website offers Paid features</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <Check
+                    className="size-6 p-1 text-green-400 bg-green-100 rounded-full border-2 border-white relative"
+                    size={25}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Launch for Free</p>
                 </TooltipContent>
               </Tooltip>
             )}

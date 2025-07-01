@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronUp, Dot } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
@@ -13,8 +13,61 @@ import { LoginDialog } from "@/components/login-dialog";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+interface LaunchWeek {
+  id: string;
+  startDate: string;
+  endDate: string;
+  currentStartups: number;
+  maxSlots: number;
+  availableSlots: number;
+  freeAvailable: boolean;
+  premiumAvailable: boolean;
+}
+
 export default function LaunchPage() {
   const router = useRouter();
+  const [nextLaunchWeek, setNextLaunchWeek] = useState<LaunchWeek | null>(null);
+  const [countdownTarget, setCountdownTarget] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLaunchWeeks = async () => {
+      try {
+        const response = await fetch("/api/launch-weeks");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          const now = new Date();
+
+          // Find the next launch week (startDate is in the future)
+          const upcomingWeeks = result.data
+            .filter((week: LaunchWeek) => new Date(week.startDate) > now)
+            .sort(
+              (a: LaunchWeek, b: LaunchWeek) =>
+                new Date(a.startDate).getTime() -
+                new Date(b.startDate).getTime(),
+            );
+
+          if (upcomingWeeks.length > 0) {
+            const nextWeek = upcomingWeeks[0];
+            setNextLaunchWeek(nextWeek);
+            setCountdownTarget(new Date(nextWeek.startDate).getTime());
+          } else {
+            // If no upcoming weeks, set a fallback (24 hours from now)
+            setCountdownTarget(now.getTime() + 24 * 3600 * 1000);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching launch weeks:", error);
+        // Fallback to 24 hours from now
+        setCountdownTarget(new Date().getTime() + 24 * 3600 * 1000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLaunchWeeks();
+  }, []);
 
   return (
     <div>
@@ -63,25 +116,28 @@ export default function LaunchPage() {
           </div>
         </div>
       </div>
-      {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-2">*/}
-      {/*  <FeaturedProduct />*/}
-      {/*  <FeaturedProduct />*/}
-      {/*  <FeaturedProduct />*/}
-      {/*  <FeaturedProduct />*/}
-      {/*</div>*/}
+
       <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-semibold">Launching now</h1>
         </div>
         <div className="flex flex-col gap-2 items-center">
-          <div className="text-xs">Next launch week in</div>
-          <FlipClockCountdown
-            to={new Date().getTime() + 24 * 3600 * 1000 + 5000}
-            renderOnServer
-            className={scss.flipclock}
-          />
+          <div className="text-xs">
+            {nextLaunchWeek ? "Next launch week in" : "Loading..."}
+          </div>
+          {!loading && countdownTarget > 0 && (
+            <FlipClockCountdown
+              to={countdownTarget}
+              renderOnServer
+              className={scss.flipclock}
+            />
+          )}
+          {loading && (
+            <div className="text-sm text-gray-500">Loading countdown...</div>
+          )}
         </div>
       </div>
+
       <Product />
       <Product />
       <Product />
@@ -99,6 +155,7 @@ export default function LaunchPage() {
   );
 }
 
+// Rest of your components remain the same...
 const Directory = ({
   title,
   bgColor = "bg-primary-color",

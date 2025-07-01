@@ -9,7 +9,7 @@ export async function GET() {
 
     const transformedLaunchWeeks = launchWeeks.map((week) => {
       const currentStartups = week.startupsLaunchIds?.length || 0;
-      const maxSlots = week.maxSlots || 10; // Default to 10 if not set
+      const maxSlots = week.maxSlots || 50;
       const availableSlots = maxSlots - currentStartups;
       const weekId = week._id as string;
 
