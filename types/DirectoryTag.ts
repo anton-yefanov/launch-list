@@ -3,5 +3,5 @@ export enum DirectoryTag {
   PaidFeatures = "PAID_FEATURES",
   HighTraffic = "HIGH_TRAFFIC",
   AI = "AI",
-  SMALL_STARTUPS = "SMALL_STARTUPS",
+  SmallStartups = "SMALL_STARTUPS",
 }

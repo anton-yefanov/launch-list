@@ -31,6 +31,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { DirectoryType } from "@/types/DirectoryType";
+import { formatNumber } from "@/lib/formatNumber";
 
 interface ProductCardDialogProps {
   isOpen: boolean;
@@ -60,8 +61,8 @@ export function ProductCardDialog({
           </div>
         </div>
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">{directory.name}</h2>
-          <p className="text-base mt-1 text-muted-foreground">
+          <h2 className="text-xl font-bold">{directory.name}</h2>
+          <p className="text-base text-muted-foreground">
             {directory.description}
           </p>
         </div>
@@ -71,7 +72,9 @@ export function ProductCardDialog({
           <div className="flex items-center justify-center mb-2">
             <Users className="size-5 text-blue-600" />
           </div>
-          <div className="font-bold text-lg">{directory.viewsPerMonth}</div>
+          <div className="font-bold text-lg">
+            {formatNumber(directory.viewsPerMonth)}
+          </div>
           <div className="text-xs text-gray-600">Monthly Views</div>
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -88,11 +91,15 @@ export function ProductCardDialog({
           <div className="font-bold text-lg">High</div>
           <div className="text-xs text-gray-600">Authority</div>
         </div>
+        <div className="text-center p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-center mb-2">
+            <Globe className="size-5 text-purple-600" />
+          </div>
+          <div className="font-bold text-lg">Ok</div>
+          <div className="text-xs text-gray-600">Submit Difficulty</div>
+        </div>
       </div>
-
       <Separator />
-
-      {/* Features Section */}
       <div>
         <h3 className="font-semibold mb-3">Features & Pricing</h3>
         <div className="flex flex-wrap gap-2">
@@ -127,7 +134,7 @@ export function ProductCardDialog({
       </div>
       <div className="flex gap-3 pt-4">
         <Button className="bg-primary-color hover:bg-primary-color/90 flex-1">
-          <Plus className="size-4 mr-2" />
+          <Plus className="size-4" />
           Add to Launch List
         </Button>
         <Link
@@ -135,7 +142,7 @@ export function ProductCardDialog({
           className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
           target="_blank"
         >
-          <ExternalLink className="size-4 mr-2" />
+          <ExternalLink className="size-4" />
           Visit Website
         </Link>
       </div>

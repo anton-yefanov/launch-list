@@ -1,5 +1,11 @@
 import { DirectoryTag } from "@/types/DirectoryTag";
 
+enum SubmitDifficulty {
+  High = "High",
+  Ok = "Ok",
+  Low = "Low",
+}
+
 export interface DirectoryType {
   name: string;
   description: string;
@@ -8,4 +14,5 @@ export interface DirectoryType {
   domainRating: number;
   viewsPerMonth: number;
   tags: DirectoryTag[];
+  submitDifficulty: SubmitDifficulty;
 }
