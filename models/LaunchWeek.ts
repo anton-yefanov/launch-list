@@ -2,14 +2,16 @@ import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 
 const LaunchWeekSchema = new mongoose.Schema({
-  startsAt: Date,
-  endsAt: Date,
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
   startupsLaunchIds: [ObjectId],
   maxSlots: Number,
-  status: String,
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date,
 });
 
 export default mongoose.models.LaunchWeek ||
