@@ -1,4 +1,3 @@
-// models/Directory.ts
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum DirectoryTag {

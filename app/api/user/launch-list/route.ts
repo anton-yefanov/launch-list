@@ -106,8 +106,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const directoryId = searchParams.get("directoryId");
+    const { directoryId } = await request.json();
 
     if (!directoryId) {
       return NextResponse.json(

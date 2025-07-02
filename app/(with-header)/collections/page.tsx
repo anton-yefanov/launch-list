@@ -6,6 +6,7 @@ import {
   ListFilter,
   FileInput,
   FilePlus,
+  Check,
 } from "lucide-react";
 import {
   Tooltip,
@@ -13,6 +14,12 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
 import { useMemo, useState, useEffect } from "react";
@@ -35,6 +42,7 @@ interface DirectoryType {
 
 interface DirectoriesResponse {
   directories: DirectoryType[];
+  userLaunchList: string[]; // Array of directory IDs in user's launch list
   pagination: {
     page: number;
     limit: number;
@@ -43,11 +51,23 @@ interface DirectoriesResponse {
   };
 }
 
+type SortOption = "none" | "a-z" | "z-a" | "dr-high" | "views-high";
+
+const sortOptions = [
+  { value: "none" as const, label: "No Sort" },
+  { value: "a-z" as const, label: "A - Z" },
+  { value: "z-a" as const, label: "Z - A" },
+  { value: "dr-high" as const, label: "DR (High to Low)" },
+  { value: "views-high" as const, label: "Views (High to Low)" },
+];
+
 export default function CollectionPage() {
   const router = useRouter();
   const [directories, setDirectories] = useState<DirectoryType[]>([]);
+  const [userLaunchList, setUserLaunchList] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortOption>("none");
 
   useEffect(() => {
     const fetchDirectories = async () => {
@@ -61,6 +81,7 @@ export default function CollectionPage() {
 
         const data: DirectoriesResponse = await response.json();
         setDirectories(data.directories);
+        setUserLaunchList(new Set(data.userLaunchList || []));
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
         toast.error("Failed to load directories");
@@ -72,7 +93,27 @@ export default function CollectionPage() {
     fetchDirectories();
   }, []);
 
-  // Add single directory to launch list
+  const sortedDirectories = useMemo(() => {
+    if (sortBy === "none") return directories;
+
+    const sorted = [...directories].sort((a, b) => {
+      switch (sortBy) {
+        case "a-z":
+          return a.name.localeCompare(b.name);
+        case "z-a":
+          return b.name.localeCompare(a.name);
+        case "dr-high":
+          return b.domainRating - a.domainRating;
+        case "views-high":
+          return b.viewsPerMonth - a.viewsPerMonth;
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [directories, sortBy]);
+
   const addToLaunchList = async (directoryId: string) => {
     try {
       const response = await fetch("/api/user/launch-list", {
@@ -88,6 +129,9 @@ export default function CollectionPage() {
         throw new Error(errorData.error || "Failed to add to launch list");
       }
 
+      // Update local state
+      setUserLaunchList((prev) => new Set([...prev, directoryId]));
+
       toast("Directory Added to Launch List", {
         description: "View now or later",
         action: {
@@ -102,9 +146,50 @@ export default function CollectionPage() {
     }
   };
 
+  const removeFromLaunchList = async (directoryId: string) => {
+    try {
+      const response = await fetch("/api/user/launch-list", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ directoryId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to remove from launch list");
+      }
+
+      // Update local state
+      setUserLaunchList((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(directoryId);
+        return newSet;
+      });
+
+      toast("Directory removed from Launch List");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Failed to remove from launch list",
+      );
+    }
+  };
+
   const addAllToLaunchList = async () => {
     try {
-      const promises = directories.map((directory) =>
+      const directoriesToAdd = directories.filter(
+        (dir) => !userLaunchList.has(dir._id),
+      );
+
+      if (directoriesToAdd.length === 0) {
+        toast("All directories are already in your Launch List");
+        return;
+      }
+
+      const promises = directoriesToAdd.map((directory) =>
         fetch("/api/user/launch-list", {
           method: "POST",
           headers: {
@@ -116,7 +201,12 @@ export default function CollectionPage() {
 
       await Promise.all(promises);
 
-      toast(`All ${directories.length} directories added to Launch List`, {
+      // Update local state
+      setUserLaunchList(
+        (prev) => new Set([...prev, ...directoriesToAdd.map((d) => d._id)]),
+      );
+
+      toast(`${directoriesToAdd.length} directories added to Launch List`, {
         description: "View now or later",
         action: {
           label: "View",
@@ -129,24 +219,36 @@ export default function CollectionPage() {
   };
 
   const AddButton = useMemo(() => {
-    return (directoryId: string) => (
-      <Tooltip>
-        <TooltipTrigger
-          onClick={() => addToLaunchList(directoryId)}
-          className={cn(
-            buttonVariants({ variant: "outline", size: "sm" }),
-            "active:scale-92 transition-all duration-100",
-          )}
-        >
-          <FilePlus />
-          Add
-        </TooltipTrigger>
-        <TooltipContent side="bottom">
-          <p>Add to Launch List</p>
-        </TooltipContent>
-      </Tooltip>
-    );
-  }, []);
+    return (directoryId: string) => {
+      const isAdded = userLaunchList.has(directoryId);
+
+      return (
+        <Tooltip>
+          <TooltipTrigger
+            onClick={() =>
+              isAdded
+                ? removeFromLaunchList(directoryId)
+                : addToLaunchList(directoryId)
+            }
+            className={cn(
+              buttonVariants({
+                variant: isAdded ? "default" : "outline",
+                size: "sm",
+              }),
+              "active:scale-92 transition-all duration-100",
+              isAdded && "bg-green-600 hover:bg-green-700",
+            )}
+          >
+            {isAdded ? <Check /> : <FilePlus />}
+            {isAdded ? "Added" : "Add"}
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>{isAdded ? "Remove from Launch List" : "Add to Launch List"}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    };
+  }, [userLaunchList]);
 
   if (error) {
     return (
@@ -178,7 +280,7 @@ export default function CollectionPage() {
           />
         </div>
         <div className="flex items-center justify-between my-4">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (
               <Skeleton className="h-[28px] w-[126px] my-auto" />
             ) : (
@@ -197,17 +299,30 @@ export default function CollectionPage() {
             </Button>
           </div>
           <div className="flex gap-2">
-            <Tooltip>
-              <TooltipTrigger
-                disabled={loading}
-                className={cn(buttonVariants({ variant: "outline" }), "size-8")}
-              >
-                <ListFilter />
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Sort</p>
-              </TooltipContent>
-            </Tooltip>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={loading}
+                  className="size-8 bg-transparent"
+                >
+                  <ListFilter />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {sortOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => setSortBy(option.value)}
+                    className="flex items-center justify-between"
+                  >
+                    <span>{option.label}</span>
+                    {sortBy === option.value && <Check className="h-4 w-4" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Tooltip>
               <TooltipTrigger
                 disabled={loading}
@@ -230,7 +345,7 @@ export default function CollectionPage() {
             </>
           ) : (
             <>
-              {directories.map((directory) => (
+              {sortedDirectories.map((directory) => (
                 <Directory
                   key={directory._id}
                   directory={directory}

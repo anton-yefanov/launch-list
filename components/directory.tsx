@@ -35,7 +35,6 @@ export const Directory = ({
 
   return (
     <>
-      {/* Mobile Layout */}
       <TooltipProvider>
         <div className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden">
           <div className="flex items-start justify-between mb-3">
