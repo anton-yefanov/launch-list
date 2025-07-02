@@ -145,7 +145,7 @@ export default function MyLaunchListPage() {
         Don&#39;t forget to launch everywhere!
       </h1>
       <div className="mb-4">
-        Check directories you launched on ({launchedDirectories.length}/
+        Check websites you launched on ({launchedDirectories.length}/
         {launchList.length} completed)
       </div>
       <div className="flex flex-col gap-2">

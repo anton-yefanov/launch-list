@@ -19,6 +19,7 @@ import { useMemo, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DirectoryType {
   _id: string;
@@ -47,9 +48,7 @@ export default function CollectionPage() {
   const [directories, setDirectories] = useState<DirectoryType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [totalDirectories, setTotalDirectories] = useState(0);
 
-  // Fetch directories from API
   useEffect(() => {
     const fetchDirectories = async () => {
       try {
@@ -62,7 +61,6 @@ export default function CollectionPage() {
 
         const data: DirectoriesResponse = await response.json();
         setDirectories(data.directories);
-        setTotalDirectories(data.pagination.total);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
         toast.error("Failed to load directories");
@@ -104,7 +102,6 @@ export default function CollectionPage() {
     }
   };
 
-  // Add all directories to launch list
   const addAllToLaunchList = async () => {
     try {
       const promises = directories.map((directory) =>
@@ -126,7 +123,7 @@ export default function CollectionPage() {
           onClick: () => router.push("/my-launch-list"),
         },
       });
-    } catch (err) {
+    } catch {
       toast.error("Failed to add all directories to launch list");
     }
   };
@@ -150,14 +147,6 @@ export default function CollectionPage() {
       </Tooltip>
     );
   }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -190,9 +179,13 @@ export default function CollectionPage() {
         </div>
         <div className="flex items-center justify-between my-4">
           <div className="flex items-center gap-2">
-            <div className="text-xl font-semibold">
-              {totalDirectories} Websites
-            </div>
+            {loading ? (
+              <Skeleton className="h-[28px] w-[126px] my-auto" />
+            ) : (
+              <div className="text-xl font-semibold">
+                {directories.length} Websites
+              </div>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -206,6 +199,7 @@ export default function CollectionPage() {
           <div className="flex gap-2">
             <Tooltip>
               <TooltipTrigger
+                disabled={loading}
                 className={cn(buttonVariants({ variant: "outline" }), "size-8")}
               >
                 <ListFilter />
@@ -216,6 +210,7 @@ export default function CollectionPage() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger
+                disabled={loading}
                 className={cn(buttonVariants({ variant: "outline" }), "size-8")}
               >
                 <Funnel />
@@ -227,13 +222,23 @@ export default function CollectionPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          {directories.map((directory) => (
-            <Directory
-              key={directory._id}
-              directory={directory}
-              buttonComponent={AddButton(directory._id)}
-            />
-          ))}
+          {loading ? (
+            <>
+              {new Array(20).fill(0).map((_, index) => (
+                <Skeleton key={index} className="h-[66px] w-full border" />
+              ))}
+            </>
+          ) : (
+            <>
+              {directories.map((directory) => (
+                <Directory
+                  key={directory._id}
+                  directory={directory}
+                  buttonComponent={AddButton(directory._id)}
+                />
+              ))}
+            </>
+          )}
         </div>
       </div>
     </TooltipProvider>
