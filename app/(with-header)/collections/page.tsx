@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
+import { LoginDialog } from "@/components/login-dialog";
 import { useMemo, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,22 @@ export default function CollectionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("none");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null = checking, true = logged in, false = not logged in
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        // Replace this with your actual auth check endpoint
+        const response = await fetch("/api/auth/me");
+        setIsLoggedIn(response.ok);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   useEffect(() => {
     const fetchDirectories = async () => {
@@ -81,7 +98,11 @@ export default function CollectionPage() {
 
         const data: DirectoriesResponse = await response.json();
         setDirectories(data.directories);
-        setUserLaunchList(new Set(data.userLaunchList || []));
+
+        // Only set user launch list if user is logged in
+        if (isLoggedIn) {
+          setUserLaunchList(new Set(data.userLaunchList || []));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
         toast.error("Failed to load directories");
@@ -90,8 +111,19 @@ export default function CollectionPage() {
       }
     };
 
-    fetchDirectories();
-  }, []);
+    // Only fetch directories after we know the auth status
+    if (isLoggedIn !== null) {
+      fetchDirectories();
+    }
+  }, [isLoggedIn]);
+
+  const handleAuthRequired = (action: () => void) => {
+    if (isLoggedIn === false) {
+      setShowLoginDialog(true);
+      return;
+    }
+    action();
+  };
 
   const sortedDirectories = useMemo(() => {
     if (sortBy === "none") return directories;
@@ -179,16 +211,16 @@ export default function CollectionPage() {
   };
 
   const addAllToLaunchList = async () => {
+    const directoriesToAdd = directories.filter(
+      (dir) => !userLaunchList.has(dir._id),
+    );
+
+    if (directoriesToAdd.length === 0) {
+      toast("All directories are already in your Launch List");
+      return;
+    }
+
     try {
-      const directoriesToAdd = directories.filter(
-        (dir) => !userLaunchList.has(dir._id),
-      );
-
-      if (directoriesToAdd.length === 0) {
-        toast("All directories are already in your Launch List");
-        return;
-      }
-
       const promises = directoriesToAdd.map((directory) =>
         fetch("/api/user/launch-list", {
           method: "POST",
@@ -226,9 +258,11 @@ export default function CollectionPage() {
         <Tooltip>
           <TooltipTrigger
             onClick={() =>
-              isAdded
-                ? removeFromLaunchList(directoryId)
-                : addToLaunchList(directoryId)
+              handleAuthRequired(() =>
+                isAdded
+                  ? removeFromLaunchList(directoryId)
+                  : addToLaunchList(directoryId),
+              )
             }
             className={cn(
               buttonVariants({
@@ -248,7 +282,7 @@ export default function CollectionPage() {
         </Tooltip>
       );
     };
-  }, [userLaunchList]);
+  }, [userLaunchList, isLoggedIn]);
 
   if (error) {
     return (
@@ -291,7 +325,7 @@ export default function CollectionPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={addAllToLaunchList}
+              onClick={() => handleAuthRequired(addAllToLaunchList)}
               disabled={directories.length === 0}
             >
               <FileInput />
@@ -356,6 +390,21 @@ export default function CollectionPage() {
           )}
         </div>
       </div>
+
+      {/* Login Dialog */}
+      <LoginDialog
+        open={showLoginDialog}
+        onOpenChange={setShowLoginDialog}
+        title={
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Sign in to continue</h2>
+            <p className="text-muted-foreground">
+              Please sign in to add directories to your launch list and access
+              all features.
+            </p>
+          </div>
+        }
+      />
     </TooltipProvider>
   );
 }

@@ -321,7 +321,13 @@ const Product = () => {
           12
         </Button>
       </div>
-      <LoginDialog open={loginDialogOpen} onOpenChange={setLoginDialogOpen} />
+      <LoginDialog
+        open={loginDialogOpen}
+        onOpenChange={setLoginDialogOpen}
+        title={
+          <h1 className="text-2xl font-semibold">Login to upvote a product</h1>
+        }
+      />
     </>
   );
 };

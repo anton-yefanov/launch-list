@@ -95,9 +95,7 @@ export const Directory = ({
                   </TooltipContent>
                 </Tooltip>
               )}
-              {directory.tags.find(
-                (tag) => tag === DirectoryTag.HighTraffic,
-              ) && (
+              {directory.viewsPerMonth >= 10000 && (
                 <Tooltip>
                   <TooltipTrigger>
                     <TrendingUp
@@ -193,9 +191,7 @@ export const Directory = ({
                   </TooltipContent>
                 </Tooltip>
               )}
-              {directory.tags.find(
-                (tag) => tag === DirectoryTag.HighTraffic,
-              ) && (
+              {directory.viewsPerMonth >= 10000 && (
                 <Tooltip>
                   <TooltipTrigger>
                     <TrendingUp

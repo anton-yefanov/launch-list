@@ -128,7 +128,7 @@ export function ProductCardDialog({
               Website offers Paid features
             </Badge>
           )}
-          {directory.tags.find((tag) => tag === DirectoryTag.HighTraffic) && (
+          {directory.viewsPerMonth >= 10000 && (
             <Badge variant="secondary" className="text-rose-400 bg-rose-100">
               <TrendingUp className="size-3 mr-1" />
               High Traffic

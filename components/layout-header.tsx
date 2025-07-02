@@ -38,6 +38,7 @@ export const LayoutHeader = () => {
   const pathname = usePathname();
   const isMyLaunchListPage = pathname === "/my-launch-list";
   const { data: session, status } = useSession();
+  const isAuth = status === "authenticated";
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
   const handleSignOut = () => {
@@ -47,6 +48,27 @@ export const LayoutHeader = () => {
   const handleEmailContact = () => {
     window.open("mailto:antonyefanov@gmail.com", "_blank");
   };
+
+  // Determine button content based on auth status
+  const getButtonContent = () => {
+    if (!isAuth) {
+      // Always show "Browse collection" for non-authenticated users
+      return {
+        href: "/collections",
+        icon: <List />,
+        text: "Browse collection",
+      };
+    } else {
+      // For authenticated users, toggle based on current page
+      return {
+        href: isMyLaunchListPage ? "/collections" : "/my-launch-list",
+        icon: isMyLaunchListPage ? <List /> : <File />,
+        text: isMyLaunchListPage ? "Browse collection" : "Launch List",
+      };
+    }
+  };
+
+  const buttonContent = getButtonContent();
 
   return (
     <>
@@ -63,8 +85,8 @@ export const LayoutHeader = () => {
             />
           </Link>
           <Link
-            href="https://tally.so/r/nW6pYJ"
-            target="_blank"
+            href={isAuth ? "https://tally.so/r/nW6pYJ" : "/login"}
+            target={isAuth ? "_blank" : "_self"}
             className={cn(buttonVariants({ variant: "outline" }))}
           >
             <Plus />
@@ -73,19 +95,19 @@ export const LayoutHeader = () => {
         </div>
         <div className="flex items-center gap-2">
           <Link
-            href={isMyLaunchListPage ? "/collections" : "/my-launch-list"}
+            href={buttonContent.href}
             className={cn(
               buttonVariants({ variant: "outline" }),
               "group active:scale-95 transition-all duration-100",
             )}
           >
-            {isMyLaunchListPage ? <List /> : <File />}
-            {isMyLaunchListPage ? "Browse collection" : "Launch List"}
+            {buttonContent.icon}
+            {buttonContent.text}
           </Link>
 
           {status === "loading" ? (
             <Skeleton className="h-9 w-9 rounded-full" />
-          ) : status === "authenticated" ? (
+          ) : isAuth ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full">

@@ -7,25 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { ReactNode } from "react";
 
-export const LoginForm = () => {
+export const LoginForm = ({ title }: { title: ReactNode }) => {
   return (
     <>
-      <div className="mb-6 text-center select-none">
-        <Link href="/">
-          <Image
-            src="/logo.png"
-            alt="logo"
-            width={50}
-            height={50}
-            draggable={false}
-            className="rounded mx-auto mb-4"
-          />
-        </Link>
-        <h1 className="text-2xl font-semibold">
-          <span className="font-normal">Let&#39;s launch your product,</span>
-          <br /> everywhere!
-        </h1>
+      <div className="mb-2 text-center select-none">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={50}
+          height={50}
+          draggable={false}
+          className="rounded mx-auto mb-4"
+        />
+        {title}
       </div>
       <Card className="shadow-none p-7 gap-2">
         <Button
