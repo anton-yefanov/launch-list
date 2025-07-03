@@ -20,7 +20,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   DollarSign,
-  Gem,
   ExternalLink,
   Plus,
   Users,
