@@ -35,6 +35,7 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
+import { useSession } from "next-auth/react";
 
 interface DirectoryType {
   _id: string;
@@ -94,10 +95,11 @@ export default function CollectionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("none");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { status } = useSession();
+  const isLoggedIn = status === "authenticated";
 
   const [selectedDirectory, setSelectedDirectory] =
     useState<DirectoryType | null>(null);
@@ -112,20 +114,6 @@ export default function CollectionPage() {
     setIsDialogOpen(false);
     setSelectedDirectory(null);
   };
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        // Replace this with your actual auth check endpoint
-        const response = await fetch("/api/auth/me");
-        setIsLoggedIn(response.ok);
-      } catch {
-        setIsLoggedIn(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
 
   useEffect(() => {
     const fetchDirectories = async () => {
@@ -159,7 +147,7 @@ export default function CollectionPage() {
   }, [isLoggedIn]);
 
   const handleAuthRequired = (action: () => void) => {
-    if (isLoggedIn === false) {
+    if (!isLoggedIn) {
       setShowLoginDialog(true);
       return;
     }
@@ -432,7 +420,7 @@ export default function CollectionPage() {
             category="Collection"
           />
         </div>
-        <div className="flex items-center justify-between py-4 sticky top-0 bg-background z-20">
+        <div className="flex items-center justify-between py-4 sticky top-21 bg-background z-20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (
               <Skeleton className="h-[28px] w-[126px] my-auto" />

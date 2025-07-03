@@ -72,7 +72,7 @@ export const LayoutHeader = () => {
 
   return (
     <>
-      <div className="pb-8 flex justify-between">
+      <div className="pt-8 pb-4 flex justify-between sticky top-0 z-30 bg-background">
         <div className="flex items-center gap-2">
           <Link href="/launch" className="shrink-0 select-none">
             <Image
