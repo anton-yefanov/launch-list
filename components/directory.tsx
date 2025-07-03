@@ -10,6 +10,7 @@ import {
 import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
+import { useRouter } from "next/navigation";
 
 interface DirectoryType {
   _id: string;
@@ -26,12 +27,12 @@ interface DirectoryType {
 export const Directory = ({
   directory,
   buttonComponent,
-  onDirectoryClick,
 }: {
   directory: DirectoryType;
   buttonComponent: ReactNode;
-  onDirectoryClick: (directory: DirectoryType) => void;
 }) => {
+  const router = useRouter();
+
   return (
     <TooltipProvider>
       <div className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden">
@@ -40,7 +41,7 @@ export const Directory = ({
             <div
               style={{ backgroundColor: directory.bgColor }}
               className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center group"
-              onClick={() => onDirectoryClick(directory)}
+              onClick={() => router.push(`/directory/${directory._id}`)}
             >
               <div className="relative">
                 <div className="bg-white relative rounded-xs text-xs px-0.5 border h-5 w-4 grid place-items-center border-black -rotate-6 z-10">
@@ -150,7 +151,7 @@ export const Directory = ({
           <div
             style={{ backgroundColor: directory.bgColor }}
             className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
-            onClick={() => onDirectoryClick(directory)}
+            onClick={() => router.push(`/directory/${directory._id}`)}
           >
             <div className="relative">
               <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">

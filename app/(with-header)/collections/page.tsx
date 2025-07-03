@@ -101,20 +101,6 @@ export default function CollectionPage() {
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
 
-  const [selectedDirectory, setSelectedDirectory] =
-    useState<DirectoryType | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleDirectoryClick = (directory: DirectoryType) => {
-    setSelectedDirectory(directory);
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setSelectedDirectory(null);
-  };
-
   useEffect(() => {
     const fetchDirectories = async () => {
       try {
@@ -630,20 +616,12 @@ export default function CollectionPage() {
                   key={directory._id}
                   directory={directory}
                   buttonComponent={AddButton(directory._id)}
-                  onDirectoryClick={handleDirectoryClick}
                 />
               ))}
             </>
           )}
         </div>
       </div>
-      {selectedDirectory && (
-        <ProductCardDialog
-          isOpen={isDialogOpen}
-          onClose={handleCloseDialog}
-          directory={selectedDirectory}
-        />
-      )}
       <LoginDialog
         open={showLoginDialog}
         onOpenChange={setShowLoginDialog}
