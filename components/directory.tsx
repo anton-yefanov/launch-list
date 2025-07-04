@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
+import { Check, DollarSign, TrendingUp, PawPrint, Shield } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,9 @@ export const Directory = ({
               <div className="font-semibold text-base truncate">
                 {directory.name}
               </div>
-              <div className="text-xs text-gray-600">An OG Launch platform</div>
+              <div className="text-xs text-gray-600">
+                Launch to get backlink
+              </div>
             </div>
           </div>
           <div className="shrink-0 ml-2">{buttonComponent}</div>
@@ -162,7 +164,9 @@ export const Directory = ({
           </div>
           <div className="flex flex-col">
             <div className="font-semibold text-lg">{directory.name}</div>
-            <div className="text-xs">An OG Launch platform</div>
+            <div className="text-xs">
+              Launch here to get a high authority backlink
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-4">

@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { Plus, Rocket, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Rocket,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -32,6 +39,8 @@ interface Startup {
   submissionRating?: number;
   userId: string;
   status: "pending" | "approved" | "rejected";
+  rejectionReason?: string;
+  rejectionCategory?: string;
   submittedAt: string;
   approvedAt?: string;
   rejectedAt?: string;
@@ -137,6 +146,32 @@ interface ProductCardProps {
 const ProductCard = ({ startup }: ProductCardProps) => {
   const logoSrc = startup.logo?.url || "/logo.png";
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "approved":
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case "rejected":
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      case "pending":
+        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-400" />;
+    }
+  };
+
+  const getStatusMessage = (startup: Startup) => {
+    switch (startup.status) {
+      case "approved":
+        return "Ready to launch! 🚀";
+      case "rejected":
+        return startup.rejectionReason || "Submission not approved";
+      case "pending":
+        return "Under review...";
+      default:
+        return "Status unknown";
+    }
+  };
+
   return (
     <div className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50">
       <div className="shrink-0">
@@ -153,32 +188,76 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           }}
         />
       </div>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center flex-1">
         <div className="font-semibold text-lg">{startup.name}</div>
         <div className="text-gray-600">{startup.tagline}</div>
-        <div className="text-xs text-gray-400 mt-1">
-          Status:{" "}
-          <span
-            className={cn(
-              "capitalize",
-              startup.status === "approved" && "text-green-600",
-              startup.status === "pending" && "text-yellow-600",
-              startup.status === "rejected" && "text-red-600",
-            )}
-          >
-            {startup.status}
+
+        {/* Status with icon */}
+        <div className="flex items-center gap-2 mt-1">
+          {getStatusIcon(startup.status)}
+          <span className="text-xs text-gray-500">
+            {getStatusMessage(startup)}
           </span>
         </div>
-      </div>
-      <Link
-        href={`/my-startups/launch/${startup._id}`}
-        className={cn(
-          buttonVariants({ variant: "default" }),
-          "ml-auto my-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",
+
+        {/* Rejection details */}
+        {startup.status === "rejected" && startup.rejectionReason && (
+          <div className="mt-2 p-2 bg-red-50 rounded-md border border-red-200">
+            <div className="text-xs text-red-700 font-medium">
+              Why was this rejected?
+            </div>
+            <div className="text-xs text-red-600 mt-1">
+              {startup.rejectionReason}
+            </div>
+            {startup.rejectionCategory && (
+              <div className="text-xs text-red-500 mt-1">
+                Category: {startup.rejectionCategory}
+              </div>
+            )}
+          </div>
         )}
-      >
-        Launch <Rocket />
-      </Link>
+
+        {/* Approval celebration */}
+        {startup.status === "approved" && (
+          <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
+            <div className="text-xs text-green-700 font-medium">
+              🎉 Congratulations! Your startup has been approved for launch.
+            </div>
+            <div className="text-xs text-green-600 mt-1">
+              You can now launch your startup and start getting feedback from
+              the community.
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Launch button - only show for approved startups */}
+      {startup.status === "approved" && (
+        <Link
+          href={`/my-startups/launch/${startup._id}`}
+          className={cn(
+            buttonVariants({ variant: "default" }),
+            "ml-auto my-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",
+          )}
+        >
+          Launch <Rocket />
+        </Link>
+      )}
+
+      {/* View details button for pending/rejected */}
+      {startup.status !== "approved" && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto my-auto"
+          onClick={() => {
+            // You can add a modal or navigate to details page
+            console.log("View details for:", startup._id);
+          }}
+        >
+          View Details
+        </Button>
+      )}
     </div>
   );
 };

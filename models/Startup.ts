@@ -31,11 +31,16 @@ const StartupSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Upvoting system
+    upvotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     // Tally form metadata
     tallyEventId: { type: String, unique: true },
-    tallyResponseId: { type: String, unique: true },
-    tallySubmissionId: { type: String },
-    tallyRespondentId: { type: String },
 
     // Status and approval workflow
     status: {
@@ -44,21 +49,36 @@ const StartupSchema = new mongoose.Schema(
       default: "pending",
     },
 
+    // AI Review fields
+    rejectionReason: { type: String }, // AI-generated reason for rejection
+    rejectionCategory: { type: String }, // Category of rejection (gambling, adult, spam, etc.)
+
     // Timestamps
     submittedAt: { type: Date, default: Date.now },
     approvedAt: { type: Date },
     rejectedAt: { type: Date },
+    reviewedAt: { type: Date }, // When AI review was completed
   },
   {
     timestamps: true, // Adds createdAt and updatedAt automatically
   },
 );
 
+// Virtual for upvote count
+StartupSchema.virtual("upvoteCount").get(function () {
+  return this.upvotes ? this.upvotes.length : 0;
+});
+
+// Ensure virtual fields are serialized
+StartupSchema.set("toJSON", { virtuals: true });
+StartupSchema.set("toObject", { virtuals: true });
+
 // Index for faster queries
 StartupSchema.index({ submitterEmail: 1 });
 StartupSchema.index({ userId: 1 });
 StartupSchema.index({ status: 1 });
-StartupSchema.index({ tallyEventId: 1 });
+StartupSchema.index({ rejectionCategory: 1 });
+StartupSchema.index({ upvotes: 1 });
 
 export const Startup =
   mongoose.models.Startup || mongoose.model("Startup", StartupSchema);

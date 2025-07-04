@@ -14,7 +14,6 @@ export enum SubmitDifficulty {
   Low = "Low",
 }
 
-// Interface extending mongoose Document
 export interface IDirectory extends Document {
   name: string;
   description: string;
@@ -28,7 +27,6 @@ export interface IDirectory extends Document {
   updatedAt: Date;
 }
 
-// Mongoose Schema
 const DirectorySchema: Schema = new Schema(
   {
     name: {
@@ -90,18 +88,16 @@ const DirectorySchema: Schema = new Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
-    collection: "directories", // Explicitly set collection name
+    timestamps: true,
+    collection: "directories",
   },
 );
 
-// Add indexes for better query performance
 DirectorySchema.index({ name: 1 });
 DirectorySchema.index({ domainRating: -1 });
 DirectorySchema.index({ viewsPerMonth: -1 });
 DirectorySchema.index({ tags: 1 });
 DirectorySchema.index({ submitDifficulty: 1 });
 
-// Prevent re-compilation during development
 export default mongoose.models.Directory ||
   mongoose.model<IDirectory>("Directory", DirectorySchema);

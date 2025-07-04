@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { User } from "@/models/User";
 import { Startup } from "@/models/Startup";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
+import { reviewStartup } from "../../../../lib/ai/startupApproval";
 
 export async function POST(request) {
   try {
@@ -46,7 +47,7 @@ export async function POST(request) {
       websiteUrl: processedData["Website URL"],
       tagline: processedData["Tagline"],
       submittedBy: processedData["Submitted by"],
-      submitterEmail: processedData["Email"],
+      submitterEmail: processedData["email"],
       twitterUsername: processedData["𝕏 username (optional)"],
       submissionRating:
         processedData["How would you rate submission experience?"],
@@ -74,9 +75,6 @@ export async function POST(request) {
 
       // Tally metadata
       tallyEventId: eventId,
-      tallyResponseId: formData.responseId,
-      tallySubmissionId: formData.submissionId,
-      tallyRespondentId: formData.respondentId,
 
       submittedAt: new Date(createdAt),
     };
@@ -94,23 +92,28 @@ export async function POST(request) {
 
     let user = await User.findOne({ email: startupData.submitterEmail });
 
-    if (!user) {
-      // Create new user
-      user = new User({
-        name: startupData.submittedBy,
-        email: startupData.submitterEmail,
-        twitterUsername: startupData.twitterUsername,
-        startups: [],
-      });
-    } else {
-      // Update user's twitter username if provided and not already set
-      if (startupData.twitterUsername && !user.twitterUsername) {
-        user.twitterUsername = startupData.twitterUsername;
-      }
+    if (startupData.twitterUsername && !user.twitterUsername) {
+      user.twitterUsername = startupData.twitterUsername;
     }
 
     // Add user ID to startup data
     startupData.userId = user._id;
+
+    // AI REVIEW: Automatically review the startup
+    console.log("Starting AI review for startup:", startupData.name);
+    const aiReview = await reviewStartup(startupData);
+    console.log("AI review result:", aiReview);
+
+    // Update startup data based on AI review
+    if (aiReview.approved) {
+      startupData.status = "approved";
+      startupData.approvedAt = new Date();
+    } else {
+      startupData.status = "rejected";
+      startupData.rejectedAt = new Date();
+      startupData.rejectionReason = aiReview.reason;
+      startupData.rejectionCategory = aiReview.category;
+    }
 
     // Create startup
     const startup = new Startup(startupData);
@@ -122,9 +125,19 @@ export async function POST(request) {
 
     console.log("Successfully created startup:", startup._id);
     console.log("Updated user:", user._id);
+    console.log(
+      "AI Review - Approved:",
+      aiReview.approved,
+      "Reason:",
+      aiReview.reason,
+    );
 
-    // Optional: Send notification email here
-    // await sendNotificationEmail(startupData);
+    // Optional: Send notification email based on approval status
+    // if (aiReview.approved) {
+    //   await sendApprovalEmail(startupData);
+    // } else {
+    //   await sendRejectionEmail(startupData, aiReview.reason);
+    // }
 
     return NextResponse.json(
       {
@@ -133,6 +146,11 @@ export async function POST(request) {
         eventId,
         startupId: startup._id,
         userId: user._id,
+        aiReview: {
+          approved: aiReview.approved,
+          reason: aiReview.reason,
+          category: aiReview.category,
+        },
       },
       { status: 200 },
     );

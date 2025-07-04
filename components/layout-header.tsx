@@ -38,11 +38,14 @@ export const LayoutHeader = () => {
   const pathname = usePathname();
   const isMyLaunchListPage = pathname === "/my-launch-list";
   const { data: session, status } = useSession();
+  const user = session?.user;
   const isAuth = status === "authenticated";
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
   const handleSignOut = () => {
-    signOut();
+    signOut({
+      redirectTo: "/",
+    });
   };
 
   const handleEmailContact = () => {
@@ -85,7 +88,11 @@ export const LayoutHeader = () => {
             />
           </Link>
           <Link
-            href={isAuth ? "https://tally.so/r/nW6pYJ" : "/login"}
+            href={
+              isAuth
+                ? `https://tally.so/r/nW6pYJ?email=${user?.email}`
+                : "/login"
+            }
             target={isAuth ? "_blank" : "_self"}
             className={cn(buttonVariants({ variant: "outline" }))}
           >

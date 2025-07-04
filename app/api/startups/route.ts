@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { Startup } from "@/models/Startup"; // Adjust path as needed
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
+import { Startup } from "@/models/Startup";
 import { auth } from "@/auth";
 
 export async function GET() {
@@ -17,8 +17,8 @@ export async function GET() {
     }
 
     const startups = await Startup.find({ userId })
-      .sort({ createdAt: -1 }) // Most recent first
-      .lean(); // Convert to plain objects for better performance
+      .sort({ createdAt: -1 })
+      .lean();
 
     return NextResponse.json({
       success: true,

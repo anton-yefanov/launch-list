@@ -12,61 +12,89 @@ import Link from "next/link";
 import { LoginDialog } from "@/components/login-dialog";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Footer } from "@/components/footer";
 
 interface LaunchWeek {
   id: string;
   startDate: string;
   endDate: string;
-  currentStartups: number;
   maxSlots: number;
-  availableSlots: number;
-  freeAvailable: boolean;
-  premiumAvailable: boolean;
+}
+
+interface Startup {
+  id: string;
+  name: string;
+  tagline: string;
+  logo: string;
+  websiteUrl: string;
+  submittedBy: string;
+  twitterUsername?: string;
+  upvotes: number;
+  categories: string[];
+  submittedAt: string;
+}
+
+interface Winner extends Startup {
+  place: 1 | 2 | 3;
 }
 
 export default function LaunchPage() {
   const router = useRouter();
-  const [nextLaunchWeek, setNextLaunchWeek] = useState<LaunchWeek | null>(null);
-  const [countdownTarget, setCountdownTarget] = useState<number>(0);
+
+  const [launchData, setLaunchData] = useState<{
+    nextLaunchWeek: LaunchWeek | null;
+    countdownTarget: number;
+  }>({
+    nextLaunchWeek: null,
+    countdownTarget: 0,
+  });
+
   const [loading, setLoading] = useState(true);
+  const [startups, setStartups] = useState<Startup[]>([]);
+  const [lastWeekStartups, setLastWeekStartups] = useState<Startup[]>([]);
 
   useEffect(() => {
-    const fetchLaunchWeeks = async () => {
+    const fetchLaunchData = async () => {
       try {
-        const response = await fetch("/api/launch-weeks");
+        const response = await fetch("/api/launches");
         const result = await response.json();
 
         if (result.success && result.data) {
-          const now = new Date();
+          const {
+            nextLaunchWeek,
+            startups: currentStartups,
+            lastWeekStartups: lastWeekData,
+          } = result.data;
 
-          // Find the next launch week (startDate is in the future)
-          const upcomingWeeks = result.data
-            .filter((week: LaunchWeek) => new Date(week.startDate) > now)
-            .sort(
-              (a: LaunchWeek, b: LaunchWeek) =>
-                new Date(a.startDate).getTime() -
-                new Date(b.startDate).getTime(),
-            );
+          setStartups(currentStartups || []);
+          setLastWeekStartups(lastWeekData || []);
 
-          if (upcomingWeeks.length > 0) {
-            const nextWeek = upcomingWeeks[0];
-            setNextLaunchWeek(nextWeek);
-            setCountdownTarget(new Date(nextWeek.startDate).getTime());
+          if (nextLaunchWeek) {
+            setLaunchData({
+              nextLaunchWeek,
+              countdownTarget: new Date(nextLaunchWeek.startDate).getTime(),
+            });
           } else {
-            // If no upcoming weeks, set a fallback (24 hours from now)
-            setCountdownTarget(now.getTime() + 24 * 3600 * 1000);
+            const fallbackTime = new Date().getTime() + 24 * 3600 * 1000;
+            setLaunchData({
+              nextLaunchWeek: null,
+              countdownTarget: fallbackTime,
+            });
           }
         }
       } catch (error) {
-        console.error("Error fetching launch weeks:", error);
-        // Fallback to 24 hours from now
-        setCountdownTarget(new Date().getTime() + 24 * 3600 * 1000);
+        console.error("Error fetching launch data:", error);
+        const fallbackTime = new Date().getTime() + 24 * 3600 * 1000;
+        setLaunchData({
+          nextLaunchWeek: null,
+          countdownTarget: fallbackTime,
+        });
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLaunchWeeks();
+    fetchLaunchData();
   }, []);
 
   return (
@@ -123,11 +151,11 @@ export default function LaunchPage() {
         </div>
         <div className="flex flex-col gap-2 items-center">
           <div className="text-xs">
-            {nextLaunchWeek ? "Next launch week in" : "Loading..."}
+            {launchData.nextLaunchWeek ? "Next launch week in" : "Loading..."}
           </div>
-          {!loading && countdownTarget > 0 && (
+          {!loading && launchData.countdownTarget > 0 && (
             <FlipClockCountdown
-              to={countdownTarget}
+              to={launchData.countdownTarget}
               renderOnServer
               className={scss.flipclock}
             />
@@ -138,24 +166,48 @@ export default function LaunchPage() {
         </div>
       </div>
 
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <Product />
-      <h2 className="text-3xl font-semibold my-4 px-2.5">Last week winners</h2>
-      <WinnerProduct place={1} />
-      <WinnerProduct place={2} />
-      <WinnerProduct place={3} />
+      {loading ? (
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="rounded-lg p-2.5 flex gap-2 animate-pulse">
+              <div className="shrink-0 pt-1">
+                <div className="w-12 h-12 bg-gray-200 rounded"></div>
+              </div>
+              <div className="flex flex-col space-y-1 flex-1">
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              </div>
+              <div className="w-12 h-12 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+      ) : startups.length > 0 ? (
+        startups.map((startup) => (
+          <Product key={startup.id} startup={startup} />
+        ))
+      ) : (
+        <div className="text-center py-8 text-gray-500">
+          <p>No startups launching this week yet.</p>
+          <p className="text-sm mt-2">Be the first to launch!</p>
+        </div>
+      )}
+
+      {!loading && lastWeekStartups.length > 0 && (
+        <>
+          <h2 className="text-3xl font-semibold my-4 px-2.5">
+            Last week winners
+          </h2>
+          {lastWeekStartups.map((startup) => (
+            <Product key={startup.id} startup={startup} />
+          ))}
+        </>
+      )}
+      <Footer />
     </div>
   );
 }
 
-// Rest of your components remain the same...
 const Directory = ({
   title,
   bgColor = "bg-primary-color",
@@ -195,13 +247,13 @@ const Directory = ({
   );
 };
 
-const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
+const WinnerProduct = ({ winner }: { winner: Winner }) => {
   return (
     <div className="relative rounded-lg p-2.5 flex gap-2 select-none">
       <div className="shrink-0 pt-1">
         <Image
-          src="/logo.png"
-          alt="logo"
+          src={winner.logo}
+          alt={`${winner.name} logo`}
           width={50}
           height={50}
           draggable={false}
@@ -209,19 +261,21 @@ const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
         />
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="font-semibold">Flex</div>
-        <div>The ultimate AI social media scheduling tool</div>
+        <div className="font-semibold">{winner.name}</div>
+        <div>{winner.tagline}</div>
         <div className="flex text-xs items-center">
-          <div>by Anton</div>
-          <Dot size={16} className="text-gray-300" />
-          <div>AI</div>
-          <Dot size={16} className="text-gray-300" />
-          <div>Directory</div>
+          <div>by {winner.submittedBy}</div>
+          {winner.categories.map((category, index) => (
+            <span key={index}>
+              <Dot size={16} className="text-gray-300" />
+              <span>{category}</span>
+            </span>
+          ))}
         </div>
       </div>
       <Image
-        src={getCupByPlace(place) || "/placeholder.svg"}
-        alt="logo"
+        src={getCupByPlace(winner.place) || "/placeholder.svg"}
+        alt={`${winner.place} place cup`}
         width={50}
         height={50}
         draggable={false}
@@ -231,65 +285,105 @@ const WinnerProduct = ({ place }: { place: 1 | 2 | 3 }) => {
         variant="outline"
         className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background bg-transparent"
       >
-        12
+        {winner.upvotes}
       </Button>
     </div>
   );
 };
 
-const FeaturedProduct = () => {
-  return (
-    <div className="border rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50 cursor-pointer">
-      <div className="shrink-0">
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={75}
-          height={75}
-          draggable={false}
-          className="rounded"
-        />
-      </div>
-      <div className="flex flex-col space-y-1 w-full">
-        <div className="flex justify-between">
-          <div className="font-semibold text-lg">Flex</div>
-          <span className="text-xs py-1 px-2 rounded bg-primary-color/10 h-fit">
-            Featured
-          </span>
-        </div>
-        <div className="text-sm">
-          The ultimate AI social media scheduling tool
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Product = () => {
-  const { status } = useSession();
+const Product = ({ startup }: { startup: Startup }) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [upvoted, setUpvoted] = useState<boolean>(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
-
+  const [currentUpvotes, setCurrentUpvotes] = useState(startup.upvotes);
+  const [isLoading, setIsLoading] = useState(false);
   const isAuthenticated = status === "authenticated";
 
-  const handleUpvoteClick = () => {
+  // Check if user has upvoted this startup when component mounts
+  useEffect(() => {
+    const checkUpvoteStatus = async () => {
+      if (!isAuthenticated || !session?.user?.id) return;
+
+      try {
+        const response = await fetch(`/api/startups/${startup.id}/upvote`);
+        const result = await response.json();
+
+        if (result.success) {
+          setUpvoted(result.data.hasUpvoted);
+          setCurrentUpvotes(result.data.upvoteCount);
+        }
+      } catch (error) {
+        console.error("Error checking upvote status:", error);
+      }
+    };
+
+    checkUpvoteStatus();
+  }, [startup.id, isAuthenticated, session?.user?.id]);
+
+  const handleUpvoteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the row click
+
     if (!isAuthenticated) {
       setLoginDialogOpen(true);
       return;
     }
 
-    setUpvoted(!upvoted);
+    if (isLoading) return; // Prevent multiple clicks
 
-    console.log("User is authenticated - add your upvote logic here");
+    setIsLoading(true);
+
+    // Optimistic update
+    const newUpvoted = !upvoted;
+    const newCount = newUpvoted ? currentUpvotes + 1 : currentUpvotes - 1;
+
+    setUpvoted(newUpvoted);
+    setCurrentUpvotes(newCount);
+
+    try {
+      const response = await fetch(`/api/startups/${startup.id}/upvote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Update with actual values from server
+        setUpvoted(result.data.hasUpvoted);
+        setCurrentUpvotes(result.data.upvoteCount);
+      } else {
+        // Revert optimistic update on error
+        setUpvoted(!newUpvoted);
+        setCurrentUpvotes(currentUpvotes);
+        console.error("Error upvoting:", result.error);
+      }
+    } catch (error) {
+      // Revert optimistic update on error
+      setUpvoted(!newUpvoted);
+      setCurrentUpvotes(currentUpvotes);
+      console.error("Error upvoting:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRowClick = () => {
+    router.push(`/startup/${startup.id}`);
   };
 
   return (
     <>
-      <div className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50">
+      <div
+        className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
+        onClick={handleRowClick}
+      >
         <div className="shrink-0 pt-1">
           <Image
-            src="/logo.png"
-            alt="logo"
+            src={startup.logo}
+            alt={`${startup.name} logo`}
             width={50}
             height={50}
             draggable={false}
@@ -297,28 +391,32 @@ const Product = () => {
           />
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="font-semibold">Flex</div>
-          <div>The ultimate AI social media scheduling tool</div>
+          <div className="font-semibold">{startup.name}</div>
+          <div>{startup.tagline}</div>
           <div className="flex text-xs items-center">
-            <div>by Anton</div>
-            <Dot size={16} className="text-gray-300" />
-            <div>AI</div>
-            <Dot size={16} className="text-gray-300" />
-            <div>Directory</div>
+            <div>by {startup.submittedBy}</div>
+            {startup.categories.map((category, index) => (
+              <span key={index}>
+                <Dot size={16} className="text-gray-300" />
+                <span>{category}</span>
+              </span>
+            ))}
           </div>
         </div>
         <Button
           variant="outline"
           onClick={handleUpvoteClick}
+          disabled={isLoading}
           className={cn(
             "cursor-pointer size-12.5 ml-auto active:scale-90 flex flex-col gap-0 transition-all duration-120",
             upvoted
               ? "border-primary-color text-primary-color hover:text-primary-color"
               : "",
+            isLoading && "opacity-70 cursor-not-allowed",
           )}
         >
           <ChevronUp strokeWidth={2} />
-          12
+          {currentUpvotes}
         </Button>
       </div>
       <LoginDialog

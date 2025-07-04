@@ -602,7 +602,7 @@ export default function CollectionPage() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 mt-1">
           {loading ? (
             <>
               {new Array(20).fill(0).map((_, index) => (

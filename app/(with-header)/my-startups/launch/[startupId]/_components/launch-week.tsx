@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
@@ -15,9 +16,10 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useMobile } from "@/hooks/use-mobile";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LaunchWeekData } from "../page";
+import { toast } from "sonner"; // Assuming you're using sonner for toast notifications
 
 type LaunchOption = { id: string; title: string; benefits: string[] };
 
@@ -45,11 +47,57 @@ const LAUNCH_OPTIONS: LaunchOption[] = [
 
 interface LaunchWeekProps {
   launchWeekData: LaunchWeekData;
+  onLaunchSuccess?: () => void;
 }
 
-const LaunchWeek = ({ launchWeekData }: LaunchWeekProps) => {
+const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
   const [open, setOpen] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
   const isMobile = useMobile();
+  const params = useParams();
+  const router = useRouter();
+
+  const startupId = params.startupId as string;
+
+  const handleLaunch = async (launchType: "free" | "premium") => {
+    if (launchType === "premium") {
+      toast.error("Premium launch is not available yet");
+      return;
+    }
+
+    setIsLaunching(true);
+
+    try {
+      const response = await fetch("/api/launch-weeks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          startupId,
+          launchWeekId: launchWeekData.id,
+          launchType,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Successfully launched your startup!");
+        setOpen(false);
+        onLaunchSuccess?.();
+        // Optionally redirect to a success page or dashboard
+        router.push(`/my-startups/${startupId}/launch-success`);
+      } else {
+        toast.error(result.error || "Failed to launch startup");
+      }
+    } catch (error) {
+      console.error("Error launching startup:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsLaunching(false);
+    }
+  };
 
   // Format dates for display
   const formatDate = (dateString: string) => {
@@ -74,6 +122,8 @@ const LaunchWeek = ({ launchWeekData }: LaunchWeekProps) => {
         ? launchWeekData.freeAvailable
         : launchWeekData.premiumAvailable;
 
+    const isFreeLaunch = option.id === "free";
+
     return (
       <div
         className={`flex flex-col justify-between border rounded-lg p-4 ${
@@ -97,9 +147,19 @@ const LaunchWeek = ({ launchWeekData }: LaunchWeekProps) => {
         </div>
         <Button
           className="mt-auto w-full hover:scale-101 transition-all duration-100 active:scale-99"
-          disabled={!isAvailable}
+          disabled={!isAvailable || isLaunching}
+          onClick={() => handleLaunch(option.id as "free" | "premium")}
         >
-          {isAvailable ? "Select" : "Not Available"}
+          {isLaunching && isFreeLaunch ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Launching...
+            </>
+          ) : isAvailable ? (
+            "Select"
+          ) : (
+            "Not Available"
+          )}
         </Button>
       </div>
     );
