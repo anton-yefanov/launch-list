@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, DollarSign, TrendingUp, PawPrint, Shield } from "lucide-react";
+import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { useRouter } from "next/navigation";
@@ -165,7 +165,7 @@ export const Directory = ({
           <div className="flex flex-col">
             <div className="font-semibold text-lg">{directory.name}</div>
             <div className="text-xs">
-              Launch here to get a high authority backlink
+              {`Launch here to get a ${directory.domainRating >= 50 ? "high authority " : ""}backlink`}
             </div>
           </div>
         </div>

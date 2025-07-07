@@ -76,7 +76,10 @@ export const LayoutHeader = () => {
     <>
       <div className="pt-8 pb-4 flex justify-between sticky top-0 z-30 bg-background">
         <div className="flex items-center gap-2">
-          <Link href="/" className="shrink-0 select-none">
+          <Link
+            href="/"
+            className="shrink-0 select-none active:scale-95 transition-all duration-100"
+          >
             <Image
               src="/logo.png"
               alt="logo"
@@ -93,10 +96,13 @@ export const LayoutHeader = () => {
                 : "/login"
             }
             target={isAuth ? "_blank" : "_self"}
-            className={cn(buttonVariants({ variant: "outline" }))}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "active:scale-95 transition-all duration-100",
+            )}
           >
             <Plus />
-            Submit
+            Launch here
           </Link>
         </div>
         <div className="flex items-center gap-2">

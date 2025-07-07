@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ChevronUp, Dot, Rocket } from "lucide-react";
+import { ChevronUp, Dot, Plus, Rocket } from "lucide-react";
 import { useState, useEffect, Fragment } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
@@ -53,6 +53,9 @@ export default function LaunchPage() {
   const [loading, setLoading] = useState(true);
   const [startups, setStartups] = useState<Startup[]>([]);
   const [lastWeekStartups, setLastWeekStartups] = useState<Startup[]>([]);
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isAuth = status === "authenticated";
 
   useEffect(() => {
     const fetchLaunchData = async () => {
@@ -209,7 +212,21 @@ export default function LaunchPage() {
         <div className="flex flex-col justify-center items-center text-center py-10 text-gray-500">
           <Rocket size={60} className="mb-4" />
           <p className="mb-4">No startups launching this week, yet</p>
-          <Button variant="outline">Be the first to launch!</Button>
+          <Link
+            href={
+              isAuth
+                ? `https://tally.so/r/nW6pYJ?email=${user?.email}`
+                : "/login"
+            }
+            target={isAuth ? "_blank" : "_self"}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "text-black active:scale-97 transition-all duration-100",
+            )}
+          >
+            <Plus />
+            Be the first to launch!
+          </Link>
         </div>
       )}
 

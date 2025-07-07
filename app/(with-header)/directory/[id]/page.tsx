@@ -1,4 +1,3 @@
-// app/directory/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -25,11 +24,11 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DirectoryTag } from "@/types/DirectoryTag";
-import { DirectoryType } from "@/types/DirectoryType";
 import { formatNumber } from "@/lib/formatNumber";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { IDirectory } from "@/models/Directory";
 
 export default function DirectoryDetailPage() {
   const params = useParams();
@@ -37,7 +36,7 @@ export default function DirectoryDetailPage() {
   const { status } = useSession();
   const isLoggedIn = status === "authenticated";
 
-  const [directory, setDirectory] = useState<DirectoryType | null>(null);
+  const [directory, setDirectory] = useState<IDirectory | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isInLaunchList, setIsInLaunchList] = useState(false);
@@ -117,7 +116,7 @@ export default function DirectoryDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div>
         <div className="mb-6">
           <Skeleton className="h-10 w-32 mb-4" />
         </div>
@@ -141,7 +140,7 @@ export default function DirectoryDetailPage() {
 
   if (error || !directory) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div>
         <div className="text-center py-8">
           <p className="text-red-600 mb-4">{error || "Directory not found"}</p>
           <Button onClick={() => router.back()} variant="outline">
@@ -154,8 +153,8 @@ export default function DirectoryDetailPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-6">
+    <div>
+      <div>
         <Button onClick={() => router.back()} variant="ghost" className="mb-4">
           <ArrowLeft className="size-4 mr-2" />
           Back
@@ -204,7 +203,9 @@ export default function DirectoryDetailPage() {
             <div className="flex items-center justify-center mb-2">
               <Globe className="size-5 text-purple-600" />
             </div>
-            <div className="font-bold text-lg">High</div>
+            <div className="font-bold text-lg">
+              {directory.domainRating >= 50 ? "High" : "Normal"}
+            </div>
             <div className="text-xs text-gray-600">Authority</div>
           </div>
           <div className="text-center p-3 bg-gray-50 rounded-lg">
