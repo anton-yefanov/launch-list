@@ -42,6 +42,7 @@ export async function GET() {
           createdAt: 1,
           submittedAt: 1,
           upvotes: 1,
+          categories: 1, // Add this line
         })
         .sort({ createdAt: -1 });
 
@@ -54,7 +55,7 @@ export async function GET() {
         submittedBy: startup.submittedBy,
         twitterUsername: startup.twitterUsername,
         upvotes: startup.upvotes?.length || 0,
-        categories: ["AI", "Productivity"], // TODO: Add categories to schema
+        categories: startup.categories,
         submittedAt: startup.submittedAt || startup.createdAt,
       }));
     }
@@ -75,6 +76,7 @@ export async function GET() {
           createdAt: 1,
           submittedAt: 1,
           upvotes: 1,
+          categories: 1, // Add this line
         })
         .sort({ createdAt: -1 });
 
@@ -87,7 +89,7 @@ export async function GET() {
         submittedBy: startup.submittedBy,
         twitterUsername: startup.twitterUsername,
         upvotes: startup.upvotes?.length || 0,
-        categories: ["AI", "Productivity"], // TODO: Add categories to schema
+        categories: startup.categories,
         submittedAt: startup.submittedAt || startup.createdAt,
       }));
     }

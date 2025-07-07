@@ -68,7 +68,7 @@ export const LayoutHeader = () => {
         text: isMyLaunchListPage ? "Browse collection" : "Launch List",
       };
     }
-  }, [isAuth, isMobile]);
+  }, [isAuth, isMobile, isMyLaunchListPage]);
 
   const buttonContent = getButtonContent();
 
@@ -92,7 +92,7 @@ export const LayoutHeader = () => {
           <Link
             href={
               isAuth
-                ? `https://tally.so/r/nW6pYJ?email=${user?.email}`
+                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-startups`
                 : "/login"
             }
             target={isAuth ? "_blank" : "_self"}

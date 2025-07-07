@@ -29,20 +29,20 @@ const LAUNCH_OPTIONS: LaunchOption[] = [
     title: "Free Launch",
     benefits: [
       "Your website on homepage for a week",
-      "Badge for your website",
-      "High authority backlink",
+      "A backlink for your website",
+      "Free traffic on your project",
     ],
   },
-  {
-    id: "premium",
-    title: "Premium Launch",
-    benefits: [
-      "Skip queue",
-      "Your website on homepage for a week",
-      "Badge for your website",
-      "High authority backlink, guaranteed",
-    ],
-  },
+  // {
+  //   id: "premium",
+  //   title: "Premium Launch",
+  //   benefits: [
+  //     "Skip queue",
+  //     "Your website on homepage for a week",
+  //     "Badge for your website",
+  //     "High authority backlink, guaranteed",
+  //   ],
+  // },
 ];
 
 interface LaunchWeekProps {
@@ -194,23 +194,17 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
       <div className="flex items-center gap-3">
         {launchWeekData.freeAvailable ? (
           <div className="text-sm font-medium text-green-400 bg-green-100 px-2 rounded">
-            Free available
+            Free slots available
           </div>
         ) : (
           <div className="text-sm font-medium text-red-400 bg-red-100 px-2 rounded">
             Free full
           </div>
         )}
-        <Separator orientation="vertical" />
-        {launchWeekData.premiumAvailable ? (
-          <div className="text-sm font-medium text-amber-400 bg-amber-100/60 px-2 rounded">
-            Premium available
-          </div>
-        ) : (
-          <div className="text-sm font-medium text-red-400 bg-red-100 px-2 rounded">
-            Premium full
-          </div>
-        )}
+        {/*<Separator orientation="vertical" />*/}
+        {/*<div className="text-sm font-medium text-amber-400 bg-amber-100/60 px-2 rounded">*/}
+        {/*  Premium available*/}
+        {/*</div>*/}
       </div>
     </div>
   );

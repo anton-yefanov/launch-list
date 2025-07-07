@@ -41,11 +41,34 @@ export async function POST(request) {
 
     console.log("Processed form data:", processedData);
 
+    // Helper function to map category IDs to category names
+    const getCategoryNames = (categoryIds, options) => {
+      if (!categoryIds || !Array.isArray(categoryIds)) return [];
+
+      return categoryIds
+        .map((id) => {
+          const option = options.find((opt) => opt.id === id);
+          return option ? option.text : null;
+        })
+        .filter(Boolean);
+    };
+
+    // Find the categories field to get the options mapping
+    const categoriesField = formData.fields.find(
+      (field) => field.label === "Select categories that best fit your product",
+    );
+    const categoryNames = getCategoryNames(
+      processedData["Select categories that best fit your product"],
+      categoriesField?.options || [],
+    );
+
     // Extract startup data from the form
     const startupData = {
-      name: processedData["Startup name"],
+      name: processedData["Name"],
       websiteUrl: processedData["Website URL"],
       tagline: processedData["Tagline"],
+      description: processedData["Description"],
+      categories: categoryNames,
       submittedBy: processedData["Submitted by"],
       submitterEmail: processedData["email"],
       twitterUsername: processedData["𝕏 username (optional)"],
@@ -53,13 +76,13 @@ export async function POST(request) {
         processedData["How would you rate submission experience?"],
 
       // Handle logo (single file)
-      logo: processedData["Website logo"]?.[0]
+      logo: processedData["Logo"]?.[0]
         ? {
-            id: processedData["Website logo"][0].id,
-            name: processedData["Website logo"][0].name,
-            url: processedData["Website logo"][0].url,
-            mimeType: processedData["Website logo"][0].mimeType,
-            size: processedData["Website logo"][0].size,
+            id: processedData["Logo"][0].id,
+            name: processedData["Logo"][0].name,
+            url: processedData["Logo"][0].url,
+            mimeType: processedData["Logo"][0].mimeType,
+            size: processedData["Logo"][0].size,
           }
         : null,
 
@@ -75,6 +98,11 @@ export async function POST(request) {
 
       // Tally metadata
       tallyEventId: eventId,
+      tallyResponseId: formData.responseId,
+      tallySubmissionId: formData.submissionId,
+      tallyRespondentId: formData.respondentId,
+      tallyFormId: formData.formId,
+      tallyFormName: formData.formName,
 
       submittedAt: new Date(createdAt),
     };
@@ -84,6 +112,7 @@ export async function POST(request) {
       !startupData.name ||
       !startupData.websiteUrl ||
       !startupData.tagline ||
+      !startupData.description ||
       !startupData.submittedBy ||
       !startupData.submitterEmail
     ) {
@@ -91,6 +120,12 @@ export async function POST(request) {
     }
 
     let user = await User.findOne({ email: startupData.submitterEmail });
+
+    if (!user) {
+      throw new Error(
+        "User not found. User must be registered before submitting a startup.",
+      );
+    }
 
     if (startupData.twitterUsername && !user.twitterUsername) {
       user.twitterUsername = startupData.twitterUsername;
@@ -114,6 +149,8 @@ export async function POST(request) {
       startupData.rejectionReason = aiReview.reason;
       startupData.rejectionCategory = aiReview.category;
     }
+
+    startupData.reviewedAt = new Date(); // Set review timestamp
 
     // Create startup
     const startup = new Startup(startupData);

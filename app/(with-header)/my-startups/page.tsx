@@ -14,11 +14,14 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { IStartup } from "@/models/Startup";
+import { useSession } from "next-auth/react";
 
 export default function MyStartupsPage() {
   const [startups, setStartups] = useState<IStartup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   useEffect(() => {
     fetchStartups();
@@ -48,9 +51,6 @@ export default function MyStartupsPage() {
       <div>
         <div className="flex items-center justify-between px-2.5">
           <h1 className="text-2xl font-semibold mb-4">My startups</h1>
-          <Button variant="outline" disabled>
-            <Plus /> Add new
-          </Button>
         </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -65,9 +65,6 @@ export default function MyStartupsPage() {
       <div>
         <div className="flex items-center justify-between px-2.5">
           <h1 className="text-2xl font-semibold mb-4">My startups</h1>
-          <Button variant="outline">
-            <Plus /> Add new
-          </Button>
         </div>
         <div className="text-center py-8">
           <p className="text-red-600 mb-4">{error}</p>
@@ -83,17 +80,17 @@ export default function MyStartupsPage() {
     <div>
       <div className="flex items-center justify-between px-2.5">
         <h1 className="text-2xl font-semibold mb-4">My startups</h1>
-        <Button variant="outline">
-          <Plus /> Add new
-        </Button>
       </div>
 
       {startups.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500 mb-4">No startups yet</p>
-          <Button variant="outline">
+          <Link
+            href={`https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-startups`}
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
             <Plus /> Add your first startup
-          </Button>
+          </Link>
         </div>
       ) : (
         <div className="space-y-2">
@@ -184,11 +181,10 @@ const ProductCard = ({ startup }: ProductCardProps) => {
         {startup.status === "approved" && (
           <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
             <div className="text-xs text-green-700 font-medium">
-              🎉 Congratulations! Your startup has been approved for launch.
+              🎉 Congratulations! Your startup has been approved for launch
             </div>
             <div className="text-xs text-green-600 mt-1">
-              You can now launch your startup and start getting feedback from
-              the community.
+              You can now launch your startup
             </div>
           </div>
         )}
@@ -200,7 +196,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           href={`/my-startups/launch/${startup._id}`}
           className={cn(
             buttonVariants({ variant: "default" }),
-            "ml-auto my-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",
+            "ml-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",
           )}
         >
           Launch <Rocket />

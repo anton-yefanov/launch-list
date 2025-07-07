@@ -10,7 +10,8 @@ export async function GET(
     const { id } = await params;
     await connectToDatabase();
 
-    const startup = await Startup.findById(id);
+    // Populate upvotes to get the actual count and optionally user details
+    const startup = await Startup.findById(id).populate("upvotes", "_id");
 
     if (!startup) {
       return NextResponse.json(
@@ -27,12 +28,13 @@ export async function GET(
       );
     }
 
-    // You might want to add upvotes count here from a separate collection
-    // For now, we'll just return the startup data
+    // Convert to object and get upvotes count and categories
+    const startupObject = startup.toObject();
+
     const startupData = {
-      ...startup.toObject(),
-      upvotes: 0, // TODO: Implement upvotes count from separate collection
-      categories: [], // TODO: Implement categories from separate collection or startup schema
+      ...startupObject,
+      upvotes: startup.upvoteCount || startup.upvotes?.length || 0, // Use virtual or fallback to array length
+      categories: startup.categories || [], // Categories are already in the schema
     };
 
     return NextResponse.json({

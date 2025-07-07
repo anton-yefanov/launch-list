@@ -215,7 +215,7 @@ export default function LaunchPage() {
           <Link
             href={
               isAuth
-                ? `https://tally.so/r/nW6pYJ?email=${user?.email}`
+                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-startups`
                 : "/login"
             }
             target={isAuth ? "_blank" : "_self"}
@@ -235,8 +235,12 @@ export default function LaunchPage() {
           <h2 className="text-3xl font-semibold my-4 px-2.5">
             Last week winners
           </h2>
-          {lastWeekStartups.map((startup) => (
-            <WinnerProduct key={startup.id} winner={{ ...startup, place: 1 }} />
+          {lastWeekStartups.map((startup, index) => (
+            <WinnerProduct
+              key={startup.id}
+              winner={{ ...startup, place: (index + 1) as 1 | 2 | 3 }}
+              showCup={index < 3}
+            />
           ))}
         </>
       )}
@@ -299,9 +303,18 @@ const Directory = ({
   );
 };
 
-const WinnerProduct = ({ winner }: { winner: Winner }) => {
+const WinnerProduct = ({
+  winner,
+  showCup,
+}: {
+  winner: Winner;
+  showCup: boolean;
+}) => {
   return (
-    <div className="relative rounded-lg p-2.5 flex gap-2 select-none">
+    <Link
+      href={`/startup/${winner.id}`}
+      className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-2 select-none"
+    >
       <div className="shrink-0">
         <Image
           src={winner.logo}
@@ -325,21 +338,23 @@ const WinnerProduct = ({ winner }: { winner: Winner }) => {
           ))}
         </div>
       </div>
-      <Image
-        src={getCupByPlace(winner.place) || "/placeholder.svg"}
-        alt={`${winner.place} place cup`}
-        width={50}
-        height={50}
-        draggable={false}
-        className="rounded absolute -left-5 top-2 -rotate-10"
-      />
+      {showCup && (
+        <Image
+          src={getCupByPlace(winner.place)}
+          alt={`${winner.place} place cup`}
+          width={50}
+          height={50}
+          draggable={false}
+          className="rounded absolute -left-5 top-2 -rotate-10"
+        />
+      )}
       <Button
         variant="outline"
         className="size-12.5 ml-auto flex flex-col gap-0 cursor-default hover:bg-background bg-transparent"
       >
         {winner.upvotes}
       </Button>
-    </div>
+    </Link>
   );
 };
 

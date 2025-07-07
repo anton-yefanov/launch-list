@@ -43,6 +43,11 @@ const StartupSchema = new mongoose.Schema(
 
     // Tally form metadata
     tallyEventId: { type: String, unique: true },
+    tallyResponseId: { type: String }, // responseId from Tally
+    tallySubmissionId: { type: String }, // submissionId from Tally
+    tallyRespondentId: { type: String }, // respondentId from Tally
+    tallyFormId: { type: String }, // formId from Tally
+    tallyFormName: { type: String }, // formName from Tally
 
     status: {
       type: String,
@@ -82,6 +87,8 @@ StartupSchema.index({ userId: 1 });
 StartupSchema.index({ status: 1 });
 StartupSchema.index({ rejectionCategory: 1 });
 StartupSchema.index({ upvotes: 1 });
+StartupSchema.index({ tallyResponseId: 1 });
+StartupSchema.index({ tallyFormId: 1 });
 
 export const Startup =
   mongoose.models.Startup || mongoose.model<IStartup>("Startup", StartupSchema);

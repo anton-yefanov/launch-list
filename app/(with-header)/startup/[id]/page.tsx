@@ -2,7 +2,14 @@
 
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ChevronUp, ExternalLink, User, Tag, ArrowLeft } from "lucide-react";
+import {
+  ChevronUp,
+  ExternalLink,
+  User,
+  Tag,
+  ArrowLeft,
+  FileText,
+} from "lucide-react";
 import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -31,6 +38,7 @@ export default function StartupPage({ params }: StartupPageProps) {
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(
     null,
   );
+  const [isInLaunchWeek, setIsInLaunchWeek] = useState<boolean>(false);
 
   const isAuthenticated = status === "authenticated";
 
@@ -44,6 +52,9 @@ export default function StartupPage({ params }: StartupPageProps) {
           setStartup(result.data);
           setCurrentUpvotes(result.data.upvotes || 0);
           setSelectedScreenshot(result.data.screenshots?.[0]?.url || null);
+
+          // Check if startup is in current launch week
+          await checkLaunchWeekStatus(result.data._id);
         } else {
           setError(result.message || "Startup not found");
         }
@@ -57,6 +68,45 @@ export default function StartupPage({ params }: StartupPageProps) {
 
     fetchStartup();
   }, [id]);
+
+  const checkLaunchWeekStatus = async (startupId: string) => {
+    try {
+      const response = await fetch(
+        `/api/startups/${startupId}/launch-week-status`,
+      );
+
+      // Check if response is ok and content-type is JSON
+      if (!response.ok) {
+        console.error(
+          "API response not ok:",
+          response.status,
+          response.statusText,
+        );
+        setIsInLaunchWeek(true); // Default to allowing upvotes if API fails
+        return;
+      }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("API did not return JSON, got:", contentType);
+        setIsInLaunchWeek(true); // Default to allowing upvotes if API fails
+        return;
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        setIsInLaunchWeek(result.data.isInLaunchWeek);
+      } else {
+        console.error("API returned error:", result.message);
+        setIsInLaunchWeek(true); // Default to allowing upvotes if API returns error
+      }
+    } catch (error) {
+      console.error("Error checking launch week status:", error);
+      // Default to true (allow upvotes) if we can't check - safer for user experience
+      setIsInLaunchWeek(true);
+    }
+  };
 
   // Check upvote status when user is authenticated
   useEffect(() => {
@@ -80,6 +130,11 @@ export default function StartupPage({ params }: StartupPageProps) {
   }, [id, isAuthenticated, session?.user?.id, startup]);
 
   const handleUpvoteClick = async () => {
+    // Don't allow upvoting if not in launch week
+    if (!isInLaunchWeek) {
+      return;
+    }
+
     if (!isAuthenticated) {
       setLoginDialogOpen(true);
       return;
@@ -216,24 +271,34 @@ export default function StartupPage({ params }: StartupPageProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  onClick={handleUpvoteClick}
-                  disabled={isUpvoting}
-                  className={cn(
-                    "cursor-pointer flex sm:justify-between gap-2 px-4 py-2 active:scale-95 transition-all duration-120",
-                    upvoted
-                      ? "border-primary-color text-primary-color hover:text-primary-color"
-                      : "",
-                    isUpvoting && "opacity-70 cursor-not-allowed",
-                  )}
-                >
-                  Upvote
-                  <div className="flex items-center gap-1">
-                    <ChevronUp strokeWidth={2} />
-                    <span className="text-sm">{currentUpvotes}</span>
+                {isInLaunchWeek ? (
+                  <Button
+                    variant="outline"
+                    onClick={handleUpvoteClick}
+                    disabled={isUpvoting}
+                    className={cn(
+                      "cursor-pointer flex sm:justify-between gap-2 px-4 py-2 active:scale-95 transition-all duration-120",
+                      upvoted
+                        ? "border-primary-color text-primary-color hover:text-primary-color"
+                        : "",
+                      isUpvoting && "opacity-70 cursor-not-allowed",
+                    )}
+                  >
+                    Upvote
+                    <div className="flex items-center gap-1">
+                      <ChevronUp strokeWidth={2} />
+                      <span className="text-sm">{currentUpvotes}</span>
+                    </div>
+                  </Button>
+                ) : (
+                  <div className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md bg-gray-50">
+                    <span className="text-gray-600">Upvotes</span>
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <ChevronUp strokeWidth={2} className="h-4 w-4" />
+                      <span className="text-sm">{currentUpvotes}</span>
+                    </div>
                   </div>
-                </Button>
+                )}
 
                 <Link
                   href={startup.websiteUrl}
@@ -248,6 +313,31 @@ export default function StartupPage({ params }: StartupPageProps) {
             </div>
           </div>
         </div>
+
+        {!isInLaunchWeek && (
+          <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-amber-800 text-sm">
+              <strong>Launch week has ended.</strong> This startup is no longer
+              accepting upvotes. The final upvote count is displayed above.
+            </p>
+          </div>
+        )}
+
+        {/* Description Section */}
+        {startup.description && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Description
+            </h2>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {startup.description}
+              </p>
+            </div>
+          </div>
+        )}
+
         {startup.screenshots && startup.screenshots.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Screenshots</h2>
@@ -293,11 +383,10 @@ export default function StartupPage({ params }: StartupPageProps) {
           </div>
         )}
 
-        {/* Additional Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-3">About</h3>
-            <div className="space-y-2 text-gray-600">
+            <div className="space-y-3 text-gray-600">
               <p>
                 <strong>Website:</strong>{" "}
                 <Link
@@ -316,62 +405,27 @@ export default function StartupPage({ params }: StartupPageProps) {
                 <p>
                   <strong>Twitter:</strong>{" "}
                   <Link
-                    href={`https://twitter.com/${startup.twitterUsername}`}
+                    href={`https://twitter.com/${startup.twitterUsername.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
-                    @{startup.twitterUsername}
+                    {startup.twitterUsername.startsWith("@")
+                      ? startup.twitterUsername
+                      : `@${startup.twitterUsername}`}
                   </Link>
                 </p>
               )}
-              <p>
-                <strong>Status:</strong>{" "}
-                <span
-                  className={cn(
-                    "capitalize px-2 py-1 rounded text-xs",
-                    startup.status === "approved"
-                      ? "bg-green-100 text-green-800"
-                      : startup.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800",
-                  )}
-                >
-                  {startup.status}
-                </span>
-              </p>
             </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Engagement</h3>
-            <div className="space-y-2 text-gray-600">
-              <p>
-                <strong>Upvotes:</strong> {currentUpvotes}
-              </p>
-              {startup.submissionRating && (
-                <p>
-                  <strong>Submission Rating:</strong> {startup.submissionRating}
-                  /5
-                </p>
-              )}
-              {startup.categories && startup.categories.length > 0 && (
-                <div>
-                  <p>
-                    <strong>Categories:</strong>
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {startup.categories.map((category, index) => (
-                      <span
-                        key={index}
-                        className="bg-gray-100 px-2 py-1 rounded-full text-xs"
-                      >
-                        {category}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {startup.categories.map((category, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium"
+                >
+                  {category}
+                </span>
+              ))}
             </div>
           </div>
         </div>

@@ -395,17 +395,17 @@ export default function CollectionPage() {
   return (
     <TooltipProvider>
       <div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <Card title="I launched on 100+ websites" category="Article" />
-          <Card
-            title="Best directories for Small Startups (75+)"
-            category="Collection"
-          />
-          <Card
-            title="Best directories for Small Startups (75+)"
-            category="Collection"
-          />
-        </div>
+        {/*<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">*/}
+        {/*  <Card title="I launched on 100+ websites" category="Article" />*/}
+        {/*  <Card*/}
+        {/*    title="Best directories for Small Startups (75+)"*/}
+        {/*    category="Collection"*/}
+        {/*  />*/}
+        {/*  <Card*/}
+        {/*    title="Best directories for Small Startups (75+)"*/}
+        {/*    category="Collection"*/}
+        {/*  />*/}
+        {/*</div>*/}
         <div className="flex items-center justify-between py-4 sticky top-21 bg-background z-20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (
