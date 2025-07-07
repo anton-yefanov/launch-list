@@ -76,7 +76,7 @@ export const LayoutHeader = () => {
     <>
       <div className="pt-8 pb-4 flex justify-between sticky top-0 z-30 bg-background">
         <div className="flex items-center gap-2">
-          <Link href="/launch" className="shrink-0 select-none">
+          <Link href="/" className="shrink-0 select-none">
             <Image
               src="/logo.png"
               alt="logo"

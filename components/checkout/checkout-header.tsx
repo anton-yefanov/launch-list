@@ -9,7 +9,7 @@ export function CheckoutHeader() {
   return (
     <div className="flex items-center gap-4">
       <Link
-        href="/launch"
+        href="/"
         className={cn(buttonVariants({ variant: "outline" }), "size-[32px]")}
       >
         <ChevronLeft />

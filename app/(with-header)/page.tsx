@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ChevronUp, Dot } from "lucide-react";
-import { useState, useEffect } from "react";
+import { ChevronUp, Dot, Rocket } from "lucide-react";
+import { useState, useEffect, Fragment } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
@@ -13,6 +13,7 @@ import { LoginDialog } from "@/components/login-dialog";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Footer } from "@/components/footer";
+import { formatNumber } from "@/lib/formatNumber";
 
 interface LaunchWeek {
   id: string;
@@ -137,9 +138,27 @@ export default function LaunchPage() {
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <Directory title="Product Hunt" bgColor="bg-orange-600" />
-              <Directory title="Tiny Launch" bgColor="bg-rose-600" />
-              <Directory title="Launch List" bgColor="bg-slate-600" />
+              <Directory
+                title="Product Hunt"
+                viewsPerMonth={500000}
+                domainRating={91}
+                bgColor="bg-rose-600"
+                benefits={["Free", "High authority"]}
+              />
+              <Directory
+                title="Y Combinator"
+                viewsPerMonth={1000000}
+                domainRating={89}
+                bgColor="bg-orange-600"
+                benefits={["Free", "Tech audience"]}
+              />
+              <Directory
+                title="DevPost"
+                viewsPerMonth={100000}
+                domainRating={86}
+                bgColor="bg-slate-600"
+                benefits={["Free", "Small startups"]}
+              />
             </div>
           </div>
         </div>
@@ -187,9 +206,10 @@ export default function LaunchPage() {
           <Product key={startup.id} startup={startup} />
         ))
       ) : (
-        <div className="text-center py-8 text-gray-500">
-          <p>No startups launching this week yet.</p>
-          <p className="text-sm mt-2">Be the first to launch!</p>
+        <div className="flex flex-col justify-center items-center text-center py-10 text-gray-500">
+          <Rocket size={60} className="mb-4" />
+          <p className="mb-4">No startups launching this week, yet</p>
+          <Button variant="outline">Be the first to launch!</Button>
         </div>
       )}
 
@@ -199,7 +219,7 @@ export default function LaunchPage() {
             Last week winners
           </h2>
           {lastWeekStartups.map((startup) => (
-            <Product key={startup.id} startup={startup} />
+            <WinnerProduct key={startup.id} winner={{ ...startup, place: 1 }} />
           ))}
         </>
       )}
@@ -210,10 +230,16 @@ export default function LaunchPage() {
 
 const Directory = ({
   title,
+  viewsPerMonth,
+  domainRating,
   bgColor = "bg-primary-color",
+  benefits,
 }: {
   title: string;
+  viewsPerMonth: number;
+  domainRating: number;
   bgColor?: string;
+  benefits: string[];
 }) => {
   return (
     <div className="flex select-none justify-between gap-1.5 bg-white border p-1 pr-3 rounded-md">
@@ -230,16 +256,25 @@ const Directory = ({
         </div>
         <div className="flex flex-col">
           <div className="text-sm font-semibold">{title}</div>
-          <div className="text-xs">Free</div>
+          <div className="flex items-center">
+            {benefits.map((b, i) => (
+              <Fragment key={i}>
+                <div className="text-xs">{b}</div>
+                {i !== benefits.length - 1 && <Dot size={12} />}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
       <div className="flex gap-2">
         <div className="grid place-items-center">
-          <span className="font-bold h-[10px]">200k</span>
+          <span className="font-bold h-[10px]">
+            {formatNumber(viewsPerMonth)}
+          </span>
           <span className="text-[8px]">Views</span>
         </div>
         <div className="grid place-items-center">
-          <span className="font-bold h-[10px]">96</span>
+          <span className="font-bold h-[10px]">{domainRating}</span>
           <span className="text-[8px]">DR</span>
         </div>
       </div>
@@ -250,7 +285,7 @@ const Directory = ({
 const WinnerProduct = ({ winner }: { winner: Winner }) => {
   return (
     <div className="relative rounded-lg p-2.5 flex gap-2 select-none">
-      <div className="shrink-0 pt-1">
+      <div className="shrink-0">
         <Image
           src={winner.logo}
           alt={`${winner.name} logo`}
@@ -266,7 +301,7 @@ const WinnerProduct = ({ winner }: { winner: Winner }) => {
         <div className="flex text-xs items-center">
           <div>by {winner.submittedBy}</div>
           {winner.categories.map((category, index) => (
-            <span key={index}>
+            <span key={index} className="flex">
               <Dot size={16} className="text-gray-300" />
               <span>{category}</span>
             </span>
@@ -283,7 +318,7 @@ const WinnerProduct = ({ winner }: { winner: Winner }) => {
       />
       <Button
         variant="outline"
-        className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background bg-transparent"
+        className="size-12.5 ml-auto flex flex-col gap-0 cursor-default hover:bg-background bg-transparent"
       >
         {winner.upvotes}
       </Button>
@@ -380,7 +415,7 @@ const Product = ({ startup }: { startup: Startup }) => {
         className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
         onClick={handleRowClick}
       >
-        <div className="shrink-0 pt-1">
+        <div className="shrink-0">
           <Image
             src={startup.logo}
             alt={`${startup.name} logo`}
@@ -396,7 +431,7 @@ const Product = ({ startup }: { startup: Startup }) => {
           <div className="flex text-xs items-center">
             <div>by {startup.submittedBy}</div>
             {startup.categories.map((category, index) => (
-              <span key={index}>
+              <span key={index} className="flex">
                 <Dot size={16} className="text-gray-300" />
                 <span>{category}</span>
               </span>
