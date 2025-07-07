@@ -13,43 +13,10 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-
-interface Startup {
-  _id: string;
-  name: string;
-  websiteUrl: string;
-  tagline: string;
-  logo?: {
-    id: string;
-    name: string;
-    url: string;
-    mimeType: string;
-    size: number;
-  };
-  screenshots?: Array<{
-    id: string;
-    name: string;
-    url: string;
-    mimeType: string;
-    size: number;
-  }>;
-  submittedBy: string;
-  submitterEmail: string;
-  twitterUsername?: string;
-  submissionRating?: number;
-  userId: string;
-  status: "pending" | "approved" | "rejected";
-  rejectionReason?: string;
-  rejectionCategory?: string;
-  submittedAt: string;
-  approvedAt?: string;
-  rejectedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { IStartup } from "@/models/Startup";
 
 export default function MyStartupsPage() {
-  const [startups, setStartups] = useState<Startup[]>([]);
+  const [startups, setStartups] = useState<IStartup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -140,7 +107,7 @@ export default function MyStartupsPage() {
 }
 
 interface ProductCardProps {
-  startup: Startup;
+  startup: IStartup;
 }
 
 const ProductCard = ({ startup }: ProductCardProps) => {
@@ -159,7 +126,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
     }
   };
 
-  const getStatusMessage = (startup: Startup) => {
+  const getStatusMessage = (startup: IStartup) => {
     switch (startup.status) {
       case "approved":
         return "Ready to launch! 🚀";
@@ -182,10 +149,6 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           height={50}
           draggable={false}
           className="rounded"
-          onError={(e) => {
-            // Fallback to placeholder if image fails to load
-            e.currentTarget.src = "/logo.png";
-          }}
         />
       </div>
       <div className="flex flex-col justify-center flex-1">

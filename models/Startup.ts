@@ -63,7 +63,9 @@ const StartupSchema = new mongoose.Schema(
   },
 );
 
-export type IStartup = InferSchemaType<typeof StartupSchema>;
+export type IStartup = InferSchemaType<typeof StartupSchema> & {
+  _id: string;
+};
 
 // Virtual for upvote count
 StartupSchema.virtual("upvoteCount").get(function () {
