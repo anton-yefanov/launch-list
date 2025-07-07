@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import { ObjectId } from "mongodb";
 
 const LaunchWeekSchema = new mongoose.Schema({
@@ -14,5 +14,7 @@ const LaunchWeekSchema = new mongoose.Schema({
   maxSlots: Number,
 });
 
+export type ILaunchWeek = InferSchemaType<typeof LaunchWeekSchema>;
+
 export default mongoose.models.LaunchWeek ||
-  mongoose.model("LaunchWeek", LaunchWeekSchema);
+  mongoose.model<ILaunchWeek>("LaunchWeek", LaunchWeekSchema);

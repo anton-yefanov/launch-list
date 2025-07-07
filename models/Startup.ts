@@ -1,10 +1,13 @@
 import * as mongoose from "mongoose";
+import { InferSchemaType } from "mongoose";
 
 const StartupSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     websiteUrl: { type: String, required: true },
     tagline: { type: String, required: true },
+    description: { type: String, required: true },
+    categories: { type: [String], required: true },
     logo: {
       id: String,
       name: String,
@@ -31,7 +34,6 @@ const StartupSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Upvoting system
     upvotes: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -42,18 +44,15 @@ const StartupSchema = new mongoose.Schema(
     // Tally form metadata
     tallyEventId: { type: String, unique: true },
 
-    // Status and approval workflow
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
 
-    // AI Review fields
     rejectionReason: { type: String }, // AI-generated reason for rejection
     rejectionCategory: { type: String }, // Category of rejection (gambling, adult, spam, etc.)
 
-    // Timestamps
     submittedAt: { type: Date, default: Date.now },
     approvedAt: { type: Date },
     rejectedAt: { type: Date },
@@ -63,6 +62,8 @@ const StartupSchema = new mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt automatically
   },
 );
+
+export type IStartup = InferSchemaType<typeof StartupSchema>;
 
 // Virtual for upvote count
 StartupSchema.virtual("upvoteCount").get(function () {
@@ -81,4 +82,4 @@ StartupSchema.index({ rejectionCategory: 1 });
 StartupSchema.index({ upvotes: 1 });
 
 export const Startup =
-  mongoose.models.Startup || mongoose.model("Startup", StartupSchema);
+  mongoose.models.Startup || mongoose.model<IStartup>("Startup", StartupSchema);

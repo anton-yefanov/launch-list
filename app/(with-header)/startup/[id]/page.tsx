@@ -1,50 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import {
-  ChevronUp,
-  ExternalLink,
-  Calendar,
-  User,
-  Tag,
-  ArrowLeft,
-} from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChevronUp, ExternalLink, User, Tag, ArrowLeft } from "lucide-react";
 import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LoginDialog } from "@/components/login-dialog";
-
-interface StartupFile {
-  id: string;
-  name: string;
-  url: string;
-  mimeType: string;
-  size: number;
-}
-
-interface Startup {
-  _id: string;
-  name: string;
-  websiteUrl: string;
-  tagline: string;
-  logo: StartupFile;
-  screenshots: StartupFile[];
-  submittedBy: string;
-  submitterEmail: string;
-  twitterUsername?: string;
-  submissionRating?: number;
-  userId: string;
-  status: "pending" | "approved" | "rejected";
-  submittedAt: string;
-  approvedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  upvotes?: number; // This might come from a separate upvotes collection
-  categories?: string[]; // This might come from a separate categories collection
-}
+import { IStartup } from "@/models/Startup";
 
 interface StartupPageProps {
   params: Promise<{
@@ -56,7 +21,7 @@ export default function StartupPage({ params }: StartupPageProps) {
   const { id } = use(params);
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [startup, setStartup] = useState<Startup | null>(null);
+  const [startup, setStartup] = useState<IStartup | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [upvoted, setUpvoted] = useState<boolean>(false);
@@ -161,17 +126,9 @@ export default function StartupPage({ params }: StartupPageProps) {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div>
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="bg-gray-200 rounded-lg p-8">
@@ -197,7 +154,7 @@ export default function StartupPage({ params }: StartupPageProps) {
 
   if (error || !startup) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div>
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             {error || "Startup not found"}
@@ -216,18 +173,15 @@ export default function StartupPage({ params }: StartupPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Navigation */}
-      <div className="mb-6">
-        <Button variant="ghost" onClick={() => router.back()} className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+    <div>
+      <div className="mb-4">
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="size-4" />
           Back
         </Button>
       </div>
 
-      {/* Main Content */}
-      <div className="bg-white rounded-lg border p-8">
-        {/* Header */}
+      <div className="bg-white rounded-lg pb-4">
         <div className="flex flex-col sm:flex-row gap-6 mb-8">
           <div className="shrink-0">
             <Image
@@ -239,7 +193,6 @@ export default function StartupPage({ params }: StartupPageProps) {
               draggable={false}
             />
           </div>
-
           <div className="flex-1">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
@@ -253,10 +206,6 @@ export default function StartupPage({ params }: StartupPageProps) {
                     <User className="h-4 w-4" />
                     <span>by {startup.submittedBy}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>Launched {formatDate(startup.submittedAt)}</span>
-                  </div>
                   {startup.categories && startup.categories.length > 0 && (
                     <div className="flex items-center gap-1">
                       <Tag className="h-4 w-4" />
@@ -266,48 +215,48 @@ export default function StartupPage({ params }: StartupPageProps) {
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-2">
                 <Button
                   variant="outline"
                   onClick={handleUpvoteClick}
                   disabled={isUpvoting}
                   className={cn(
-                    "cursor-pointer flex flex-col gap-0 px-4 py-2 active:scale-90 transition-all duration-120",
+                    "cursor-pointer flex sm:justify-between gap-2 px-4 py-2 active:scale-95 transition-all duration-120",
                     upvoted
                       ? "border-primary-color text-primary-color hover:text-primary-color"
                       : "",
                     isUpvoting && "opacity-70 cursor-not-allowed",
                   )}
                 >
-                  <ChevronUp strokeWidth={2} />
-                  <span className="text-sm">{currentUpvotes}</span>
+                  Upvote
+                  <div className="flex items-center gap-1">
+                    <ChevronUp strokeWidth={2} />
+                    <span className="text-sm">{currentUpvotes}</span>
+                  </div>
                 </Button>
 
-                <Button asChild>
-                  <Link
-                    href={startup.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Visit Website
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <Link
+                  href={startup.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(buttonVariants({ variant: "outline" }))}
+                >
+                  Visit Website
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Screenshots */}
         {startup.screenshots && startup.screenshots.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Screenshots</h2>
-
-            {/* Main Screenshot */}
             <div className="mb-4">
               <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
                 <Image
-                  src={selectedScreenshot || startup.screenshots[0].url}
+                  src={
+                    selectedScreenshot || (startup.screenshots[0].url as string)
+                  }
                   alt={`${startup.name} screenshot`}
                   fill
                   className="object-cover"
@@ -315,8 +264,6 @@ export default function StartupPage({ params }: StartupPageProps) {
                 />
               </div>
             </div>
-
-            {/* Screenshot Thumbnails */}
             {startup.screenshots.length > 1 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {startup.screenshots.map((screenshot, index) => (
@@ -328,10 +275,12 @@ export default function StartupPage({ params }: StartupPageProps) {
                         ? "border-primary-color"
                         : "border-transparent hover:border-gray-300",
                     )}
-                    onClick={() => setSelectedScreenshot(screenshot.url)}
+                    onClick={() =>
+                      setSelectedScreenshot(screenshot.url as string)
+                    }
                   >
                     <Image
-                      src={screenshot.url}
+                      src={screenshot.url as string}
                       alt={`${startup.name} screenshot ${index + 1}`}
                       fill
                       className="object-cover"
@@ -376,9 +325,6 @@ export default function StartupPage({ params }: StartupPageProps) {
                   </Link>
                 </p>
               )}
-              <p>
-                <strong>Launch Date:</strong> {formatDate(startup.submittedAt)}
-              </p>
               <p>
                 <strong>Status:</strong>{" "}
                 <span

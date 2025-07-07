@@ -17,7 +17,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMobile } from "@/hooks/use-mobile";
 
 export const LayoutHeader = () => {
   const pathname = usePathname();
@@ -41,6 +42,7 @@ export const LayoutHeader = () => {
   const user = session?.user;
   const isAuth = status === "authenticated";
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const isMobile = useMobile();
 
   const handleSignOut = () => {
     signOut({
@@ -52,24 +54,21 @@ export const LayoutHeader = () => {
     window.open("mailto:antonyefanov@gmail.com", "_blank");
   };
 
-  // Determine button content based on auth status
-  const getButtonContent = () => {
+  const getButtonContent = useCallback(() => {
     if (!isAuth) {
-      // Always show "Browse collection" for non-authenticated users
       return {
         href: "/collections",
         icon: <List />,
-        text: "Browse collection",
+        text: isMobile ? "Browse" : "Browse collection",
       };
     } else {
-      // For authenticated users, toggle based on current page
       return {
         href: isMyLaunchListPage ? "/collections" : "/my-launch-list",
         icon: isMyLaunchListPage ? <List /> : <File />,
         text: isMyLaunchListPage ? "Browse collection" : "Launch List",
       };
     }
-  };
+  }, [isAuth, isMobile]);
 
   const buttonContent = getButtonContent();
 

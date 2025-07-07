@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import { InferSchemaType } from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -25,9 +26,12 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
+export type IUser = InferSchemaType<typeof UserSchema>;
+
 UserSchema.index({ email: 1 });
 UserSchema.index({ twitterUsername: 1 });
 UserSchema.index({ launchList: 1 });
 UserSchema.index({ launchedDirectories: 1 });
 
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
+export const User =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

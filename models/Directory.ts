@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, InferSchemaType } from "mongoose";
 
 export enum DirectoryTag {
   FreeLaunch = "FREE_LAUNCH",
@@ -12,19 +12,6 @@ export enum SubmitDifficulty {
   High = "High",
   Ok = "Ok",
   Low = "Low",
-}
-
-export interface IDirectory extends Document {
-  name: string;
-  description: string;
-  url: string;
-  bgColor: string;
-  domainRating: number;
-  viewsPerMonth: number;
-  tags: DirectoryTag[];
-  submitDifficulty: SubmitDifficulty;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 const DirectorySchema: Schema = new Schema(
@@ -92,6 +79,8 @@ const DirectorySchema: Schema = new Schema(
     collection: "directories",
   },
 );
+
+export type IDirectory = InferSchemaType<typeof DirectorySchema>;
 
 DirectorySchema.index({ name: 1 });
 DirectorySchema.index({ domainRating: -1 });
