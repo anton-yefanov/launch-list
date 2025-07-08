@@ -2,17 +2,17 @@
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  FilterIcon as Funnel,
-  ListFilter,
+  Check,
   FileInput,
   FilePlus,
-  Check,
+  FilterIcon as Funnel,
+  ListFilter,
 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
@@ -26,16 +26,15 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
-import { ProductCardDialog } from "@/app/(with-header)/collections/_components/product-card-dialog";
 import { LoginDialog } from "@/components/login-dialog";
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 import { useSession } from "next-auth/react";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 interface DirectoryType {
   _id: string;
@@ -51,7 +50,7 @@ interface DirectoryType {
 
 interface DirectoriesResponse {
   directories: DirectoryType[];
-  userLaunchList: string[]; // Array of directory IDs in user's launch list
+  userLaunchList: string[];
   pagination: {
     page: number;
     limit: number;
@@ -99,23 +98,17 @@ export default function CollectionPage() {
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { status } = useSession();
-  const isLoggedIn = status === "authenticated";
+  const isAuth = status === "authenticated";
 
   useEffect(() => {
     const fetchDirectories = async () => {
       try {
         setLoading(true);
         const response = await fetch("/api/directories");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch directories");
-        }
-
         const data: DirectoriesResponse = await response.json();
         setDirectories(data.directories);
 
-        // Only set user launch list if user is logged in
-        if (isLoggedIn) {
+        if (isAuth) {
           setUserLaunchList(new Set(data.userLaunchList || []));
         }
       } catch (err) {
@@ -126,21 +119,23 @@ export default function CollectionPage() {
       }
     };
 
-    // Only fetch directories after we know the auth status
-    if (isLoggedIn !== null) {
+    if (isAuth !== null) {
       fetchDirectories();
     }
-  }, [isLoggedIn]);
+  }, [isAuth]);
 
-  const handleAuthRequired = (action: () => void) => {
-    if (!isLoggedIn) {
+  const handleAuthRequired = useCallback((action: () => void) => {
+    if (!isAuth) {
       setShowLoginDialog(true);
       return;
     }
     action();
-  };
+  }, []);
 
-  const handleFilterChange = (key: keyof FilterState, value: any) => {
+  const handleFilterChange = (
+    key: keyof FilterState,
+    value: CheckedState | [number, number],
+  ) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
@@ -218,10 +213,9 @@ export default function CollectionPage() {
       });
     }
 
-    // Apply sorting
     if (sortBy === "none") return filtered;
 
-    const sorted = [...filtered].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "a-z":
           return a.name.localeCompare(b.name);
@@ -235,73 +229,7 @@ export default function CollectionPage() {
           return 0;
       }
     });
-
-    return sorted;
   }, [directories, sortBy, filters, hasActiveFilters]);
-
-  const addToLaunchList = async (directoryId: string) => {
-    try {
-      const response = await fetch("/api/user/launch-list", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ directoryId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to add to launch list");
-      }
-
-      // Update local state
-      setUserLaunchList((prev) => new Set([...prev, directoryId]));
-
-      toast("Directory Added to Launch List", {
-        description: "View now or later",
-        action: {
-          label: "View",
-          onClick: () => router.push("/my-launch-list"),
-        },
-      });
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to add to launch list",
-      );
-    }
-  };
-
-  const removeFromLaunchList = async (directoryId: string) => {
-    try {
-      const response = await fetch("/api/user/launch-list", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ directoryId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to remove from launch list");
-      }
-
-      // Update local state
-      setUserLaunchList((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(directoryId);
-        return newSet;
-      });
-
-      toast("Directory removed from Launch List");
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "Failed to remove from launch list",
-      );
-    }
-  };
 
   const addAllToLaunchList = async () => {
     const directoriesToAdd = filteredAndSortedDirectories.filter(
@@ -326,7 +254,6 @@ export default function CollectionPage() {
 
       await Promise.all(promises);
 
-      // Update local state
       setUserLaunchList(
         (prev) => new Set([...prev, ...directoriesToAdd.map((d) => d._id)]),
       );
@@ -344,7 +271,69 @@ export default function CollectionPage() {
   };
 
   const AddButton = useMemo(() => {
-    return (directoryId: string) => {
+    const addToLaunchList = async (directoryId: string) => {
+      try {
+        // Optimistically update the state first
+        setUserLaunchList((prev) => new Set([...prev, directoryId]));
+
+        const response = await fetch("/api/user/launch-list", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ directoryId }),
+        });
+
+        if (!response.ok) {
+          setUserLaunchList((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(directoryId);
+            return newSet;
+          });
+        }
+
+        toast("Directory Added to Launch List", {
+          description: "View now or later",
+          action: {
+            label: "View",
+            onClick: () => router.push("/my-launch-list"),
+          },
+        });
+      } catch (error) {
+        console.error("Error adding to launch list:", error);
+        toast.error("Failed to add directory to launch list");
+      }
+    };
+
+    const removeFromLaunchList = async (directoryId: string) => {
+      try {
+        // Optimistically update the state first
+        setUserLaunchList((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(directoryId);
+          return newSet;
+        });
+
+        const response = await fetch("/api/user/launch-list", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ directoryId }),
+        });
+
+        if (!response.ok) {
+          setUserLaunchList((prev) => new Set([...prev, directoryId]));
+        }
+
+        toast("Directory removed from Launch List");
+      } catch (error) {
+        console.error("Error removing from launch list:", error);
+        toast.error("Failed to remove directory from launch list");
+      }
+    };
+
+    const ButtonComponent = (directoryId: string) => {
       const isAdded = userLaunchList.has(directoryId);
 
       return (
@@ -362,7 +351,7 @@ export default function CollectionPage() {
                 variant: isAdded ? "default" : "outline",
                 size: "sm",
               }),
-              "active:scale-92 transition-all duration-100",
+              "min-w-[85px] active:scale-92 transition-all duration-100",
               isAdded && "bg-green-600 hover:bg-green-700",
             )}
           >
@@ -375,7 +364,10 @@ export default function CollectionPage() {
         </Tooltip>
       );
     };
-  }, [userLaunchList, isLoggedIn]);
+
+    ButtonComponent.displayName = "AddButton";
+    return ButtonComponent;
+  }, [router, userLaunchList, handleAuthRequired]);
 
   if (error) {
     return (
@@ -639,22 +631,22 @@ export default function CollectionPage() {
   );
 }
 
-const Card = ({ title, category }: { title: string; category: string }) => {
-  return (
-    <div className="relative bg-gradient-to-br from-white to-purple-50/70 rounded-lg border overflow-hidden select-none">
-      <Image
-        src="/me.png"
-        alt="star"
-        width={100}
-        height={30}
-        draggable={false}
-        className="absolute inset-0 w-full h-full object-cover select-none"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
-      <div className="relative z-10 p-4 pt-14 pb-2 h-full flex flex-col justify-end">
-        <div className="font-semibold text-white">{title}</div>
-        <div className="text-xs mt-1 text-white/90">{category}</div>
-      </div>
-    </div>
-  );
-};
+// const Card = ({ title, category }: { title: string; category: string }) => {
+//   return (
+//     <div className="relative bg-gradient-to-br from-white to-purple-50/70 rounded-lg border overflow-hidden select-none">
+//       <Image
+//         src="/me.png"
+//         alt="star"
+//         width={100}
+//         height={30}
+//         draggable={false}
+//         className="absolute inset-0 w-full h-full object-cover select-none"
+//       />
+//       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+//       <div className="relative z-10 p-4 pt-14 pb-2 h-full flex flex-col justify-end">
+//         <div className="font-semibold text-white">{title}</div>
+//         <div className="text-xs mt-1 text-white/90">{category}</div>
+//       </div>
+//     </div>
+//   );
+// };
