@@ -14,9 +14,9 @@ export type LaunchWeekData = {
 async function getLaunchWeeks(): Promise<LaunchWeekData[]> {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/launch-weeks`,
+      `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/api/launch-weeks`,
       {
-        cache: "no-store", // Always fetch fresh data
+        cache: "no-store",
       },
     );
 

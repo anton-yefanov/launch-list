@@ -4,6 +4,9 @@ import { ObjectId } from "mongodb";
 const MONGODB_URI =
   "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
+// const MONGODB_URI =
+//   "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/prod?retryWrites=true&w=majority&appName=Cluster0";
+
 if (!MONGODB_URI) {
   throw new Error(
     "[connectToDatabase.ts]: Please define the MONGODB_URI environment variable",

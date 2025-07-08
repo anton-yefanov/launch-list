@@ -1720,9 +1720,8 @@ async function seedDirectories() {
   try {
     const mongoUri =
       "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-    if (!mongoUri) {
-      throw new Error("MONGODB_URI environment variable is not defined");
-    }
+    // const mongoUri =
+    //     "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/prod?retryWrites=true&w=majority&appName=Cluster0";
 
     console.log("Connecting to MongoDB...");
     await mongoose.connect(mongoUri);
