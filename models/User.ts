@@ -36,7 +36,6 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
-UserSchema.index({ email: 1 });
 UserSchema.index({ twitterUsername: 1 });
 UserSchema.index({ launchList: 1 });
 UserSchema.index({ launchedDirectories: 1 });

@@ -124,13 +124,16 @@ export default function CollectionPage() {
     }
   }, [isAuth]);
 
-  const handleAuthRequired = useCallback((action: () => void) => {
-    if (!isAuth) {
-      setShowLoginDialog(true);
-      return;
-    }
-    action();
-  }, []);
+  const handleAuthRequired = useCallback(
+    (action: () => void) => {
+      if (!isAuth) {
+        setShowLoginDialog(true);
+        return;
+      }
+      action();
+    },
+    [isAuth],
+  );
 
   const handleFilterChange = (
     key: keyof FilterState,

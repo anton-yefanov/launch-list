@@ -2,18 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import mongoose from "mongoose";
 import { User } from "@/models/User";
-import Directory from "@/models/Directory"; // Adjust import path as needed
+import Directory from "@/models/Directory";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const session = await auth();
 
     // Replace with your actual database query
     // This is a placeholder - you'll need to implement your actual database logic
-    const directory = await fetchDirectoryById(params.id);
+    const directory = await fetchDirectoryById(id);
 
     if (!directory) {
       return NextResponse.json(
@@ -28,7 +29,7 @@ export async function GET(
     if (session?.user) {
       isInLaunchList = await checkIfDirectoryInUserLaunchList(
         session.user.id as string,
-        params.id,
+        id,
       );
     }
 
