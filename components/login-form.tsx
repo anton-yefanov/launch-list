@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { ReactNode } from "react";
@@ -62,15 +61,15 @@ export const LoginForm = ({ title }: { title: ReactNode }) => {
         {/*  <Image src="/x_logo.png" alt="twitter logo" width={22} height={22} />*/}
         {/*  Continue with Twitter*/}
         {/*</Button>*/}
-        <div className="mx-auto text-xs select-none">OR</div>
-        <Input
-          type="email"
-          placeholder="Enter your personal or work email"
-          className="select-none"
-        />
-        <Button className="active:scale-98 transition-all duration-100">
-          Continue with email
-        </Button>
+        {/*<div className="mx-auto text-xs select-none">OR</div>*/}
+        {/*<Input*/}
+        {/*  type="email"*/}
+        {/*  placeholder="Enter your personal or work email"*/}
+        {/*  className="select-none"*/}
+        {/*/>*/}
+        {/*<Button className="active:scale-98 transition-all duration-100">*/}
+        {/*  Continue with email*/}
+        {/*</Button>*/}
       </Card>
     </>
   );
