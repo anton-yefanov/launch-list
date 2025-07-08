@@ -10,7 +10,6 @@ export async function GET(
     const { id } = await params;
     await connectToDatabase();
 
-    // Populate upvotes to get the actual count and optionally user details
     const startup = await Startup.findById(id).populate("upvotes", "_id");
 
     if (!startup) {
