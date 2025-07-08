@@ -19,10 +19,10 @@ export default {
           await resend.emails.send({
             from: "auth@launch-list.org",
             to: email,
-            subject: "Sign in to Your App",
+            subject: "Sign in to Launch List",
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2>Sign in to Your App</h2>
+                <h2>Sign in to Launch List</h2>
                 <p>Click the button below to sign in to your account:</p>
                 <a href="${url}" style="display: inline-block; background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0;">
                   Sign In

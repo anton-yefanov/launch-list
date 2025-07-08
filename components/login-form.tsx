@@ -11,6 +11,7 @@ import { signIn } from "next-auth/react";
 export const LoginForm = ({ title }: { title: ReactNode }) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailSent, setShowEmailSent] = useState(false);
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,16 +23,14 @@ export const LoginForm = ({ title }: { title: ReactNode }) => {
     try {
       const result = await signIn("resend", {
         email,
-        redirectTo: DEFAULT_LOGIN_REDIRECT,
         redirect: false,
       });
 
       if (result?.error) {
         console.error("Sign in error:", result.error);
       } else {
-        // Redirect to verification page or show success message
-        window.location.href =
-          "/auth/verify-request?email=" + encodeURIComponent(email);
+        // Show success message instead of redirecting
+        setShowEmailSent(true);
       }
     } catch (error) {
       console.error("Sign in error:", error);
@@ -39,6 +38,43 @@ export const LoginForm = ({ title }: { title: ReactNode }) => {
       setIsLoading(false);
     }
   };
+
+  if (showEmailSent) {
+    return (
+      <>
+        <div className="mb-2 text-center select-none">
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            draggable={false}
+            className="rounded mx-auto mb-4"
+          />
+          {title}
+        </div>
+        <Card className="shadow-none p-7 gap-2 text-center">
+          <div className="mb-4">
+            <div className="text-2xl mb-2">📧</div>
+            <h3 className="text-lg font-semibold mb-2">Check your email</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              We&#39;ve sent a sign-in link to <strong>{email}</strong>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Click the link in the email to complete your sign-in
+            </p>
+          </div>
+          <Button
+            onClick={() => setShowEmailSent(false)}
+            variant="outline"
+            className="w-full"
+          >
+            Back to login
+          </Button>
+        </Card>
+      </>
+    );
+  }
 
   return (
     <>
