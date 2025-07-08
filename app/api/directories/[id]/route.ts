@@ -27,7 +27,7 @@ export async function GET(
     // Check if user is logged in and if directory is in their launch list
     if (session?.user) {
       isInLaunchList = await checkIfDirectoryInUserLaunchList(
-        session.user.id,
+        session.user.id as string,
         params.id,
       );
     }
@@ -45,14 +45,12 @@ export async function GET(
   }
 }
 
-// Replace these with your actual database functions
 async function fetchDirectoryById(id: string) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error("Invalid Directory ID format.");
   }
   try {
-    const directory = await Directory.findById(id);
-    return directory;
+    return await Directory.findById(id);
   } catch (error) {
     console.error(`Error fetching directory by ID ${id}:`, error);
     throw new Error("Could not fetch directory due to a database error.");
@@ -79,7 +77,7 @@ async function checkIfDirectoryInUserLaunchList(
 
     // Check if the directoryId exists in the user's launchList array
     // Convert directoryId to ObjectId for proper comparison if launchList stores ObjectIds
-    return user.launchList.some((itemObjectId) =>
+    return user.launchList.some((itemObjectId: mongoose.Types.ObjectId) =>
       itemObjectId.equals(new mongoose.Types.ObjectId(directoryId)),
     );
   } catch (error) {

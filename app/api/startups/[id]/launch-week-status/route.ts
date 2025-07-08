@@ -61,7 +61,7 @@ export async function GET(
       now >= launchWeek.startDate && now <= launchWeek.endDate;
 
     // Calculate days remaining or days since ended
-    let timeInfo = "";
+    let timeInfo: string;
     if (isInLaunchWeek) {
       const daysRemaining = Math.ceil(
         (launchWeek.endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
@@ -109,8 +109,7 @@ export async function GET(
       {
         success: false,
         message: "Internal server error",
-        error:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        error: process.env.NODE_ENV === "development" ? error : undefined,
       },
       { status: 500 },
     );

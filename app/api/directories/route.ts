@@ -11,14 +11,14 @@ export async function GET() {
     let userLaunchList: string[] = [];
 
     if (session?.user?.email) {
-      const user = await User.findOne({ email: session.user.email })
-        .select("launchList")
-        .lean();
+      const user = await User.findOne({ email: session.user.email }).select(
+        "launchList",
+      );
 
-      userLaunchList = user?.launchList?.map((id) => id.toString()) || [];
+      userLaunchList = user?.launchList || [];
     }
 
-    const directories = await Directory.find({}).lean();
+    const directories = await Directory.find({});
 
     return NextResponse.json({
       directories,

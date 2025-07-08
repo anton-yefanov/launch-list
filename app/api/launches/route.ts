@@ -3,6 +3,19 @@ import { connectToDatabase } from "@/lib/database/connectToDatabase";
 import { Startup } from "@/models/Startup";
 import LaunchWeek from "@/models/LaunchWeek";
 
+interface StartupResponse {
+  id: string;
+  name: string;
+  tagline: string;
+  logo: string;
+  websiteUrl: string;
+  submittedBy: string;
+  twitterUsername: string;
+  upvotes: number;
+  categories: string[];
+  submittedAt: Date;
+}
+
 export async function GET() {
   try {
     await connectToDatabase();
@@ -23,8 +36,9 @@ export async function GET() {
       endDate: { $lt: now },
     }).sort({ endDate: -1 });
 
-    let currentWeekStartups = [];
-    let lastWeekStartups = [];
+    // Explicitly type the arrays
+    let currentWeekStartups: StartupResponse[] = [];
+    let lastWeekStartups: StartupResponse[] = [];
 
     // Get current week startups
     if (currentLaunchWeek) {
@@ -42,7 +56,7 @@ export async function GET() {
           createdAt: 1,
           submittedAt: 1,
           upvotes: 1,
-          categories: 1, // Add this line
+          categories: 1,
         })
         .sort({ createdAt: -1 });
 
@@ -76,7 +90,7 @@ export async function GET() {
           createdAt: 1,
           submittedAt: 1,
           upvotes: 1,
-          categories: 1, // Add this line
+          categories: 1,
         })
         .sort({ createdAt: -1 });
 

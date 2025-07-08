@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +18,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LaunchWeekData } from "../page";
-import { toast } from "sonner"; // Assuming you're using sonner for toast notifications
+import { toast } from "sonner";
 
 type LaunchOption = { id: string; title: string; benefits: string[] };
 

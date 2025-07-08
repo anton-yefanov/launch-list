@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Startup } from "@/models/Startup"; // Adjust path to your Startup model
+import { Startup } from "@/models/Startup";
 import { ObjectId } from "mongodb";
 import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";

@@ -1,5 +1,15 @@
 import * as mongoose from "mongoose";
-import { InferSchemaType } from "mongoose";
+
+export type IUser = {
+  _id: string;
+  name: string;
+  email: string;
+  image?: string;
+  startups: string[];
+  twitterUsername?: string;
+  launchList: string[];
+  launchedDirectories: string[];
+};
 
 const UserSchema = new mongoose.Schema(
   {
@@ -25,8 +35,6 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-export type IUser = InferSchemaType<typeof UserSchema>;
 
 UserSchema.index({ email: 1 });
 UserSchema.index({ twitterUsername: 1 });

@@ -9,16 +9,12 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    // Get current date at start of day to compare with launch weeks
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    // Only fetch launch weeks that haven't ended yet
     const launchWeeks = await LaunchWeek.find({
       endDate: { $gte: currentDate },
-    })
-      .sort({ startDate: 1 })
-      .lean();
+    }).sort({ startDate: 1 });
 
     const transformedLaunchWeeks = launchWeeks.map((week) => {
       const currentStartups = week.startupsLaunchIds?.length || 0;

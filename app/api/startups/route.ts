@@ -16,9 +16,7 @@ export async function GET() {
       );
     }
 
-    const startups = await Startup.find({ userId })
-      .sort({ createdAt: -1 })
-      .lean();
+    const startups = await Startup.find({ userId }).sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,

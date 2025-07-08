@@ -14,12 +14,10 @@ export async function GET() {
 
     await connectToDatabase();
 
-    const user = await User.findOne({ email: session.user.email })
-      .populate({
-        path: "launchList",
-        model: Directory,
-      })
-      .lean();
+    const user = await User.findOne({ email: session.user.email }).populate({
+      path: "launchList",
+      model: Directory,
+    });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
