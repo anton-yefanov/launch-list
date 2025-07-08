@@ -2,7 +2,7 @@ import { NextAuthConfig } from "next-auth";
 import Google from "@auth/core/providers/google";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.AUTH_RESEND_KEY);
 
 export default {
   providers: [
