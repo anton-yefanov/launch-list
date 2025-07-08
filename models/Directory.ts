@@ -1,4 +1,4 @@
-import mongoose, { Schema, InferSchemaType } from "mongoose";
+import mongoose from "mongoose";
 
 export enum DirectoryTag {
   FreeLaunch = "FREE_LAUNCH",
@@ -14,7 +14,21 @@ export enum SubmitDifficulty {
   Low = "Low",
 }
 
-const DirectorySchema: Schema = new Schema(
+export type IDirectory = {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+  bgColor: string;
+  domainRating: number;
+  viewsPerMonth: number;
+  tags: DirectoryTag[];
+  submitDifficulty: SubmitDifficulty;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+const DirectorySchema = new mongoose.Schema<IDirectory>(
   {
     name: {
       type: String,
@@ -79,8 +93,6 @@ const DirectorySchema: Schema = new Schema(
     collection: "directories",
   },
 );
-
-export type IDirectory = InferSchemaType<typeof DirectorySchema>;
 
 DirectorySchema.index({ name: 1 });
 DirectorySchema.index({ domainRating: -1 });

@@ -47,11 +47,6 @@ export default function DirectoryDetailPage() {
       try {
         setLoading(true);
         const response = await fetch(`/api/directories/${params.id}`);
-
-        if (!response.ok) {
-          throw new Error("Directory not found");
-        }
-
         const data = await response.json();
         setDirectory(data.directory);
         setIsInLaunchList(data.isInLaunchList || false);

@@ -1,5 +1,45 @@
 import * as mongoose from "mongoose";
-import { InferSchemaType } from "mongoose";
+
+export type IStartup = {
+  _id: string;
+  name: string;
+  websiteUrl: string;
+  tagline: string;
+  description: string;
+  categories: string[];
+  logo?: {
+    id?: string;
+    name?: string;
+    url?: string;
+    mimeType?: string;
+    size?: number;
+  };
+  screenshots?: {
+    id?: string;
+    name?: string;
+    url?: string;
+    mimeType?: string;
+    size?: number;
+  }[];
+  submittedBy: string;
+  submitterEmail: string;
+  twitterUsername?: string;
+  submissionRating?: number;
+  userId: mongoose.Schema.Types.ObjectId;
+  upvotes: mongoose.Schema.Types.ObjectId[];
+
+  tallyEventId?: string;
+
+  status: "pending" | "approved" | "rejected";
+  rejectionReason?: string;
+  rejectionCategory?: string;
+
+  submittedAt: Date;
+  approvedAt?: Date;
+  rejectedAt?: Date;
+  reviewedAt?: Date;
+  upvoteCount?: number;
+};
 
 const StartupSchema = new mongoose.Schema(
   {
@@ -41,13 +81,7 @@ const StartupSchema = new mongoose.Schema(
       },
     ],
 
-    // Tally form metadata
     tallyEventId: { type: String, unique: true },
-    tallyResponseId: { type: String }, // responseId from Tally
-    tallySubmissionId: { type: String }, // submissionId from Tally
-    tallyRespondentId: { type: String }, // respondentId from Tally
-    tallyFormId: { type: String }, // formId from Tally
-    tallyFormName: { type: String }, // formName from Tally
 
     status: {
       type: String,
@@ -67,10 +101,6 @@ const StartupSchema = new mongoose.Schema(
     timestamps: true, // Adds createdAt and updatedAt automatically
   },
 );
-
-export type IStartup = InferSchemaType<typeof StartupSchema> & {
-  _id: string;
-};
 
 // Virtual for upvote count
 StartupSchema.virtual("upvoteCount").get(function () {

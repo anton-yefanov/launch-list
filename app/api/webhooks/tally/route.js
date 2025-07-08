@@ -96,14 +96,7 @@ export async function POST(request) {
           size: screenshot.size,
         })) || [],
 
-      // Tally metadata
       tallyEventId: eventId,
-      tallyResponseId: formData.responseId,
-      tallySubmissionId: formData.submissionId,
-      tallyRespondentId: formData.respondentId,
-      tallyFormId: formData.formId,
-      tallyFormName: formData.formName,
-
       submittedAt: new Date(createdAt),
     };
 

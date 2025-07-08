@@ -21,7 +21,7 @@ interface DirectoryType {
 
 interface LaunchListData {
   launchList: DirectoryType[];
-  launchedDirectories: string[]; // Array of directory IDs
+  launchedDirectories: string[];
 }
 
 export default function MyLaunchListPage() {
