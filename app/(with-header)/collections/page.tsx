@@ -245,31 +245,41 @@ export default function CollectionPage() {
     }
 
     try {
-      const promises = directoriesToAdd.map((directory) =>
-        fetch("/api/user/launch-list", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ directoryId: directory._id }),
+      // Single API call with all directory IDs
+      const response = await fetch("/api/user/launch-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          directoryIds: directoriesToAdd.map((d) => d._id),
         }),
-      );
+      });
 
-      await Promise.all(promises);
+      if (!response.ok) {
+        throw new Error("Failed to add directories");
+      }
 
+      const result = await response.json();
+
+      // Update local state
       setUserLaunchList(
         (prev) => new Set([...prev, ...directoriesToAdd.map((d) => d._id)]),
       );
 
-      toast(`${directoriesToAdd.length} directories added to Launch List`, {
-        description: "View now or later",
+      toast(`${result.addedCount} directories added to Launch List`, {
+        description:
+          result.skippedCount > 0
+            ? `${result.skippedCount} were already in your list`
+            : "View now or later",
         action: {
           label: "View",
           onClick: () => router.push("/my-launch-list"),
         },
       });
-    } catch {
-      toast.error("Failed to add all directories to launch list");
+    } catch (error) {
+      console.error("Bulk add error:", error);
+      toast.error("Failed to add directories to launch list");
     }
   };
 
@@ -284,7 +294,7 @@ export default function CollectionPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ directoryId }),
+          body: JSON.stringify({ directoryIds: [directoryId] }),
         });
 
         if (!response.ok) {
@@ -322,7 +332,7 @@ export default function CollectionPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ directoryId }),
+          body: JSON.stringify({ directoryIds: [directoryId] }),
         });
 
         if (!response.ok) {

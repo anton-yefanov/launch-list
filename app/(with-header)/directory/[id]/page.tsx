@@ -77,7 +77,7 @@ export default function DirectoryDetailPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ directoryId: directory._id }),
+        body: JSON.stringify({ directoryIds: [directory._id] }),
       });
 
       if (!response.ok) {

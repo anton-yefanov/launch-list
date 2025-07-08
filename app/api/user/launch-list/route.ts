@@ -55,53 +55,89 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { directoryId } = await request.json();
+    const { directoryIds } = await request.json();
 
-    if (!directoryId) {
+    if (
+      !directoryIds ||
+      !Array.isArray(directoryIds) ||
+      !directoryIds.length ||
+      directoryIds.some((id) => !id)
+    ) {
       return NextResponse.json(
-        { error: "Directory ID is required" },
+        { error: "Array of directory IDs is required" },
         { status: 400 },
       );
     }
 
     await connectToDatabase();
 
-    // Check if directory exists
-    const directory = await Directory.findById(directoryId);
-    if (!directory) {
+    // Verify all directories exist
+    const existingDirectories = await Directory.find({
+      _id: { $in: directoryIds },
+    }).select("_id");
+
+    const existingIds = existingDirectories.map((d) => d._id.toString());
+    const nonExistentIds = directoryIds.filter(
+      (id) => !existingIds.includes(id),
+    );
+
+    if (nonExistentIds.length > 0) {
       return NextResponse.json(
-        { error: "Directory not found" },
+        {
+          error: "Some directories not found",
+          nonExistentIds,
+        },
         { status: 404 },
       );
     }
 
-    // Add directory to user's launch list (if not already added)
+    // Get user's current launch list to filter out duplicates
+    const currentUser = await User.findOne({
+      email: session.user.email,
+    }).select("launchList");
+    if (!currentUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const currentLaunchList =
+      currentUser.launchList?.map((id: string) => id.toString()) || [];
+    const newDirectoryIds = directoryIds.filter(
+      (id) => !currentLaunchList.includes(id),
+    );
+
+    if (newDirectoryIds.length === 0) {
+      return NextResponse.json({
+        message: "All directories already in launch list",
+        addedCount: 0,
+        skippedCount: directoryIds.length,
+      });
+    }
+
+    // Bulk add directories to user's launch list
     const user = await User.findOneAndUpdate(
+      { email: session.user.email },
       {
-        email: session.user.email,
-        launchList: { $ne: directoryId }, // Only add if not already in list
-      },
-      {
-        $addToSet: { launchList: directoryId },
+        $addToSet: {
+          launchList: { $each: newDirectoryIds },
+        },
       },
       { new: true },
     );
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found or directory already in launch list" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json({
-      message: "Directory added to launch list",
-      directoryId,
+      message: `${newDirectoryIds.length} directories added to launch list`,
+      addedCount: newDirectoryIds.length,
+      skippedCount: directoryIds.length - newDirectoryIds.length,
+      addedDirectoryIds: newDirectoryIds,
     });
   } catch (error) {
     console.error("Error adding to launch list:", error);
     return NextResponse.json(
-      { error: "Failed to add directory to launch list" },
+      { error: "Failed to add directory(ies) to launch list" },
       { status: 500 },
     );
   }
@@ -115,11 +151,16 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { directoryId } = await request.json();
+    const { directoryIds } = await request.json();
 
-    if (!directoryId) {
+    if (
+      !directoryIds ||
+      !Array.isArray(directoryIds) ||
+      !directoryIds.length ||
+      directoryIds.some((id) => !id)
+    ) {
       return NextResponse.json(
-        { error: "Directory ID is required" },
+        { error: "Array of directory IDs is required" },
         { status: 400 },
       );
     }
@@ -130,8 +171,8 @@ export async function DELETE(request: NextRequest) {
       { email: session.user.email },
       {
         $pull: {
-          launchList: directoryId,
-          launchedDirectories: directoryId, // Also remove from launched if it was there
+          launchList: { $in: directoryIds },
+          launchedDirectories: { $in: directoryIds }, // Also remove from launched if they were there
         },
       },
       { new: true },
@@ -142,13 +183,14 @@ export async function DELETE(request: NextRequest) {
     }
 
     return NextResponse.json({
-      message: "Directory removed from launch list",
-      directoryId,
+      message: `${directoryIds.length} directories removed from launch list`,
+      removedCount: directoryIds.length,
+      removedDirectoryIds: directoryIds,
     });
   } catch (error) {
     console.error("Error removing from launch list:", error);
     return NextResponse.json(
-      { error: "Failed to remove directory from launch list" },
+      { error: "Failed to remove directory(ies) from launch list" },
       { status: 500 },
     );
   }
