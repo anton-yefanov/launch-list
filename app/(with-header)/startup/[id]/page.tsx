@@ -323,24 +323,8 @@ export default function StartupPage({ params }: StartupPageProps) {
           </div>
         )}
 
-        {/* Description Section */}
-        {startup.description && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Description
-            </h2>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                {startup.description}
-              </p>
-            </div>
-          </div>
-        )}
-
         {startup.screenshots && startup.screenshots.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Screenshots</h2>
             <div className="mb-4">
               <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
                 <Image
@@ -380,6 +364,21 @@ export default function StartupPage({ params }: StartupPageProps) {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Description Section */}
+        {startup.description && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Description
+            </h2>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {startup.description}
+              </p>
+            </div>
           </div>
         )}
 

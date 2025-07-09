@@ -85,8 +85,8 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
         toast.success("Successfully launched your startup!");
         setOpen(false);
         onLaunchSuccess?.();
-        // Optionally redirect to a success page or dashboard
-        router.push(`/my-products/${startupId}/launch-success`);
+        // Redirect to home page instead of launch-success
+        router.push("/");
       } else {
         toast.error(result.error || "Failed to launch startup");
       }
@@ -96,6 +96,16 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
     } finally {
       setIsLaunching(false);
     }
+  };
+
+  // Handle immediate free launch on click
+  const handleTriggerClick = () => {
+    if (!launchWeekData.freeAvailable) {
+      toast.error("Free launch is not available for this week");
+      return;
+    }
+
+    handleLaunch("free");
   };
 
   // Format dates for display
@@ -186,12 +196,19 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
 
   const LaunchTrigger = () => (
     <div
-      className="flex justify-between p-4 border hover:border-gray-300 rounded-md select-none cursor-pointer hover:scale-101 transition-all duration-100 active:scale-99"
-      onClick={() => setOpen(true)}
+      className={`flex justify-between p-4 border hover:border-gray-300 rounded-md select-none cursor-pointer hover:scale-101 transition-all duration-100 active:scale-99 ${
+        isLaunching ? "opacity-50 pointer-events-none" : ""
+      }`}
+      onClick={handleTriggerClick}
     >
       <div>{dateRange}</div>
       <div className="flex items-center gap-3">
-        {launchWeekData.freeAvailable ? (
+        {isLaunching ? (
+          <div className="text-sm font-medium text-blue-400 bg-blue-100 px-2 rounded flex items-center gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Launching...
+          </div>
+        ) : launchWeekData.freeAvailable ? (
           <div className="text-sm font-medium text-green-400 bg-green-100 px-2 rounded">
             Free slots available
           </div>
@@ -208,6 +225,8 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
     </div>
   );
 
+  // Since we're handling launch immediately, we don't need the dialog/drawer anymore
+  // But keeping the components in case you want to revert or use them elsewhere
   if (isMobile) {
     return (
       <>

@@ -87,21 +87,23 @@ export default function MyStartupsPage() {
         <h1 className="text-2xl font-semibold mb-4">My products</h1>
       </div>
 
-      <div className="border border-sky-400 items-center justify-between rounded-xl p-3 flex flex-col sm:flex-row bg-sky-200/30">
-        <p className="text-gray-600 mb-4 sm:mb-0 text-center">
-          Just submitted your product? It might take a moment to appear.
-        </p>
-        <div className="space-y-3">
-          <Button
-            onClick={handleRefresh}
-            variant="outline"
-            className="flex items-center gap-2 active:scale-92 transition-all duration-100"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
+      {startups.length === 0 ? (
+        <div className="border border-sky-400 items-center justify-between rounded-xl p-3 flex flex-col sm:flex-row bg-sky-200/30">
+          <p className="text-gray-600 mb-4 sm:mb-0 text-center">
+            Just submitted your product? It might take a moment to appear.
+          </p>
+          <div className="space-y-3">
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              className="flex items-center gap-2 active:scale-92 transition-all duration-100"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {startups.length === 0 ? (
         <div className="text-center select-none flex flex-col items-center py-12">
@@ -110,7 +112,8 @@ export default function MyStartupsPage() {
 
           <>
             <p className="text-gray-600 mb-4">
-              Launch your product to get a backlink
+              Launch your product to get a backlink and live on homepage for a
+              week
             </p>
             <Link
               href={`https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`}

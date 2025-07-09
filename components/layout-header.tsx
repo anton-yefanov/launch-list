@@ -102,7 +102,7 @@ export const LayoutHeader = () => {
             )}
           >
             <Plus />
-            Launch here
+            Submit
           </Link>
         </div>
         <div className="flex items-center gap-2">
