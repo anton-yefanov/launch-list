@@ -8,6 +8,7 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
+  RefreshCw,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -46,11 +47,15 @@ export default function MyStartupsPage() {
     }
   };
 
+  const handleRefresh = () => {
+    fetchStartups();
+  };
+
   if (loading) {
     return (
       <div>
         <div className="flex items-center justify-between px-2.5">
-          <h1 className="text-2xl font-semibold mb-4">My startups</h1>
+          <h1 className="text-2xl font-semibold mb-4">My products</h1>
         </div>
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin" />
@@ -64,7 +69,7 @@ export default function MyStartupsPage() {
     return (
       <div>
         <div className="flex items-center justify-between px-2.5">
-          <h1 className="text-2xl font-semibold mb-4">My startups</h1>
+          <h1 className="text-2xl font-semibold mb-4">My products</h1>
         </div>
         <div className="text-center py-8">
           <p className="text-red-600 mb-4">{error}</p>
@@ -79,18 +84,41 @@ export default function MyStartupsPage() {
   return (
     <div>
       <div className="flex items-center justify-between px-2.5">
-        <h1 className="text-2xl font-semibold mb-4">My startups</h1>
+        <h1 className="text-2xl font-semibold mb-4">My products</h1>
+      </div>
+
+      <div className="border border-sky-400 items-center justify-between rounded-xl p-3 flex flex-col sm:flex-row bg-sky-200/30">
+        <p className="text-gray-600 mb-4 sm:mb-0 text-center">
+          Just submitted your product? It might take a moment to appear.
+        </p>
+        <div className="space-y-3">
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            className="flex items-center gap-2 active:scale-92 transition-all duration-100"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {startups.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-500 mb-4">No startups yet</p>
-          <Link
-            href={`https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-startups`}
-            className={cn(buttonVariants({ variant: "outline" }))}
-          >
-            <Plus /> Add your first startup
-          </Link>
+        <div className="text-center select-none flex flex-col items-center py-12">
+          <Rocket size={50} strokeWidth={1} className="mb-8" />
+          <h2 className="font-semibold text-2xl mb-4">No products yet</h2>
+
+          <>
+            <p className="text-gray-600 mb-4">
+              Launch your product to get a backlink
+            </p>
+            <Link
+              href={`https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`}
+              className={cn(buttonVariants({ variant: "outline" }))}
+            >
+              <Plus /> Add your first product
+            </Link>
+          </>
         </div>
       ) : (
         <div className="space-y-2">
@@ -193,7 +221,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       {/* Launch button - only show for approved startups */}
       {startup.status === "approved" && (
         <Link
-          href={`/my-startups/launch/${startup._id}`}
+          href={`/my-products/launch/${startup._id}`}
           className={cn(
             buttonVariants({ variant: "default" }),
             "ml-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",

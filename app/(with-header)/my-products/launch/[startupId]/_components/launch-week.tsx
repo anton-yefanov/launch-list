@@ -86,7 +86,7 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
         setOpen(false);
         onLaunchSuccess?.();
         // Optionally redirect to a success page or dashboard
-        router.push(`/my-startups/${startupId}/launch-success`);
+        router.push(`/my-products/${startupId}/launch-success`);
       } else {
         toast.error(result.error || "Failed to launch startup");
       }

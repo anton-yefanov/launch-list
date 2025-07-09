@@ -92,7 +92,7 @@ export const LayoutHeader = () => {
           <Link
             href={
               isAuth
-                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-startups`
+                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`
                 : "/login"
             }
             target={isAuth ? "_blank" : "_self"}
@@ -137,11 +137,11 @@ export const LayoutHeader = () => {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/my-startups"
+                    href="/my-products"
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <Rocket className="size-4" />
-                    My startups
+                    My products
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
