@@ -30,7 +30,7 @@ export type IStartup = {
 
   tallyEventId?: string;
 
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "launched";
   rejectionReason?: string;
   rejectionCategory?: string;
 
@@ -85,7 +85,7 @@ const StartupSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "launched"],
       default: "pending",
     },
 

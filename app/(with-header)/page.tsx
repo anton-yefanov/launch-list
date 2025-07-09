@@ -312,7 +312,7 @@ const WinnerProduct = ({
 }) => {
   return (
     <Link
-      href={`/startup/${winner.id}`}
+      href={`/product/${winner.id}`}
       className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-2 select-none"
     >
       <div className="shrink-0">
@@ -373,7 +373,7 @@ const Product = ({ startup }: { startup: Startup }) => {
       if (!isAuthenticated || !session?.user?.id) return;
 
       try {
-        const response = await fetch(`/api/startups/${startup.id}/upvote`);
+        const response = await fetch(`/api/product/${startup.id}/upvote`);
         const result = await response.json();
 
         if (result.success) {
@@ -408,7 +408,7 @@ const Product = ({ startup }: { startup: Startup }) => {
     setCurrentUpvotes(newCount);
 
     try {
-      const response = await fetch(`/api/startups/${startup.id}/upvote`, {
+      const response = await fetch(`/api/product/${startup.id}/upvote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -438,7 +438,7 @@ const Product = ({ startup }: { startup: Startup }) => {
   };
 
   const handleRowClick = () => {
-    router.push(`/startup/${startup.id}`);
+    router.push(`/product/${startup.id}`);
   };
 
   return (

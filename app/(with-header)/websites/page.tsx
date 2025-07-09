@@ -418,11 +418,6 @@ export default function CollectionPage() {
             ) : (
               <div className="text-xl font-semibold">
                 {filteredAndSortedDirectories.length} Websites
-                {hasActiveFilters && (
-                  <span className="text-sm text-muted-foreground ml-2">
-                    (filtered from {directories.length})
-                  </span>
-                )}
               </div>
             )}
             <Button

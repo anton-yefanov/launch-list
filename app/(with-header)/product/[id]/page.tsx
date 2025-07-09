@@ -45,7 +45,7 @@ export default function StartupPage({ params }: StartupPageProps) {
   useEffect(() => {
     const fetchStartup = async () => {
       try {
-        const response = await fetch(`/api/startups/${id}`);
+        const response = await fetch(`/api/product/${id}`);
         const result = await response.json();
 
         if (result.success && result.data) {
@@ -72,7 +72,7 @@ export default function StartupPage({ params }: StartupPageProps) {
   const checkLaunchWeekStatus = async (startupId: string) => {
     try {
       const response = await fetch(
-        `/api/startups/${startupId}/launch-week-status`,
+        `/api/product/${startupId}/launch-week-status`,
       );
 
       // Check if response is ok and content-type is JSON
@@ -114,7 +114,7 @@ export default function StartupPage({ params }: StartupPageProps) {
       if (!isAuthenticated || !session?.user?.id || !startup) return;
 
       try {
-        const response = await fetch(`/api/startups/${id}/upvote`);
+        const response = await fetch(`/api/product/${id}/upvote`);
         const result = await response.json();
 
         if (result.success) {
@@ -152,7 +152,7 @@ export default function StartupPage({ params }: StartupPageProps) {
     setCurrentUpvotes(newCount);
 
     try {
-      const response = await fetch(`/api/startups/${id}/upvote`, {
+      const response = await fetch(`/api/product/${id}/upvote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

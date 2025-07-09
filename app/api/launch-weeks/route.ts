@@ -207,6 +207,7 @@ export async function POST(request: Request) {
         $addToSet: { upvotes: userId }, // $addToSet prevents duplicates
         launchedWeekId: launchWeekId,
         launchedAt: new Date(),
+        status: "launched",
       },
       { new: true },
     );

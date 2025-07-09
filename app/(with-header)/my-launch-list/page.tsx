@@ -91,10 +91,6 @@ export default function MyLaunchListPage() {
           prev.filter((id) => id !== directoryId),
         );
       }
-
-      if (!currentStatus) {
-        toast.success("Marked as launched! 🎉");
-      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Failed to update status",
@@ -214,6 +210,15 @@ const LaunchListItem = ({
             onToggleLaunched(directory._id, isLaunched);
           }}
         >
+          {isExploding && (
+            <ConfettiExplosion
+              force={0.4}
+              duration={2000}
+              particleCount={30}
+              width={400}
+              className="absolute top-0 left-0"
+            />
+          )}
           <div
             className={`w-4 h-4 rounded border-2 border-white bg-white flex items-center justify-center ${
               isLaunched ? "bg-white" : "bg-transparent"
@@ -235,15 +240,6 @@ const LaunchListItem = ({
           </div>
           <div className="text-white">{isLaunched ? "Done!" : "Launch"}</div>
         </Button>
-        {isExploding && (
-          <ConfettiExplosion
-            className="absolute top-0 left-0"
-            force={0.4}
-            duration={2000}
-            particleCount={30}
-            width={400}
-          />
-        )}
       </div>
     );
   }, [isLaunched, isExploding, directory._id, onToggleLaunched]);

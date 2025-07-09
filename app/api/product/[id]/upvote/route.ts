@@ -48,8 +48,8 @@ export async function POST(
       );
     }
 
-    // Check if startup is approved (only approved startups can receive upvotes)
-    if (startup.status !== "approved") {
+    // Check if startup is launched (only approved startups can receive upvotes)
+    if (startup.status !== "launched") {
       return NextResponse.json(
         {
           success: false,

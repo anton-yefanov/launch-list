@@ -44,7 +44,7 @@ export async function GET() {
     if (currentLaunchWeek) {
       const startups = await Startup.find({
         _id: { $in: currentLaunchWeek.startupsLaunchIds || [] },
-        status: "approved",
+        status: "launched",
       })
         .select({
           name: 1,
@@ -78,7 +78,7 @@ export async function GET() {
     if (lastLaunchWeek && lastLaunchWeek.startupsLaunchIds?.length) {
       const startups = await Startup.find({
         _id: { $in: lastLaunchWeek.startupsLaunchIds },
-        status: "approved",
+        status: "launched",
       })
         .select({
           name: 1,

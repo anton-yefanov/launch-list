@@ -19,8 +19,8 @@ export async function GET(
       );
     }
 
-    // Only return approved startups to public (unless you want to show all)
-    if (startup.status !== "approved") {
+    // Only return launched startups to public (unless you want to show all)
+    if (startup.status !== "launched") {
       return NextResponse.json(
         { success: false, message: "Startup not found" },
         { status: 404 },

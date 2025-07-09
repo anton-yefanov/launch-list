@@ -31,7 +31,7 @@ export default function MyStartupsPage() {
   const fetchStartups = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/startups`);
+      const response = await fetch(`/api/product`);
       const data = await response.json();
 
       if (data.success) {
@@ -144,13 +144,15 @@ const ProductCard = ({ startup }: ProductCardProps) => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="size-4 text-green-600" />;
       case "rejected":
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="size-4 text-red-600" />;
       case "pending":
-        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
+        return <AlertCircle className="size-4 text-yellow-600" />;
+      case "launched":
+        return <Rocket className="size-4 text-green-500" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-400" />;
+        return <AlertCircle className="size-4 text-gray-400" />;
     }
   };
 
@@ -162,6 +164,8 @@ const ProductCard = ({ startup }: ProductCardProps) => {
         return startup.rejectionReason || "Submission not approved";
       case "pending":
         return "Under review...";
+      case "launched":
+        return "Launched";
       default:
         return "Status unknown";
     }
@@ -184,7 +188,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
         <div className="text-gray-600">{startup.tagline}</div>
 
         {/* Status with icon */}
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center gap-1 mt-1">
           {getStatusIcon(startup.status)}
           <span className="text-xs text-gray-500">
             {getStatusMessage(startup)}
@@ -226,8 +230,8 @@ const ProductCard = ({ startup }: ProductCardProps) => {
         <Link
           href={`/my-products/launch/${startup._id}`}
           className={cn(
-            buttonVariants({ variant: "default" }),
-            "ml-auto active:scale-95 transition-all duration-120 bg-primary-color hover:bg-primary-color/80",
+            buttonVariants({ variant: "default", size: "sm" }),
+            "min-w-30 ml-auto active:scale-95 transition-all duration-100 bg-primary-color hover:bg-primary-color/80",
           )}
         >
           Launch <Rocket />
@@ -235,18 +239,24 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       )}
 
       {/* View details button for pending/rejected */}
-      {startup.status !== "approved" && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto my-auto"
-          onClick={() => {
-            // You can add a modal or navigate to details page
-            console.log("View details for:", startup._id);
-          }}
-        >
-          View Details
-        </Button>
+      {startup.status === "launched" && (
+        <div className="flex flex-col gap-2">
+          <Link
+            href={`/product/${startup._id}`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "min-w-30 ml-auto active:scale-95 transition-all duration-100",
+            )}
+          >
+            View
+          </Link>
+          {/*<Button*/}
+          {/*  size="sm"*/}
+          {/*  className="min-w-30 ml-auto active:scale-95 transition-all duration-100"*/}
+          {/*>*/}
+          {/*  Share*/}
+          {/*</Button>*/}
+        </div>
       )}
     </div>
   );
