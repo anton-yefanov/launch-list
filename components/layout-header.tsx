@@ -57,13 +57,13 @@ export const LayoutHeader = () => {
   const getButtonContent = useCallback(() => {
     if (!isAuth) {
       return {
-        href: "/collections",
+        href: "/websites",
         icon: <List />,
         text: isMobile ? "Browse" : "Browse collection",
       };
     } else {
       return {
-        href: isMyLaunchListPage ? "/collections" : "/my-launch-list",
+        href: isMyLaunchListPage ? "/websites" : "/my-launch-list",
         icon: isMyLaunchListPage ? <List /> : <File />,
         text: isMyLaunchListPage ? "Browse collection" : "Launch List",
       };
@@ -152,6 +152,13 @@ export const LayoutHeader = () => {
                   <HelpCircle className="size-4" />
                   Get help
                 </DropdownMenuItem>
+                <Link href="https://insigh.to/b/launch-list" target="_blank">
+                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
+                    <MessageCircle className="size-4" />
+                    Feedback
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleSignOut}
                   className="flex items-center gap-2 cursor-pointer"

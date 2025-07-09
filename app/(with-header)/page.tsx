@@ -111,7 +111,7 @@ export default function LaunchPage() {
             <br /> everywhere!
           </div>
           <Link
-            href="/collections"
+            href="/websites"
             className={cn(
               buttonVariants({ variant: "default" }),
               "px-16 bg-primary-color hover:bg-primary-color/90 hover:scale-102 active:scale-95 transition-all duration-120",
@@ -123,7 +123,7 @@ export default function LaunchPage() {
         <div className="h-40 w-full relative">
           <div
             onClick={() => {
-              router.push("/collections");
+              router.push("/websites");
             }}
             className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"
           >

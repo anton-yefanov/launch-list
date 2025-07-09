@@ -2,10 +2,13 @@
 
 import { Directory } from "@/components/directory";
 import { useMemo, useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { File } from "lucide-react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { toast } from "sonner";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface DirectoryType {
   _id: string;
@@ -30,7 +33,6 @@ export default function MyLaunchListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch user's launch list
   useEffect(() => {
     const fetchLaunchList = async () => {
       try {
@@ -82,7 +84,6 @@ export default function MyLaunchListPage() {
         throw new Error(errorData.error || "Failed to update launched status");
       }
 
-      // Update local state
       if (!currentStatus) {
         setLaunchedDirectories((prev) => [...prev, directoryId]);
       } else {
@@ -101,14 +102,6 @@ export default function MyLaunchListPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="text-center py-8">
@@ -124,39 +117,69 @@ export default function MyLaunchListPage() {
     );
   }
 
-  if (launchList.length === 0) {
+  if (!loading && launchList.length === 0) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center select-none flex flex-col items-center py-12">
+        <File size={50} strokeWidth={1} className="mb-8" />
         <h1 className="font-semibold text-2xl mb-4">
           Your Launch List is Empty
         </h1>
         <p className="text-gray-600 mb-4">
-          Add directories from the collection to start building your launch
-          list!
+          Add websites from the collection to start building your launch list!
         </p>
-        <Link href="/collections">Browse Directories</Link>
+        <Link
+          href="/websites"
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "active:scale-96 transition-all duration-100",
+          )}
+        >
+          Browse websites
+        </Link>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="font-semibold text-2xl">
-        Don&#39;t forget to launch everywhere!
-      </h1>
+      {loading ? (
+        <Skeleton className="h-[32px] w-[400px] mb-4" />
+      ) : (
+        <h1 className="font-semibold text-2xl">
+          Don&#39;t forget to launch everywhere!
+        </h1>
+      )}
+
       <div className="mb-4">
-        Check websites you launched on ({launchedDirectories.length}/
-        {launchList.length} completed)
+        {loading ? (
+          <Skeleton className="h-[20px] w-[300px]" />
+        ) : (
+          <>
+            Check websites you launched on ({launchedDirectories.length}/
+            {launchList.length} completed)
+          </>
+        )}
       </div>
+
       <div className="flex flex-col gap-2">
-        {launchList.map((directory) => (
-          <LaunchListItem
-            key={directory._id}
-            directory={directory}
-            isLaunched={launchedDirectories.includes(directory._id)}
-            onToggleLaunched={toggleLaunched}
-          />
-        ))}
+        {loading ? (
+          <>
+            {new Array(20).fill(0).map((_, index) => (
+              <Skeleton key={index} className="h-[66px] w-full border" />
+            ))}
+          </>
+        ) : (
+          <>
+            {launchList.map((directory) => (
+              <LaunchListItem
+                key={directory._id}
+                directory={directory}
+                isLaunched={launchedDirectories.includes(directory._id)}
+                onToggleLaunched={toggleLaunched}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

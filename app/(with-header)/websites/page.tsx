@@ -99,6 +99,7 @@ export default function CollectionPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { status } = useSession();
   const isAuth = status === "authenticated";
+  const hasSortActive = sortBy !== "none";
 
   useEffect(() => {
     const fetchDirectories = async () => {
@@ -305,8 +306,7 @@ export default function CollectionPage() {
           });
         }
 
-        toast("Directory Added to Launch List", {
-          description: "View now or later",
+        toast("Website Added to Launch List", {
           action: {
             label: "View",
             onClick: () => router.push("/my-launch-list"),
@@ -442,7 +442,11 @@ export default function CollectionPage() {
                   variant="outline"
                   size="icon"
                   disabled={loading}
-                  className="size-8 bg-transparent"
+                  className={cn(
+                    "size-8 bg-transparent",
+                    hasSortActive &&
+                      "border-sky-300 bg-sky-200/30 hover:bg-sky-300/20",
+                  )}
                 >
                   <ListFilter />
                 </Button>
@@ -462,14 +466,15 @@ export default function CollectionPage() {
             </DropdownMenu>
 
             <DropdownMenu open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger autoFocus={false} asChild>
                 <Button
                   variant="outline"
                   size="icon"
                   disabled={loading}
                   className={cn(
-                    "size-8",
-                    hasActiveFilters && "bg-primary text-primary-foreground",
+                    "size-8 active:scale-95 transition-all duration-100",
+                    hasActiveFilters &&
+                      "border-sky-300 bg-sky-200/30 hover:bg-sky-300/20",
                   )}
                 >
                   <Funnel />

@@ -88,8 +88,8 @@ export default function DirectoryDetailPage() {
       setIsInLaunchList(!isInLaunchList);
       toast(
         isInLaunchList
-          ? "Directory removed from Launch List"
-          : "Directory added to Launch List",
+          ? "Website removed from Launch List"
+          : "Website added to Launch List",
         !isInLaunchList
           ? {
               description: "View now or later",

@@ -41,7 +41,7 @@ export const Directory = ({
             <div
               style={{ backgroundColor: directory.bgColor }}
               className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center group"
-              onClick={() => router.push(`/directory/${directory._id}`)}
+              onClick={() => router.push(`/website/${directory._id}`)}
             >
               <div className="relative">
                 <div className="bg-white relative rounded-xs text-xs px-0.5 border h-5 w-4 grid place-items-center border-black -rotate-6 z-10">
@@ -153,7 +153,7 @@ export const Directory = ({
           <div
             style={{ backgroundColor: directory.bgColor }}
             className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
-            onClick={() => router.push(`/directory/${directory._id}`)}
+            onClick={() => router.push(`/website/${directory._id}`)}
           >
             <div className="relative">
               <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">
