@@ -35,6 +35,7 @@ import { DirectoryTag } from "@/types/DirectoryTag";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 import { useSession } from "next-auth/react";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { FeaturedSection } from "@/components/featured-section";
 
 interface DirectoryType {
   _id: string;
@@ -411,6 +412,7 @@ export default function CollectionPage() {
         {/*    category="Collection"*/}
         {/*  />*/}
         {/*</div>*/}
+        {/*<FeaturedSection />*/}
         <div className="flex items-center justify-between py-4 sticky top-21 bg-background z-20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (

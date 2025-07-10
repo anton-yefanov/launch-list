@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Footer } from "@/components/footer";
 import { formatNumber } from "@/lib/formatNumber";
+import { FeaturedSection } from "@/components/featured-section";
 
 interface LaunchWeek {
   id: string;
@@ -249,53 +250,6 @@ export default function LaunchPage() {
     </div>
   );
 }
-
-const FeaturedSection = () => {
-  return (
-    <div className="pb-2 grid gap-2 grid-cols-2">
-      <FeaturedWebsite
-        title="Your product title"
-        description="Your product description"
-        logoSrc="/logo.png"
-      />
-      <FeaturedWebsite
-        title="Your product title"
-        description="Your product description"
-        logoSrc="/anton_avatar.jpg"
-      />
-    </div>
-  );
-};
-
-const FeaturedWebsite = ({
-  logoSrc,
-  title,
-  description,
-}: {
-  logoSrc: string;
-  title: string;
-  description: string;
-}) => {
-  return (
-    <div className="cursor-pointer flex gap-2 p-2 border rounded-lg relative hover:bg-sky-100 hover:border-sky-500 transition-all duration-100 select-none">
-      <Image
-        src={logoSrc}
-        alt="star"
-        width={80}
-        height={80}
-        draggable={false}
-        className="select-none rounded-lg"
-      />
-      <div>
-        <div className="font-semibold text-lg">{title}</div>
-        <div>{description}</div>
-      </div>
-      <div className="text-[10px] absolute right-2 bg-sky-100 text-sky-800 px-1 rounded">
-        Featured
-      </div>
-    </div>
-  );
-};
 
 const Directory = ({
   title,
