@@ -98,7 +98,7 @@ export const LoginForm = ({ title }: { title: ReactNode }) => {
           }
           variant="outline"
           size="lg"
-          className="active:scale-98 transition-all duration-100"
+          className="AiModalCreationMethodEntityId"
         >
           <Image
             src="/google_logo.png"
