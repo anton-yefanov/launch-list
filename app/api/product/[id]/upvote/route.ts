@@ -4,6 +4,72 @@ import { ObjectId } from "mongodb";
 import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
+// todo - remove this endpoint, get upvotes in /api/launches
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Authentication required",
+        },
+        { status: 401 },
+      );
+    }
+
+    const { id } = await params;
+    const userId = new ObjectId(session.user.id);
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid startup ID",
+        },
+        { status: 400 },
+      );
+    }
+
+    await connectToDatabase();
+
+    const startup = await Startup.findById(id);
+    if (!startup) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Startup not found",
+        },
+        { status: 404 },
+      );
+    }
+
+    const hasUpvoted = startup.upvotes.some(
+      (upvoteUserId: string) => upvoteUserId.toString() === userId.toString(),
+    );
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        hasUpvoted,
+        upvoteCount: startup.upvotes.length,
+      },
+    });
+  } catch (error) {
+    console.error("Error checking upvote status:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to check upvote status",
+      },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -99,72 +165,6 @@ export async function POST(
       {
         success: false,
         error: "Failed to process upvote",
-      },
-      { status: 500 },
-    );
-  }
-}
-
-// GET endpoint to check if user has upvoted a startup
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Authentication required",
-        },
-        { status: 401 },
-      );
-    }
-
-    const { id } = await params;
-    const userId = new ObjectId(session.user.id);
-
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid startup ID",
-        },
-        { status: 400 },
-      );
-    }
-
-    await connectToDatabase();
-
-    const startup = await Startup.findById(id);
-    if (!startup) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Startup not found",
-        },
-        { status: 404 },
-      );
-    }
-
-    const hasUpvoted = startup.upvotes.some(
-      (upvoteUserId: string) => upvoteUserId.toString() === userId.toString(),
-    );
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        hasUpvoted,
-        upvoteCount: startup.upvotes.length,
-      },
-    });
-  } catch (error) {
-    console.error("Error checking upvote status:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to check upvote status",
       },
       { status: 500 },
     );
