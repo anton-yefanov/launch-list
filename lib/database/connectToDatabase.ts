@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
-import { getDatabaseURI } from "@/lib/database/getDatabaseURI";
 import "@/models/User";
 import "@/models/Startup";
 import "@/models/Directory";
 import "@/models/LaunchWeek";
 
+const MONGODB_URI = process.env.MONGODB_URI!;
+
+if (!MONGODB_URI) {
+  throw new Error(
+    "[connectToDatabase.ts]: Please define the MONGODB_URI environment variable",
+  );
+}
+
 let isConnected = false;
 
 export const connectToDatabase = async (): Promise<typeof mongoose> => {
-  const uri = getDatabaseURI();
-  console.log(`Connecting to database: ${uri.split("@")[1]}`);
   if (isConnected) {
     return mongoose;
   }
 
   try {
-    await mongoose.connect(uri);
-    console.log("Connected to database:", mongoose.connection.db?.databaseName);
+    await mongoose.connect(MONGODB_URI);
     isConnected = true;
     return mongoose;
   } catch (error) {
