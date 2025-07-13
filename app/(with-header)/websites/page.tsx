@@ -35,7 +35,6 @@ import { DirectoryTag } from "@/types/DirectoryTag";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 import { useSession } from "next-auth/react";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { FeaturedSection } from "@/components/featured-section";
 
 interface DirectoryType {
   _id: string;

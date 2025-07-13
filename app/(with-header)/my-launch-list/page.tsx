@@ -9,7 +9,6 @@ import ConfettiExplosion from "react-confetti-explosion";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { FeaturedSection } from "@/components/featured-section";
 
 interface DirectoryType {
   _id: string;

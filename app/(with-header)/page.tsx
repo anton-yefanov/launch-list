@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Footer } from "@/components/footer";
 import { formatNumber } from "@/lib/formatNumber";
-import { FeaturedSection } from "@/components/featured-section";
 
 interface LaunchWeek {
   id: string;

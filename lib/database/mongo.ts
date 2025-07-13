@@ -1,12 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-
-const MONGODB_URI = process.env.MONGODB_URI!;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    "[mongo.ts]: Please define the MONGODB_URI environment variable",
-  );
-}
+import { getDatabaseURI } from "@/lib/database/getDatabaseURI";
 
 const options = {
   serverApi: {
@@ -19,16 +12,20 @@ const options = {
 let client: MongoClient;
 
 if (process.env.NODE_ENV === "development") {
+  const uri = getDatabaseURI();
+
   const globalWithMongo = global as typeof globalThis & {
     _mongoClient?: MongoClient;
   };
 
   if (!globalWithMongo._mongoClient) {
-    globalWithMongo._mongoClient = new MongoClient(MONGODB_URI, options);
+    globalWithMongo._mongoClient = new MongoClient(uri, options);
   }
   client = globalWithMongo._mongoClient;
 } else {
-  client = new MongoClient(MONGODB_URI, options);
+  const uri = getDatabaseURI();
+
+  client = new MongoClient(uri, options);
 }
 
 export default client;
