@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Launch list",
+  title: "Launch List — Don't forget to launch, everywhere!",
   description:
-    "Discover the best platforms to launch your startup and reach early adopters, investors, and potential customers.",
+    "Launch your product here and on 100+ websites to increase Domain Rating and bring traffic to your website",
 };
 
 export default function RootLayout({
