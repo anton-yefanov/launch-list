@@ -141,35 +141,13 @@ interface ProductCardProps {
 const ProductCard = ({ startup }: ProductCardProps) => {
   const logoSrc = startup.logo?.url || "/logo.png";
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="size-4 text-green-600" />;
-      case "rejected":
-        return <XCircle className="size-4 text-red-600" />;
-      case "pending":
-        return <AlertCircle className="size-4 text-yellow-600" />;
-      case "launched":
-        return <Rocket className="size-4 text-green-500" />;
-      default:
-        return <AlertCircle className="size-4 text-gray-400" />;
-    }
-  };
-
-  const getStatusMessage = (startup: IStartup) => {
-    switch (startup.status) {
-      case "approved":
-        return "Ready to launch! 🚀";
-      case "rejected":
-        return startup.rejectionReason || "Submission not approved";
-      case "pending":
-        return "Under review...";
-      case "launched":
-        return "Launched";
-      default:
-        return "Status unknown";
-    }
-  };
+  // const handleShare = () => {
+  //   const productUrl = `https://launch-list.org/product/${startup._id}`;
+  //   const tweetText = `${startup.name} is live on @LaunchList_\n\n${productUrl}`;
+  //   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+  //
+  //   window.open(twitterUrl, "_blank");
+  // };
 
   return (
     <div className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50">
@@ -186,16 +164,12 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       <div className="flex flex-col justify-center flex-1">
         <div className="font-semibold text-lg">{startup.name}</div>
         <div className="text-gray-600">{startup.tagline}</div>
-
-        {/* Status with icon */}
         <div className="flex items-center gap-1 mt-1">
           {getStatusIcon(startup.status)}
           <span className="text-xs text-gray-500">
             {getStatusMessage(startup)}
           </span>
         </div>
-
-        {/* Rejection details */}
         {startup.status === "rejected" && startup.rejectionReason && (
           <div className="mt-2 p-2 bg-red-50 rounded-md border border-red-200">
             <div className="text-xs text-red-700 font-medium">
@@ -211,8 +185,6 @@ const ProductCard = ({ startup }: ProductCardProps) => {
             )}
           </div>
         )}
-
-        {/* Approval celebration */}
         {startup.status === "approved" && (
           <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
             <div className="text-xs text-green-700 font-medium">
@@ -224,8 +196,6 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           </div>
         )}
       </div>
-
-      {/* Launch button - only show for approved startups */}
       {startup.status === "approved" && (
         <Link
           href={`/my-products/launch/${startup._id}`}
@@ -237,8 +207,6 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           Launch <Rocket />
         </Link>
       )}
-
-      {/* View details button for pending/rejected */}
       {startup.status === "launched" && (
         <div className="flex flex-col gap-2">
           <Link
@@ -253,6 +221,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
           {/*<Button*/}
           {/*  size="sm"*/}
           {/*  className="min-w-30 ml-auto active:scale-95 transition-all duration-100"*/}
+          {/*  onClick={handleShare}*/}
           {/*>*/}
           {/*  Share*/}
           {/*</Button>*/}
@@ -260,4 +229,34 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       )}
     </div>
   );
+};
+
+const getStatusMessage = (startup: IStartup) => {
+  switch (startup.status) {
+    case "approved":
+      return "Ready to launch! 🚀";
+    case "rejected":
+      return startup.rejectionReason || "Submission not approved";
+    case "pending":
+      return "Under review...";
+    case "launched":
+      return "Launched";
+    default:
+      return "Status unknown";
+  }
+};
+
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case "approved":
+      return <CheckCircle className="size-4 text-green-600" />;
+    case "rejected":
+      return <XCircle className="size-4 text-red-600" />;
+    case "pending":
+      return <AlertCircle className="size-4 text-yellow-600" />;
+    case "launched":
+      return <Rocket className="size-4 text-green-500" />;
+    default:
+      return <AlertCircle className="size-4 text-gray-400" />;
+  }
 };
