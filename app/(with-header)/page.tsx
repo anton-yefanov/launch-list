@@ -36,7 +36,7 @@ interface Startup {
 }
 
 interface Winner extends Startup {
-  place: 1 | 2 | 3;
+  place: number;
 }
 
 export default function LaunchPage() {
@@ -239,7 +239,7 @@ export default function LaunchPage() {
           {lastWeekStartups.map((startup, index) => (
             <WinnerProduct
               key={startup.id}
-              winner={{ ...startup, place: (index + 1) as 1 | 2 | 3 }}
+              winner={{ ...startup, place: index + 1 }}
               showCup={index < 3}
             />
           ))}
@@ -329,7 +329,7 @@ const WinnerProduct = ({
       <div className="flex flex-col space-y-1">
         <div className="font-semibold">{winner.name}</div>
         <div>{winner.tagline}</div>
-        <div className="flex text-xs items-center">
+        <div className="flex text-xs items-center flex-wrap">
           <div>by {winner.submittedBy}</div>
           {winner.categories.map((category, index) => (
             <span key={index} className="flex">
@@ -341,7 +341,13 @@ const WinnerProduct = ({
       </div>
       {showCup && (
         <Image
-          src={getCupByPlace(winner.place)}
+          src={
+            winner.place === 1
+              ? "/golden_cup.png"
+              : winner.place === 2
+                ? "/silver_cup.png"
+                : "/bronze_cup.png"
+          }
           alt={`${winner.place} place cup`}
           width={50}
           height={50}
@@ -461,7 +467,7 @@ const Product = ({ startup }: { startup: Startup }) => {
         <div className="flex flex-col space-y-1">
           <div className="font-semibold">{startup.name}</div>
           <div>{startup.tagline}</div>
-          <div className="flex text-xs items-center">
+          <div className="flex text-xs items-center flex-wrap">
             <div>by {startup.submittedBy}</div>
             {startup.categories.map((category, index) => (
               <span key={index} className="flex">
@@ -496,15 +502,4 @@ const Product = ({ startup }: { startup: Startup }) => {
       />
     </>
   );
-};
-
-const getCupByPlace = (place: 1 | 2 | 3): string => {
-  switch (place) {
-    case 1:
-      return "/golden_cup.png";
-    case 2:
-      return "/silver_cup.png";
-    case 3:
-      return "/bronze_cup.png";
-  }
 };

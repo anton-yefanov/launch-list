@@ -45,33 +45,33 @@ export async function GET() {
       const startups = await Startup.find({
         _id: { $in: currentLaunchWeek.startupsLaunchIds || [] },
         status: "launched",
-      })
-        .select({
-          name: 1,
-          tagline: 1,
-          logo: 1,
-          websiteUrl: 1,
-          submittedBy: 1,
-          twitterUsername: 1,
-          createdAt: 1,
-          submittedAt: 1,
-          upvotes: 1,
-          categories: 1,
-        })
-        .sort({ createdAt: -1 });
+      }).select({
+        name: 1,
+        tagline: 1,
+        logo: 1,
+        websiteUrl: 1,
+        submittedBy: 1,
+        twitterUsername: 1,
+        createdAt: 1,
+        submittedAt: 1,
+        upvotes: 1,
+        categories: 1,
+      });
 
-      currentWeekStartups = startups.map((startup) => ({
-        id: startup._id.toString(),
-        name: startup.name,
-        tagline: startup.tagline,
-        logo: startup.logo.url,
-        websiteUrl: startup.websiteUrl,
-        submittedBy: startup.submittedBy,
-        twitterUsername: startup.twitterUsername,
-        upvotes: startup.upvotes?.length || 0,
-        categories: startup.categories,
-        submittedAt: startup.submittedAt || startup.createdAt,
-      }));
+      currentWeekStartups = startups
+        .map((startup) => ({
+          id: startup._id.toString(),
+          name: startup.name,
+          tagline: startup.tagline,
+          logo: startup.logo.url,
+          websiteUrl: startup.websiteUrl,
+          submittedBy: startup.submittedBy,
+          twitterUsername: startup.twitterUsername,
+          upvotes: startup.upvotes?.length || 0,
+          categories: startup.categories,
+          submittedAt: startup.submittedAt || startup.createdAt,
+        }))
+        .sort((a, b) => b.upvotes - a.upvotes);
     }
 
     // Get last week startups
@@ -79,33 +79,33 @@ export async function GET() {
       const startups = await Startup.find({
         _id: { $in: lastLaunchWeek.startupsLaunchIds },
         status: "launched",
-      })
-        .select({
-          name: 1,
-          tagline: 1,
-          logo: 1,
-          websiteUrl: 1,
-          submittedBy: 1,
-          twitterUsername: 1,
-          createdAt: 1,
-          submittedAt: 1,
-          upvotes: 1,
-          categories: 1,
-        })
-        .sort({ createdAt: -1 });
+      }).select({
+        name: 1,
+        tagline: 1,
+        logo: 1,
+        websiteUrl: 1,
+        submittedBy: 1,
+        twitterUsername: 1,
+        createdAt: 1,
+        submittedAt: 1,
+        upvotes: 1,
+        categories: 1,
+      });
 
-      lastWeekStartups = startups.map((startup) => ({
-        id: startup._id.toString(),
-        name: startup.name,
-        tagline: startup.tagline,
-        logo: startup.logo.url,
-        websiteUrl: startup.websiteUrl,
-        submittedBy: startup.submittedBy,
-        twitterUsername: startup.twitterUsername,
-        upvotes: startup.upvotes?.length || 0,
-        categories: startup.categories,
-        submittedAt: startup.submittedAt || startup.createdAt,
-      }));
+      lastWeekStartups = startups
+        .map((startup) => ({
+          id: startup._id.toString(),
+          name: startup.name,
+          tagline: startup.tagline,
+          logo: startup.logo.url,
+          websiteUrl: startup.websiteUrl,
+          submittedBy: startup.submittedBy,
+          twitterUsername: startup.twitterUsername,
+          upvotes: startup.upvotes?.length || 0,
+          categories: startup.categories,
+          submittedAt: startup.submittedAt || startup.createdAt,
+        }))
+        .sort((a, b) => b.upvotes - a.upvotes);
     }
 
     return NextResponse.json({
