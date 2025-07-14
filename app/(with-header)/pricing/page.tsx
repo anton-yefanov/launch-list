@@ -13,7 +13,7 @@ export default function PricingPage() {
         </div>
         <Button
           size="lg"
-          className="mt-4 active:scale-96 transition-all duration-100"
+          className="sm:mt-4 active:scale-96 transition-all duration-100"
         >
           Get featured (15$/week)
         </Button>
