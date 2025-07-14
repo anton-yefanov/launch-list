@@ -15,7 +15,7 @@ export default function PricingPage() {
           size="lg"
           className="mt-4 active:scale-96 transition-all duration-100"
         >
-          Get featured
+          Get featured (15$/week)
         </Button>
       </div>
       <div className="mt-4 grid gap-2 grid-cols-1 sm:grid-cols-3">
