@@ -108,7 +108,6 @@ export default function StartupPage({ params }: StartupPageProps) {
     }
   };
 
-  // Check upvote status when user is authenticated
   useEffect(() => {
     const checkUpvoteStatus = async () => {
       if (!isAuthenticated || !session?.user?.id || !startup) return;
@@ -130,7 +129,6 @@ export default function StartupPage({ params }: StartupPageProps) {
   }, [id, isAuthenticated, session?.user?.id, startup]);
 
   const handleUpvoteClick = async () => {
-    // Don't allow upvoting if not in launch week
     if (!isInLaunchWeek) {
       return;
     }
@@ -140,7 +138,7 @@ export default function StartupPage({ params }: StartupPageProps) {
       return;
     }
 
-    if (isUpvoting) return; // Prevent multiple clicks
+    if (isUpvoting) return;
 
     setIsUpvoting(true);
 
@@ -240,7 +238,7 @@ export default function StartupPage({ params }: StartupPageProps) {
         <div className="flex flex-col sm:flex-row gap-6 mb-8">
           <div className="shrink-0">
             <Image
-              src={startup.logo?.url || "/placeholder.svg"}
+              src={startup.logo.url}
               alt={`${startup.name} logo`}
               width={80}
               height={80}
@@ -254,12 +252,21 @@ export default function StartupPage({ params }: StartupPageProps) {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   {startup.name}
                 </h1>
-                <p className="text-lg text-gray-600 mb-4">{startup.tagline}</p>
+                <p className="text-lg text-gray-600 mb-3">{startup.tagline}</p>
 
                 <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
-                    <span>by {startup.submittedBy}</span>
+                    {startup.twitterUsername ? (
+                      <Link
+                        href={`https://x.com/${startup.twitterUsername}`}
+                        target="_blank"
+                      >
+                        by {startup.submittedBy}
+                      </Link>
+                    ) : (
+                      <span>by {startup.submittedBy}</span>
+                    )}
                   </div>
                   {startup.categories && startup.categories.length > 0 && (
                     <div className="flex items-center gap-1">
@@ -291,13 +298,17 @@ export default function StartupPage({ params }: StartupPageProps) {
                     </div>
                   </Button>
                 ) : (
-                  <div className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-md bg-gray-50">
+                  <Button
+                    disabled
+                    variant="outline"
+                    className="flex justify-center sm:justify-between items-center gap-2 px-4 py-2 border border-gray-200 rounded-md bg-gray-50"
+                  >
                     <span className="text-gray-600">Upvotes</span>
                     <div className="flex items-center gap-1 text-gray-600">
-                      <ChevronUp strokeWidth={2} className="h-4 w-4" />
+                      <ChevronUp strokeWidth={2} className="size-4" />
                       <span className="text-sm">{currentUpvotes}</span>
                     </div>
-                  </div>
+                  </Button>
                 )}
 
                 <Link
@@ -366,8 +377,6 @@ export default function StartupPage({ params }: StartupPageProps) {
             )}
           </div>
         )}
-
-        {/* Description Section */}
         {startup.description && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -381,56 +390,7 @@ export default function StartupPage({ params }: StartupPageProps) {
             </div>
           </div>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h3 className="text-lg font-semibold mb-3">About</h3>
-            <div className="space-y-3 text-gray-600">
-              <p>
-                <strong>Website:</strong>{" "}
-                <Link
-                  href={startup.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {startup.websiteUrl}
-                </Link>
-              </p>
-              <p>
-                <strong>Submitted by:</strong> {startup.submittedBy}
-              </p>
-              {startup.twitterUsername && (
-                <p>
-                  <strong>Twitter:</strong>{" "}
-                  <Link
-                    href={`https://twitter.com/${startup.twitterUsername.replace("@", "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    {startup.twitterUsername.startsWith("@")
-                      ? startup.twitterUsername
-                      : `@${startup.twitterUsername}`}
-                  </Link>
-                </p>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {startup.categories.map((category, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium"
-                >
-                  {category}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
-
-      {/* Login Dialog */}
       <LoginDialog
         open={loginDialogOpen}
         onOpenChange={setLoginDialogOpen}

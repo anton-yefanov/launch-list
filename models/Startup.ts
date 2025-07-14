@@ -7,12 +7,12 @@ export type IStartup = {
   tagline: string;
   description: string;
   categories: string[];
-  logo?: {
-    id?: string;
-    name?: string;
-    url?: string;
-    mimeType?: string;
-    size?: number;
+  logo: {
+    id: string;
+    name: string;
+    url: string;
+    mimeType: string;
+    size: number;
   };
   screenshots?: {
     id?: string;
