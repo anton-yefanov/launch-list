@@ -87,7 +87,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="max-w-4xl mx-auto">
-        <article>
+        <article className="mt-2">
           <header className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-gray-900">
               {post.title}
