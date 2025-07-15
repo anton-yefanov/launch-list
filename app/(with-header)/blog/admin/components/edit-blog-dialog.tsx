@@ -34,8 +34,6 @@ export function EditBlogDialog({
     telegraphUrl: "",
   });
 
-  console.log(post);
-
   useEffect(() => {
     if (post) {
       setFormData({
