@@ -3,6 +3,7 @@ import authConfig from "./auth.config";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import client from "@/lib/database/mongo";
 import { User } from "@/models/User";
+import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
 export const { handlers, auth } = NextAuth({
   adapter: MongoDBAdapter(client, {
@@ -14,6 +15,8 @@ export const { handlers, auth } = NextAuth({
         session.user.id = token.sub;
 
         try {
+          await connectToDatabase();
+
           const user = await User.findById(token.sub);
           if (user) {
             session.user.role = user.role;
