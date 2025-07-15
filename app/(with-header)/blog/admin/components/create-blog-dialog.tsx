@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ExternalLink, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 interface CreateBlogDialogProps {
   onPostCreated: () => void;
@@ -69,17 +69,16 @@ export function CreateBlogDialog({ onPostCreated }: CreateBlogDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Create New Post
+          Add Blog Post
+          <Plus />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create New Blog Post</DialogTitle>
+          <DialogTitle>New Blog Post</DialogTitle>
         </DialogHeader>
 
         <Alert>
-          <ExternalLink className="h-4 w-4" />
           <AlertDescription>
             <div className="space-y-2">
               <p className="font-medium">Instructions:</p>
@@ -95,7 +94,7 @@ export function CreateBlogDialog({ onPostCreated }: CreateBlogDialogProps) {
                     telegra.ph
                   </a>
                 </li>
-                <li>Write your blog post</li>
+                <li>Write blog post</li>
                 <li>Click &#34;Publish&#34; on Telegraph</li>
                 <li>Copy the URL and paste it below</li>
               </ol>

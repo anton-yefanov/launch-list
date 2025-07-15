@@ -10,10 +10,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface EditBlogDialogProps {
   post: BlogPost | null;
@@ -84,25 +85,18 @@ export function EditBlogDialog({
           <DialogTitle>Edit Blog Post</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="editTelegraphUrl">Telegraph URL</Label>
-            <Input
-              type="url"
-              id="editTelegraphUrl"
-              value={formData.telegraphUrl}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  telegraphUrl: e.target.value,
-                }))
-              }
-              placeholder="https://telegra.ph/Your-Post-Title-12-25"
-            />
-            <p className="text-xs text-muted-foreground">
-              Update this to change the content source
-            </p>
-          </div>
+        <form onSubmit={handleSubmit}>
+          <Link
+            href={formData.telegraphUrl}
+            target="_blank"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "w-full mb-2",
+            )}
+          >
+            Open post in <b>telegra.ph</b>
+            <ArrowUpRight />
+          </Link>
 
           {error && (
             <Alert variant="destructive">
@@ -110,7 +104,7 @@ export function EditBlogDialog({
             </Alert>
           )}
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"

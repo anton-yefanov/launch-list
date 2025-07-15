@@ -7,8 +7,7 @@ export default async function BlogListPage() {
 
   const posts = await BlogPost.find()
     .sort({ createdAt: -1 })
-    .select("title slug createdAt")
-    .lean();
+    .select("title slug createdAt");
 
   return (
     <div className="max-w-4xl mx-auto">

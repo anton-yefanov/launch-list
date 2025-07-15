@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import type { BlogPost } from "@/models/BlogPost";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import {
   Loader2,
   AlertCircle,
   X,
+  ArrowUpRight,
 } from "lucide-react";
 
 export default function AdminPage() {
@@ -179,16 +180,13 @@ export default function AdminPage() {
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Blog Admin</h1>
-          <p className="mt-2 text-muted-foreground">
-            Manage your blog posts and content
-          </p>
+          <h1 className="text-3xl font-bold">Blog Admin 💅</h1>
         </div>
         <div className="mt-4 sm:mt-0 flex gap-3">
           <Button variant="outline" asChild>
-            <Link href="/blog">
-              <ExternalLink className="w-4 h-4 mr-2" />
-              View Blog
+            <Link href="/blog" target="_blank">
+              Open Blog
+              <ArrowUpRight />
             </Link>
           </Button>
           <CreateBlogDialog onPostCreated={fetchPosts} />
