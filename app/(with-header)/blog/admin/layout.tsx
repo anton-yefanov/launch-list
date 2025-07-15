@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import React from "react";
+import React, { ReactNode } from "react";
 
 export default async function AdminLayout({
   children,
 }: {
-  children: React.PropsWithChildren;
+  children: ReactNode;
 }) {
   const session = await auth();
 
