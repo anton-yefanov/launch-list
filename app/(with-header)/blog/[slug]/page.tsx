@@ -4,16 +4,18 @@ import BlogPost from "@/models/BlogPost";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
   await connectToDatabase();
-  const post = await BlogPost.findOne({ slug: params.slug });
+  const post = await BlogPost.findOne({ slug });
 
   if (!post) {
     return {
@@ -45,9 +47,11 @@ export async function generateMetadata({
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+
   await connectToDatabase();
 
-  const post = await BlogPost.findOne({ slug: params.slug });
+  const post = await BlogPost.findOne({ slug });
 
   if (!post) {
     notFound();

@@ -5,12 +5,13 @@ import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
 
-    const post = await BlogPost.findById(params.id).lean();
+    const post = await BlogPost.findById(id).lean();
 
     if (!post) {
       return NextResponse.json(
@@ -31,10 +32,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { telegraphUrl } = await request.json();
+    const { id } = await params;
 
     if (!telegraphUrl) {
       return NextResponse.json(
@@ -46,7 +48,7 @@ export async function PUT(
     await connectToDatabase();
 
     // Check if post exists
-    const existingPost = await BlogPost.findById(params.id);
+    const existingPost = await BlogPost.findById(id);
     if (!existingPost) {
       return NextResponse.json(
         { error: "Blog post not found" },
@@ -63,7 +65,7 @@ export async function PUT(
     // Check if the new slug conflicts with another post (excluding current post)
     const slugConflict = await BlogPost.findOne({
       slug: newSlug,
-      _id: { $ne: params.id },
+      _id: { $ne: id },
     });
 
     if (slugConflict) {
@@ -75,7 +77,7 @@ export async function PUT(
 
     // Update the post
     const updatedPost = await BlogPost.findByIdAndUpdate(
-      params.id,
+      id,
       {
         title: telegraphPost.title,
         slug: newSlug,
@@ -105,12 +107,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await connectToDatabase();
+    const { id } = await params;
 
-    const deletedPost = await BlogPost.findByIdAndDelete(params.id);
+    const deletedPost = await BlogPost.findByIdAndDelete(id);
 
     if (!deletedPost) {
       return NextResponse.json(
