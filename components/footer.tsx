@@ -9,6 +9,9 @@ export const Footer = () => {
       <Link href="/privacy" className="hover:underline">
         Privacy policy
       </Link>
+      <Link href="/blog" className="hover:underline">
+        Blog
+      </Link>
     </div>
   );
 };

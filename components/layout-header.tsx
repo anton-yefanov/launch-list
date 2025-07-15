@@ -15,6 +15,7 @@ import {
   Rocket,
   Mail,
   MessageCircle,
+  Scroll,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
@@ -135,6 +136,17 @@ export const LayoutHeader = () => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
+                {user?.role === "ADMIN" ? (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/blog/admin"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Scroll className="size-4" />
+                      Blog admin
+                    </Link>
+                  </DropdownMenuItem>
+                ) : null}
                 <DropdownMenuItem asChild>
                   <Link
                     href="/my-products"
