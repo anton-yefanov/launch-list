@@ -1,6 +1,7 @@
 import { NextAuthConfig } from "next-auth";
 import Google from "@auth/core/providers/google";
 import { Resend } from "resend";
+import { User } from "@/models/User";
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY);
 
@@ -42,6 +43,18 @@ export default {
   ],
   session: {
     strategy: "jwt",
+  },
+  events: {
+    async createUser({ user }) {
+      try {
+        await User.findByIdAndUpdate(user.id, { role: "REGULAR" });
+        console.log(
+          `Set role to REGULAR for newly created user: ${user.email}`,
+        );
+      } catch (error) {
+        console.error("Error setting role for new user:", error);
+      }
+    },
   },
   trustHost: true,
 } satisfies NextAuthConfig;

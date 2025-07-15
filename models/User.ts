@@ -1,6 +1,7 @@
 import * as mongoose from "mongoose";
 
 export type IUser = {
+  role: "REGULAR" | "ADMIN";
   _id: string;
   name: string;
   email: string;
@@ -13,6 +14,10 @@ export type IUser = {
 
 const UserSchema = new mongoose.Schema(
   {
+    role: {
+      type: String,
+      required: true,
+    },
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     image: { type: String },
