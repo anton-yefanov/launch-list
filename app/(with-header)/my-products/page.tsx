@@ -9,6 +9,7 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -213,12 +214,22 @@ const ProductCard = ({ startup }: ProductCardProps) => {
             href={`/product/${startup._id}`}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
-              "min-w-30 ml-auto active:scale-95 transition-all duration-100",
+              "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",
             )}
           >
             View
+            <ArrowUpRight />
           </Link>
-          {/*<Button*/}
+          {/*<Link*/}
+          {/*  href={`/product/${startup._id}/badges`}*/}
+          {/*  className={cn(*/}
+          {/*    buttonVariants({ variant: "outline", size: "sm" }),*/}
+          {/*    "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",*/}
+          {/*  )}*/}
+          {/*>*/}
+          {/*  Badges*/}
+          {/*  <Award />*/}
+          {/*</Link>*/}
           {/*  size="sm"*/}
           {/*  className="min-w-30 ml-auto active:scale-95 transition-all duration-100"*/}
           {/*  onClick={handleShare}*/}
