@@ -39,6 +39,7 @@ import { useMobile } from "@/hooks/use-mobile";
 export const LayoutHeader = () => {
   const pathname = usePathname();
   const isMyLaunchListPage = pathname === "/my-launch-list";
+  const isWebsitesPage = pathname === "/websites";
   const { data: session, status } = useSession();
   const user = session?.user;
   const isAuth = status === "authenticated";
@@ -57,6 +58,8 @@ export const LayoutHeader = () => {
 
   const getButtonContent = useCallback(() => {
     if (!isAuth) {
+      if (isWebsitesPage) return null;
+
       return {
         href: "/websites",
         icon: <List />,
@@ -69,7 +72,7 @@ export const LayoutHeader = () => {
         text: isMyLaunchListPage ? "Browse collection" : "Launch List",
       };
     }
-  }, [isAuth, isMobile, isMyLaunchListPage]);
+  }, [isAuth, isMobile, isMyLaunchListPage, isWebsitesPage]);
 
   const buttonContent = getButtonContent();
 
@@ -107,16 +110,18 @@ export const LayoutHeader = () => {
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href={buttonContent.href}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "group active:scale-95 transition-all duration-100",
-            )}
-          >
-            {buttonContent.icon}
-            {buttonContent.text}
-          </Link>
+          {buttonContent && (
+            <Link
+              href={buttonContent.href}
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "group active:scale-95 transition-all duration-100",
+              )}
+            >
+              {buttonContent.icon}
+              {buttonContent.text}
+            </Link>
+          )}
 
           {status === "loading" ? (
             <Skeleton className="h-9 w-9 rounded-full" />
