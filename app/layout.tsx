@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Launch List — Don't forget to launch, everywhere!",
+  title: "Launch List — Don't forget to launch everywhere!",
   description:
     "Launch your product here and on 100+ websites to increase Domain Rating and bring traffic to your website",
 };

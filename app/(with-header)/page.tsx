@@ -117,7 +117,7 @@ export default function LaunchPage() {
         <div className="flex flex-col items-center sm:items-start relative z-10">
           <div className="text-3xl text-center sm:text-left font-medium mb-4">
             Don&#39;t forget
-            <br /> to launch,
+            <br /> to launch
             <br /> <b>everywhere!</b>
           </div>
           <Link
