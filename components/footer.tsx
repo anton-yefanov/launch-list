@@ -15,7 +15,7 @@ export const Footer = () => {
         {/*</Link>*/}
       </div>
       <div className="flex items-center gap-2">
-        <a href="https://www.uneed.best/tool/launch-list">
+        <a href="https://www.uneed.best/tool/launch-list" target="_blank">
           <img
             src="https://www.uneed.best/POTD1.png"
             alt="Uneed POTD1 Badge"

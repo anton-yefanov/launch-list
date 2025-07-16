@@ -206,9 +206,11 @@ export default function LaunchPage() {
           ))}
         </div>
       ) : startups.length > 0 ? (
-        startups.map((startup) => (
-          <Product key={startup.id} startup={startup} />
-        ))
+        <div className="flex flex-col gap-2">
+          {startups.map((startup) => (
+            <Product key={startup.id} startup={startup} />
+          ))}
+        </div>
       ) : (
         <div className="flex flex-col justify-center items-center text-center py-10 text-gray-500">
           <Rocket size={60} className="mb-4" />
@@ -233,16 +235,18 @@ export default function LaunchPage() {
 
       {!loading && lastWeekStartups.length > 0 && (
         <>
-          <h2 className="text-3xl font-semibold my-4 px-2.5">
+          <h2 className="text-3xl font-semibold my-8 px-2.5">
             Last week winners
           </h2>
-          {lastWeekStartups.map((startup, index) => (
-            <WinnerProduct
-              key={startup.id}
-              winner={{ ...startup, place: index + 1 }}
-              showCup={index < 3}
-            />
-          ))}
+          <div className="flex flex-col gap-2">
+            {lastWeekStartups.map((startup, index) => (
+              <WinnerProduct
+                key={startup.id}
+                winner={{ ...startup, place: index + 1 }}
+                showCup={index < 3}
+              />
+            ))}
+          </div>
         </>
       )}
       <Footer />
@@ -349,10 +353,10 @@ const WinnerProduct = ({
                 : "/bronze_cup.png"
           }
           alt={`${winner.place} place cup`}
-          width={50}
-          height={50}
+          width={30}
+          height={30}
           draggable={false}
-          className="rounded absolute -left-5 top-2 -rotate-10"
+          className="rounded absolute -left-1 top-6 -rotate-10"
         />
       )}
       <Button
