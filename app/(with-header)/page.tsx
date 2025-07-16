@@ -138,7 +138,7 @@ export default function LaunchPage() {
                 className="select-none"
               />
               <span className="text-sm select-none font-semibold">
-                Best directories 2025
+                Best websites to launch in 2025
               </span>
             </div>
             <div className="flex flex-col gap-1">

@@ -69,7 +69,11 @@ export const LayoutHeader = () => {
       return {
         href: isMyLaunchListPage ? "/websites" : "/my-launch-list",
         icon: isMyLaunchListPage ? <List /> : <File />,
-        text: isMyLaunchListPage ? "Browse collection" : "Launch List",
+        text: isMyLaunchListPage
+          ? isMobile
+            ? "Browse"
+            : "Browse collection"
+          : "Launch List",
       };
     }
   }, [isAuth, isMobile, isMyLaunchListPage, isWebsitesPage]);
@@ -78,7 +82,7 @@ export const LayoutHeader = () => {
 
   return (
     <>
-      <div className="pt-8 pb-4 flex justify-between sticky top-0 z-30 bg-background">
+      <div className="pt-4 pb-4 flex justify-between sticky top-0 z-30 bg-background">
         <div className="flex items-center gap-2">
           <Link
             href="/"

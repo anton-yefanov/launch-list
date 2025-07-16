@@ -268,7 +268,7 @@ export default function CollectionPage() {
         (prev) => new Set([...prev, ...directoriesToAdd.map((d) => d._id)]),
       );
 
-      toast(`${result.addedCount} directories added to Launch List`, {
+      toast(`${result.addedCount} websites added to Launch List`, {
         description:
           result.skippedCount > 0
             ? `${result.skippedCount} were already in your list`
@@ -339,7 +339,7 @@ export default function CollectionPage() {
           setUserLaunchList((prev) => new Set([...prev, directoryId]));
         }
 
-        toast("Directory removed from Launch List");
+        toast("Website removed from Launch List");
       } catch (error) {
         console.error("Error removing from launch list:", error);
         toast.error("Failed to remove directory from launch list");
@@ -412,7 +412,7 @@ export default function CollectionPage() {
         {/*  />*/}
         {/*</div>*/}
         {/*<FeaturedSection />*/}
-        <div className="flex items-center justify-between py-4 sticky top-21 bg-background z-20">
+        <div className="flex items-center justify-between pb-2 sticky top-17 bg-background z-20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (
               <Skeleton className="h-[28px] w-[126px] my-auto" />
