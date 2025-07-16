@@ -2,18 +2,7 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <div className="mt-8 flex flex-col justify-center items-center gap-4">
-      <div className="text-sm flex gap-4  justify-center">
-        <Link href="/tos" className="hover:underline">
-          Terms of Service
-        </Link>
-        <Link href="/privacy" className="hover:underline">
-          Privacy policy
-        </Link>
-        {/*<Link href="/blog" className="hover:underline">*/}
-        {/*  Blog*/}
-        {/*</Link>*/}
-      </div>
+    <div className="mt-12 flex flex-col justify-center items-center gap-4">
       <div className="flex items-center gap-2">
         <a href="https://www.uneed.best/tool/launch-list" target="_blank">
           <img
@@ -33,6 +22,17 @@ export const Footer = () => {
             height="36"
           />
         </a>
+      </div>
+      <div className="text-sm flex gap-4  justify-center">
+        <Link href="/tos" className="hover:underline">
+          Terms of Service
+        </Link>
+        <Link href="/privacy" className="hover:underline">
+          Privacy policy
+        </Link>
+        {/*<Link href="/blog" className="hover:underline">*/}
+        {/*  Blog*/}
+        {/*</Link>*/}
       </div>
     </div>
   );
