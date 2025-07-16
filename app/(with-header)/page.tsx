@@ -104,12 +104,21 @@ export default function LaunchPage() {
   return (
     <div>
       {/*<FeaturedSection />*/}
-      <div className="border rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group">
-        <div className="flex flex-col items-center sm:items-start ">
+      <div className="border bg-sky-50/10 rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group relative">
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(0,0,0,0.15) 1px, transparent 0)`,
+            backgroundSize: "20px 20px",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-white/40" />
+
+        <div className="flex flex-col items-center sm:items-start relative z-10">
           <div className="text-3xl text-center sm:text-left font-medium mb-4">
             Don&#39;t forget
             <br /> to launch,
-            <br /> everywhere!
+            <br /> <b>everywhere!</b>
           </div>
           <Link
             href="/websites"
@@ -121,22 +130,24 @@ export default function LaunchPage() {
             Browse all
           </Link>
         </div>
-        <div className="h-40 w-full relative">
+        <div className="h-40 w-full relative z-10">
           <div
             onClick={() => {
               router.push("/websites");
             }}
-            className="h-50 bg-gradient-to-br from-white to-sky-50 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"
+            className="h-50 bg-gradient-to-br from-white to-sky-100/80 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"
           >
             <div className="flex gap-1.5 mb-2">
-              <Image
-                src="/star_icon.png"
-                alt="star"
-                width={20}
-                height={20}
-                draggable={false}
-                className="select-none"
-              />
+              <div className="shrink-0">
+                <Image
+                  src="/star_icon.png"
+                  alt="star"
+                  width={20}
+                  height={20}
+                  draggable={false}
+                  className="select-none"
+                />
+              </div>
               <span className="text-sm select-none font-semibold">
                 Best websites to launch in 2025
               </span>
@@ -361,7 +372,7 @@ const WinnerProduct = ({
       )}
       <Button
         variant="outline"
-        className="size-12.5 ml-auto flex flex-col gap-0 cursor-default hover:bg-background bg-transparent"
+        className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background"
       >
         {winner.upvotes}
       </Button>
