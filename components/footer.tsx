@@ -10,9 +10,9 @@ export const Footer = () => {
         <Link href="/privacy" className="hover:underline">
           Privacy policy
         </Link>
-        <Link href="/blog" className="hover:underline">
-          Blog
-        </Link>
+        {/*<Link href="/blog" className="hover:underline">*/}
+        {/*  Blog*/}
+        {/*</Link>*/}
       </div>
       <div className="flex items-center gap-2">
         <a href="https://www.uneed.best/tool/launch-list">
