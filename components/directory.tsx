@@ -114,14 +114,14 @@ export const Directory = ({
             </div>
           </div>
 
-          <div className="flex items-center -space-x-0.5">
+          <div className="flex items-center -space-x-1">
             {directory.tags.find(
               (tag) => tag === DirectoryTag.SmallStartups,
             ) && (
               <Tooltip>
                 <TooltipTrigger>
                   <PawPrint
-                    className="size-5 p-0.5 text-sky-400 bg-sky-100 rounded-full border border-white relative"
+                    className="size-8 p-1.5 text-sky-400 bg-sky-100 rounded-full border border-white relative"
                     size={20}
                   />
                 </TooltipTrigger>
@@ -134,7 +134,7 @@ export const Directory = ({
               <Tooltip>
                 <TooltipTrigger>
                   <TrendingUp
-                    className="size-5 p-0.5 text-rose-400 bg-rose-100 rounded-full border border-white relative"
+                    className="size-8 p-1.5 text-rose-400 bg-rose-100 rounded-full border border-white relative"
                     size={20}
                   />
                 </TooltipTrigger>
@@ -146,7 +146,7 @@ export const Directory = ({
             {directory.tags.find((tag) => tag === DirectoryTag.AI) && (
               <Tooltip>
                 <TooltipTrigger>
-                  <div className="text-[10px] font-semibold size-5 grid place-items-center p-0 text-purple-400 bg-purple-100 rounded-full border border-white relative">
+                  <div className="text-[14px] font-semibold size-8 p-1 grid place-items-center text-purple-400 bg-purple-100 rounded-full border border-white relative">
                     AI
                   </div>
                 </TooltipTrigger>
@@ -161,7 +161,7 @@ export const Directory = ({
               <Tooltip>
                 <TooltipTrigger>
                   <DollarSign
-                    className="size-5 p-0.5 text-yellow-400 bg-yellow-100 rounded-full border border-white relative"
+                    className="size-8 p-1.5 text-yellow-400 bg-yellow-100 rounded-full border border-white relative"
                     size={20}
                   />
                 </TooltipTrigger>
@@ -174,7 +174,7 @@ export const Directory = ({
               <Tooltip>
                 <TooltipTrigger>
                   <Check
-                    className="size-5 p-0.5 text-green-400 bg-green-100 rounded-full border border-white relative"
+                    className="size-8 p-1.5 text-green-400 bg-green-100 rounded-full border border-white relative"
                     size={20}
                   />
                 </TooltipTrigger>
@@ -189,13 +189,13 @@ export const Directory = ({
 
       {/* Desktop version */}
       <div
-        className="hidden sm:flex select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+        className="hidden sm:flex cursor-pointer select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md hover:bg-gray-50 transition-colors"
         onClick={handleCardClick}
       >
         <div className="flex gap-2">
           <div
             style={{ backgroundColor: directory.bgColor }}
-            className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
+            className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center"
             onClick={handleIconClick}
           >
             <div className="relative">
@@ -209,7 +209,7 @@ export const Directory = ({
             <Link
               href={directory.url}
               target="_blank"
-              className="flex gap-1 items-center group w-fit"
+              className="flex gap-1 group items-center group w-fit"
               onClick={handleLinkClick}
             >
               <div className="font-semibold text-lg">{directory.name}</div>
