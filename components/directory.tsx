@@ -40,15 +40,36 @@ export const Directory = ({
 }) => {
   const router = useRouter();
 
+  const handleCardClick = () => {
+    router.push(`/website/${directory._id}`);
+  };
+
+  const handleIconClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push(`/website/${directory._id}`);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <TooltipProvider>
-      <div className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden">
+      {/* Mobile version */}
+      <div
+        className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={handleCardClick}
+      >
         <div className="flex items-start justify-between mb-3">
           <div className="flex gap-3 items-center flex-1 min-w-0">
             <div
               style={{ backgroundColor: directory.bgColor }}
               className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center group"
-              onClick={() => router.push(`/website/${directory._id}`)}
+              onClick={handleIconClick}
             >
               <div className="relative">
                 <div className="bg-white relative rounded-xs text-xs px-0.5 border h-5 w-4 grid place-items-center border-black -rotate-6 z-10">
@@ -62,6 +83,7 @@ export const Directory = ({
                 href={directory.url}
                 target="_blank"
                 className="flex gap-1 items-center group w-fit"
+                onClick={handleLinkClick}
               >
                 <div className="font-semibold text-base truncate">
                   {directory.name}
@@ -73,7 +95,9 @@ export const Directory = ({
               </div>
             </div>
           </div>
-          <div className="shrink-0 ml-2">{buttonComponent}</div>
+          <div className="shrink-0 ml-2" onClick={handleButtonClick}>
+            {buttonComponent}
+          </div>
         </div>
 
         <div className="flex items-center justify-between">
@@ -162,12 +186,17 @@ export const Directory = ({
           </div>
         </div>
       </div>
-      <div className="hidden sm:flex select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md">
+
+      {/* Desktop version */}
+      <div
+        className="hidden sm:flex select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={handleCardClick}
+      >
         <div className="flex gap-2">
           <div
             style={{ backgroundColor: directory.bgColor }}
             className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center group"
-            onClick={() => router.push(`/website/${directory._id}`)}
+            onClick={handleIconClick}
           >
             <div className="relative">
               <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">
@@ -181,6 +210,7 @@ export const Directory = ({
               href={directory.url}
               target="_blank"
               className="flex gap-1 items-center group w-fit"
+              onClick={handleLinkClick}
             >
               <div className="font-semibold text-lg">{directory.name}</div>
               <ArrowUpRight
@@ -280,7 +310,7 @@ export const Directory = ({
               </div>
             </div>
           </div>
-          {buttonComponent}
+          <div onClick={handleButtonClick}>{buttonComponent}</div>
         </div>
       </div>
     </TooltipProvider>
