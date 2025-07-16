@@ -318,7 +318,7 @@ const WinnerProduct = ({
   return (
     <Link
       href={`/product/${winner.id}`}
-      className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-2 select-none"
+      className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-4 select-none"
     >
       <div className="shrink-0">
         <Image
@@ -330,10 +330,10 @@ const WinnerProduct = ({
           className="rounded"
         />
       </div>
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col">
         <div className="font-semibold">{winner.name}</div>
         <div>{winner.tagline}</div>
-        <div className="flex text-xs items-center flex-wrap">
+        <div className="flex text-xs items-center flex-wrap mt-1">
           <div>by {winner.submittedBy}</div>
           {winner.categories.map((category, index) => (
             <span key={index} className="flex">
@@ -455,7 +455,7 @@ const Product = ({ startup }: { startup: Startup }) => {
   return (
     <>
       <div
-        className="rounded-lg p-2.5 flex gap-2 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
+        className="rounded-lg p-2.5 flex gap-4 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
         onClick={handleRowClick}
       >
         <div className="shrink-0">
@@ -468,10 +468,10 @@ const Product = ({ startup }: { startup: Startup }) => {
             className="rounded"
           />
         </div>
-        <div className="flex flex-col space-y-1">
+        <div className="flex flex-col">
           <div className="font-semibold">{startup.name}</div>
           <div>{startup.tagline}</div>
-          <div className="flex text-xs items-center flex-wrap">
+          <div className="flex text-xs items-center flex-wrap mt-1">
             <div>by {startup.submittedBy}</div>
             {startup.categories.map((category, index) => (
               <span key={index} className="flex">

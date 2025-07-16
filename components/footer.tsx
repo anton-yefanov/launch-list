@@ -24,10 +24,10 @@ export const Footer = () => {
         </a>
       </div>
       <div className="text-sm flex gap-4  justify-center">
-        <Link href="/tos" className="hover:underline">
+        <Link href="/tos" className="text-gray-600 hover:underline">
           Terms of Service
         </Link>
-        <Link href="/privacy" className="hover:underline">
+        <Link href="/privacy" className="text-gray-600 hover:underline">
           Privacy policy
         </Link>
         {/*<Link href="/blog" className="hover:underline">*/}

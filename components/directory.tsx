@@ -7,10 +7,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, DollarSign, TrendingUp, PawPrint } from "lucide-react";
+import {
+  Check,
+  DollarSign,
+  TrendingUp,
+  PawPrint,
+  ArrowUpRight,
+} from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface DirectoryType {
   _id: string;
@@ -37,7 +44,7 @@ export const Directory = ({
     <TooltipProvider>
       <div className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden">
         <div className="flex items-start justify-between mb-3">
-          <div className="flex gap-3 items-center flex-1">
+          <div className="flex gap-3 items-center flex-1 min-w-0">
             <div
               style={{ backgroundColor: directory.bgColor }}
               className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center group"
@@ -50,10 +57,17 @@ export const Directory = ({
                 <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
               </div>
             </div>
-            <div className="flex flex-col flex-1">
-              <div className="font-semibold text-base truncate">
-                {directory.name}
-              </div>
+            <div className="flex flex-col flex-1 min-w-0">
+              <Link
+                href={directory.url}
+                target="_blank"
+                className="flex gap-1 items-center group w-fit"
+              >
+                <div className="font-semibold text-base truncate">
+                  {directory.name}
+                </div>
+                <ArrowUpRight size={12} className="shrink-0" />
+              </Link>
               <div className="text-xs text-gray-600">
                 Launch to get backlink
               </div>
@@ -163,7 +177,17 @@ export const Directory = ({
             </div>
           </div>
           <div className="flex flex-col">
-            <div className="font-semibold text-lg">{directory.name}</div>
+            <Link
+              href={directory.url}
+              target="_blank"
+              className="flex gap-1 items-center group w-fit"
+            >
+              <div className="font-semibold text-lg">{directory.name}</div>
+              <ArrowUpRight
+                size={12}
+                className="sm:hidden sm:group-hover:flex"
+              />
+            </Link>
             <div className="text-xs">
               {`Launch here to get a ${directory.domainRating >= 50 ? "high authority " : ""}backlink`}
             </div>
