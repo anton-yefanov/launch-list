@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { IDirectory } from "@/models/Directory";
 
-export default function DirectoryDetailPage() {
+export default function WebsitePage() {
   const params = useParams();
   const router = useRouter();
   const { status } = useSession();
