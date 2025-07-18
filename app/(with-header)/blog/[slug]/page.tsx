@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import BlogPost from "@/models/BlogPost";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
+import scss from "./styles.module.scss";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -88,7 +89,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       />
       <div className="max-w-4xl mx-auto">
         <article className="mt-2">
-          <header className="mb-8">
+          <header className="mb-4">
             <h1 className="text-4xl font-bold mb-4 text-gray-900">
               {post.title}
             </h1>
@@ -98,14 +99,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </time>
               {post.readingTime && <span>{post.readingTime} min read</span>}
             </div>
-            {post.description && (
-              <p className="mt-4 text-lg text-gray-700 leading-relaxed">
-                {post.description}
-              </p>
-            )}
           </header>
           <div
-            className="telegraph-content"
+            className={scss.telegraphContent}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>

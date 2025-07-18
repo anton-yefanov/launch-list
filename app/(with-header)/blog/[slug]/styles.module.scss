@@ -1,0 +1,72 @@
+.telegraphContent {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.telegraphContent h1,
+.telegraphContent h2,
+.telegraphContent h3,
+.telegraphContent h4,
+.telegraphContent h5,
+.telegraphContent h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.telegraphContent h1 { font-size: 2.25rem; }
+.telegraphContent h2 { font-size: 1.875rem; }
+.telegraphContent h3 { font-size: 1.5rem; }
+
+.telegraphContent p {
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+}
+
+.telegraphContent a {
+  color: #3b82f6;
+  text-decoration: underline;
+  text-decoration-color: #93c5fd;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.telegraphContent a:hover {
+  color: #1d4ed8;
+}
+
+.telegraphContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 2rem auto;
+  display: block;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.telegraphContent pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-family: 'Fira Code', monospace;
+}
+
+.telegraphContent blockquote {
+  border-left: 4px solid #e5e7eb;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #6b7280;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.telegraphContent address {
+  display: none;
+}
