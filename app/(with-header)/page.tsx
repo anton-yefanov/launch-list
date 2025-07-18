@@ -25,6 +25,7 @@ interface LaunchWeek {
 interface Startup {
   id: string;
   name: string;
+  slug: string;
   tagline: string;
   logo: string;
   websiteUrl: string;
@@ -62,6 +63,7 @@ export default function LaunchPage() {
       try {
         const response = await fetch("/api/launches");
         const result = await response.json();
+        console.log(result);
 
         if (result.success && result.data) {
           const {
@@ -326,9 +328,10 @@ const WinnerProduct = ({
   winner: Winner;
   showCup: boolean;
 }) => {
+  console.log(winner.slug);
   return (
     <Link
-      href={`/product/${winner.id}`}
+      href={`/product/${winner.slug}`}
       className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-4 select-none"
     >
       <div className="shrink-0">
@@ -395,7 +398,7 @@ const Product = ({ startup }: { startup: Startup }) => {
       if (!isAuthenticated || !session?.user?.id) return;
 
       try {
-        const response = await fetch(`/api/product/${startup.id}/upvote`);
+        const response = await fetch(`/api/product/${startup.slug}/upvote`);
         const result = await response.json();
 
         if (result.success) {
@@ -430,7 +433,7 @@ const Product = ({ startup }: { startup: Startup }) => {
     setCurrentUpvotes(newCount);
 
     try {
-      const response = await fetch(`/api/product/${startup.id}/upvote`, {
+      const response = await fetch(`/api/product/${startup.slug}/upvote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -460,7 +463,7 @@ const Product = ({ startup }: { startup: Startup }) => {
   };
 
   const handleRowClick = () => {
-    router.push(`/product/${startup.id}`);
+    router.push(`/product/${startup.slug}`);
   };
 
   return (

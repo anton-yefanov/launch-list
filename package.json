@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:seed": "node --experimental-modules scripts/populateLaunchWeeks.mjs",
-    "migrate:add-slugs": "npx tsx scripts/migrate-add-slugs.ts"
+    "migrate:add-slugs": "npx tsx scripts/migration-add-slugs.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.9.1",

@@ -1,16 +1,17 @@
+// app/api/product/[slug]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { Startup } from "@/models/Startup";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
     await connectToDatabase();
 
-    const startup = await Startup.findById(id).populate("upvotes", "_id");
+    const startup = await Startup.findOne({ slug }).populate("upvotes", "_id");
 
     if (!startup) {
       return NextResponse.json(
@@ -32,8 +33,8 @@ export async function GET(
 
     const startupData = {
       ...startupObject,
-      upvotes: startup.upvoteCount || startup.upvotes?.length || 0, // Use virtual or fallback to array length
-      categories: startup.categories || [], // Categories are already in the schema
+      upvotes: startup.upvoteCount || startup.upvotes?.length || 0,
+      categories: startup.categories || [],
     };
 
     return NextResponse.json({
@@ -41,7 +42,7 @@ export async function GET(
       data: startupData,
     });
   } catch (error) {
-    console.error("Error fetching startup:", error);
+    console.error("Error fetching startup by slug:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 },

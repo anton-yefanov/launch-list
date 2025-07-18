@@ -45,22 +45,12 @@ export async function GET() {
       const startups = await Startup.find({
         _id: { $in: currentLaunchWeek.startupsLaunchIds || [] },
         status: "launched",
-      }).select({
-        name: 1,
-        tagline: 1,
-        logo: 1,
-        websiteUrl: 1,
-        submittedBy: 1,
-        twitterUsername: 1,
-        createdAt: 1,
-        submittedAt: 1,
-        upvotes: 1,
-        categories: 1,
       });
 
       currentWeekStartups = startups
         .map((startup) => ({
           id: startup._id.toString(),
+          slug: startup.slug,
           name: startup.name,
           tagline: startup.tagline,
           logo: startup.logo.url,
@@ -79,22 +69,12 @@ export async function GET() {
       const startups = await Startup.find({
         _id: { $in: lastLaunchWeek.startupsLaunchIds },
         status: "launched",
-      }).select({
-        name: 1,
-        tagline: 1,
-        logo: 1,
-        websiteUrl: 1,
-        submittedBy: 1,
-        twitterUsername: 1,
-        createdAt: 1,
-        submittedAt: 1,
-        upvotes: 1,
-        categories: 1,
       });
 
       lastWeekStartups = startups
         .map((startup) => ({
           id: startup._id.toString(),
+          slug: startup.slug,
           name: startup.name,
           tagline: startup.tagline,
           logo: startup.logo.url,

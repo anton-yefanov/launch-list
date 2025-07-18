@@ -5,14 +5,14 @@ import { connectToDatabase } from "@/lib/database/connectToDatabase";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     await connectToDatabase();
-    const { id } = await params;
+    const { slug } = await params;
 
     // Find the startup
-    const startup = await Startup.findById(id);
+    const startup = await Startup.findOne({ slug });
     if (!startup) {
       return NextResponse.json(
         { success: false, message: "Startup not found" },

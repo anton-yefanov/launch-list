@@ -3,6 +3,26 @@ import { User } from "@/models/User";
 import { Startup } from "@/models/Startup";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 import { reviewStartup } from "../../../../lib/ai/startupApproval";
+import { generateSlug } from "../../../../utils/generateSlug";
+
+async function ensureUniqueSlug(baseSlug, excludeId = null) {
+  let slug = baseSlug;
+  let counter = 1;
+
+  while (true) {
+    const existingStartup = await Startup.findOne({
+      slug,
+      ...(excludeId && { _id: { $ne: excludeId } }),
+    });
+
+    if (!existingStartup) {
+      return slug;
+    }
+
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+}
 
 export async function POST(request) {
   try {
@@ -124,8 +144,13 @@ export async function POST(request) {
       user.twitterUsername = startupData.twitterUsername;
     }
 
-    // Add user ID to startup data
     startupData.userId = user._id;
+
+    const baseSlug = generateSlug(startupData.name);
+    const uniqueSlug = await ensureUniqueSlug(baseSlug);
+    startupData.slug = uniqueSlug;
+
+    console.log(`Generated slug for "${startupData.name}": ${uniqueSlug}`);
 
     // AI REVIEW: Automatically review the startup
     console.log("Starting AI review for startup:", startupData.name);
@@ -162,13 +187,6 @@ export async function POST(request) {
       aiReview.reason,
     );
 
-    // Optional: Send notification email based on approval status
-    // if (aiReview.approved) {
-    //   await sendApprovalEmail(startupData);
-    // } else {
-    //   await sendRejectionEmail(startupData, aiReview.reason);
-    // }
-
     return NextResponse.json(
       {
         success: true,
@@ -176,6 +194,7 @@ export async function POST(request) {
         eventId,
         startupId: startup._id,
         userId: user._id,
+        slug: uniqueSlug,
         aiReview: {
           approved: aiReview.approved,
           reason: aiReview.reason,

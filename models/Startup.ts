@@ -1,8 +1,10 @@
 import * as mongoose from "mongoose";
+import { generateSlug } from "@/utils/generateSlug";
 
 export type IStartup = {
   _id: string;
   name: string;
+  slug: string;
   websiteUrl: string;
   tagline: string;
   description: string;
@@ -44,6 +46,20 @@ export type IStartup = {
 const StartupSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: function (v: string) {
+          return /^[a-z0-9-]+$/.test(v);
+        },
+        message:
+          "Slug can only contain lowercase letters, numbers, and hyphens",
+      },
+    },
     websiteUrl: { type: String, required: true },
     tagline: { type: String, required: true },
     description: { type: String, required: true },
@@ -89,18 +105,38 @@ const StartupSchema = new mongoose.Schema(
       default: "pending",
     },
 
-    rejectionReason: { type: String }, // AI-generated reason for rejection
-    rejectionCategory: { type: String }, // Category of rejection (gambling, adult, spam, etc.)
+    rejectionReason: { type: String },
+    rejectionCategory: { type: String },
 
     submittedAt: { type: Date, default: Date.now },
     approvedAt: { type: Date },
     rejectedAt: { type: Date },
-    reviewedAt: { type: Date }, // When AI review was completed
+    reviewedAt: { type: Date },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt automatically
+    timestamps: true,
   },
 );
+
+// Pre-save middleware to generate slug
+StartupSchema.pre("save", async function (next) {
+  if (this.isModified("name") || this.isNew) {
+    const baseSlug = generateSlug(this.name);
+    let slug = baseSlug;
+    let counter = 1;
+
+    // Ensure slug uniqueness
+    while (
+      await mongoose.models.Startup.findOne({ slug, _id: { $ne: this._id } })
+    ) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    this.slug = slug;
+  }
+  next();
+});
 
 // Virtual for upvote count
 StartupSchema.virtual("upvoteCount").get(function () {

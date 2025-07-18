@@ -20,12 +20,12 @@ import { IStartup } from "@/models/Startup";
 
 interface StartupPageProps {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 }
 
-export default function StartupPage({ params }: StartupPageProps) {
-  const { id } = use(params);
+export default function ProductPage({ params }: StartupPageProps) {
+  const { slug } = use(params);
   const router = useRouter();
   const { data: session, status } = useSession();
   const [startup, setStartup] = useState<IStartup | null>(null);
@@ -45,7 +45,8 @@ export default function StartupPage({ params }: StartupPageProps) {
   useEffect(() => {
     const fetchStartup = async () => {
       try {
-        const response = await fetch(`/api/product/${id}`);
+        // Use slug-based API endpoint
+        const response = await fetch(`/api/product/${slug}`);
         const result = await response.json();
 
         if (result.success && result.data) {
@@ -53,8 +54,7 @@ export default function StartupPage({ params }: StartupPageProps) {
           setCurrentUpvotes(result.data.upvotes || 0);
           setSelectedScreenshot(result.data.screenshots?.[0]?.url || null);
 
-          // Check if startup is in current launch week
-          await checkLaunchWeekStatus(result.data._id);
+          await checkLaunchWeekStatus(result.data.slug);
         } else {
           setError(result.message || "Startup not found");
         }
@@ -67,29 +67,26 @@ export default function StartupPage({ params }: StartupPageProps) {
     };
 
     fetchStartup();
-  }, [id]);
+  }, [slug]);
 
-  const checkLaunchWeekStatus = async (startupId: string) => {
+  const checkLaunchWeekStatus = async (slug: string) => {
     try {
-      const response = await fetch(
-        `/api/product/${startupId}/launch-week-status`,
-      );
+      const response = await fetch(`/api/product/${slug}/launch-week-status`);
 
-      // Check if response is ok and content-type is JSON
       if (!response.ok) {
         console.error(
           "API response not ok:",
           response.status,
           response.statusText,
         );
-        setIsInLaunchWeek(true); // Default to allowing upvotes if API fails
+        setIsInLaunchWeek(true);
         return;
       }
 
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("API did not return JSON, got:", contentType);
-        setIsInLaunchWeek(true); // Default to allowing upvotes if API fails
+        setIsInLaunchWeek(true);
         return;
       }
 
@@ -99,11 +96,10 @@ export default function StartupPage({ params }: StartupPageProps) {
         setIsInLaunchWeek(result.data.isInLaunchWeek);
       } else {
         console.error("API returned error:", result.message);
-        setIsInLaunchWeek(true); // Default to allowing upvotes if API returns error
+        setIsInLaunchWeek(true);
       }
     } catch (error) {
       console.error("Error checking launch week status:", error);
-      // Default to true (allow upvotes) if we can't check - safer for user experience
       setIsInLaunchWeek(true);
     }
   };
@@ -113,7 +109,8 @@ export default function StartupPage({ params }: StartupPageProps) {
       if (!isAuthenticated || !session?.user?.id || !startup) return;
 
       try {
-        const response = await fetch(`/api/product/${id}/upvote`);
+        // Use ID for upvote status check since that's what the API expects
+        const response = await fetch(`/api/product/${startup.slug}/upvote`);
         const result = await response.json();
 
         if (result.success) {
@@ -126,10 +123,10 @@ export default function StartupPage({ params }: StartupPageProps) {
     };
 
     checkUpvoteStatus();
-  }, [id, isAuthenticated, session?.user?.id, startup]);
+  }, [slug, isAuthenticated, session?.user?.id, startup]); // Changed dependency from id to slug
 
   const handleUpvoteClick = async () => {
-    if (!isInLaunchWeek) {
+    if (!isInLaunchWeek || !startup) {
       return;
     }
 
@@ -150,7 +147,8 @@ export default function StartupPage({ params }: StartupPageProps) {
     setCurrentUpvotes(newCount);
 
     try {
-      const response = await fetch(`/api/product/${id}/upvote`, {
+      // Use ID for upvote API call
+      const response = await fetch(`/api/product/${startup.slug}/upvote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,17 +158,14 @@ export default function StartupPage({ params }: StartupPageProps) {
       const result = await response.json();
 
       if (result.success) {
-        // Update with actual values from server
         setUpvoted(result.data.hasUpvoted);
         setCurrentUpvotes(result.data.upvoteCount);
       } else {
-        // Revert optimistic update on error
         setUpvoted(!newUpvoted);
         setCurrentUpvotes(currentUpvotes);
         console.error("Error upvoting:", result.error);
       }
     } catch (error) {
-      // Revert optimistic update on error
       setUpvoted(!newUpvoted);
       setCurrentUpvotes(currentUpvotes);
       console.error("Error upvoting:", error);

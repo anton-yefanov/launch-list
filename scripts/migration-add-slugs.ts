@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Directory from "../models/Directory"; // Adjust path as needed
+import { Startup } from "@/models/Startup";
 import { generateSlug } from "@/utils/generateSlug";
 
 // Function to ensure slug uniqueness
@@ -11,12 +11,12 @@ async function ensureUniqueSlug(
   let counter = 1;
 
   while (true) {
-    const existingDirectory = await Directory.findOne({
+    const existingStartup = await Startup.findOne({
       slug,
       ...(excludeId && { _id: { $ne: excludeId } }),
     });
 
-    if (!existingDirectory) {
+    if (!existingStartup) {
       return slug;
     }
 
@@ -28,33 +28,33 @@ async function ensureUniqueSlug(
 const MONGODB_URI =
   "mongodb+srv://antonyefanov:9E9f3a4Antongogi@cluster0.xd3no.mongodb.net/prod?retryWrites=true&w=majority&appName=Cluster0";
 
-async function migrateDirectories() {
+async function migrateStartups() {
   try {
     console.log("🚀 Starting migration to add slugs...");
 
     await mongoose.connect(MONGODB_URI);
     console.log("✅ Connected to MongoDB");
 
-    // Get all directories that don't have a slug
-    const directories = await Directory.find({ slug: { $exists: false } });
-    console.log(`📊 Found ${directories.length} directories to migrate`);
+    // Get all startups that don't have a slug
+    const startups = await Startup.find({ slug: { $exists: false } });
+    console.log(`📊 Found ${startups.length} startups to migrate`);
 
-    if (directories.length === 0) {
-      console.log("✅ No directories need migration");
+    if (startups.length === 0) {
+      console.log("✅ No startups need migration");
       return;
     }
 
-    // Process each directory
-    for (let i = 0; i < directories.length; i++) {
-      const directory = directories[i];
-      const baseSlug = generateSlug(directory.name);
-      const uniqueSlug = await ensureUniqueSlug(baseSlug, directory._id);
+    // Process each startup
+    for (let i = 0; i < startups.length; i++) {
+      const startup = startups[i];
+      const baseSlug = generateSlug(startup.name);
+      const uniqueSlug = await ensureUniqueSlug(baseSlug, startup._id);
 
-      // Update the directory with the slug
-      await Directory.findByIdAndUpdate(directory._id, { slug: uniqueSlug });
+      // Update the startup with the slug
+      await Startup.findByIdAndUpdate(startup._id, { slug: uniqueSlug });
 
       console.log(
-        `✅ [${i + 1}/${directories.length}] Updated "${directory.name}" with slug: "${uniqueSlug}"`,
+        `✅ [${i + 1}/${startups.length}] Updated "${startup.name}" with slug: "${uniqueSlug}"`,
       );
     }
 
@@ -70,7 +70,7 @@ async function migrateDirectories() {
 
 // Run the migration if this file is executed directly
 if (require.main === module) {
-  migrateDirectories()
+  migrateStartups()
     .then(() => {
       console.log("✅ Migration script completed");
       process.exit(0);
@@ -81,4 +81,4 @@ if (require.main === module) {
     });
 }
 
-export { migrateDirectories, generateSlug, ensureUniqueSlug };
+export { migrateStartups, generateSlug, ensureUniqueSlug };

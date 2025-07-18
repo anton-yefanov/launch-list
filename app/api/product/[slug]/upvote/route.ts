@@ -7,7 +7,7 @@ import { connectToDatabase } from "@/lib/database/connectToDatabase";
 // todo - remove this endpoint, get upvotes in /api/launches
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const session = await auth();
@@ -21,22 +21,12 @@ export async function GET(
       );
     }
 
-    const { id } = await params;
+    const { slug } = await params;
     const userId = new ObjectId(session.user.id);
-
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid startup ID",
-        },
-        { status: 400 },
-      );
-    }
 
     await connectToDatabase();
 
-    const startup = await Startup.findById(id);
+    const startup = await Startup.findOne({ slug });
     if (!startup) {
       return NextResponse.json(
         {
@@ -72,7 +62,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const session = await auth();
@@ -86,24 +76,13 @@ export async function POST(
       );
     }
 
-    const { id } = await params;
+    const { slug } = await params;
     const userId = new ObjectId(session.user.id);
-
-    // Validate startup ID
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid startup ID",
-        },
-        { status: 400 },
-      );
-    }
 
     await connectToDatabase();
 
     // Find the startup
-    const startup = await Startup.findById(id);
+    const startup = await Startup.findOne({ slug });
     if (!startup) {
       return NextResponse.json(
         {
@@ -136,7 +115,7 @@ export async function POST(
     if (hasUpvoted) {
       // Remove upvote (toggle off)
       updatedStartup = await Startup.findByIdAndUpdate(
-        id,
+        startup.id,
         { $pull: { upvotes: userId } },
         { new: true },
       );
@@ -144,7 +123,7 @@ export async function POST(
     } else {
       // Add upvote (toggle on)
       updatedStartup = await Startup.findByIdAndUpdate(
-        id,
+        startup.id,
         { $addToSet: { upvotes: userId } },
         { new: true },
       );

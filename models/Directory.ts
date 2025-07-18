@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { generateSlug } from "@/utils/generateSlug";
 
 export enum DirectoryTag {
   FreeLaunch = "FREE_LAUNCH",
@@ -28,17 +29,6 @@ export type IDirectory = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
-// Helper function to generate slug
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "") // Remove special characters
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
-}
 
 const DirectorySchema = new mongoose.Schema<IDirectory>(
   {
