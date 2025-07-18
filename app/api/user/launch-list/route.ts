@@ -7,14 +7,11 @@ import { connectToDatabase } from "@/lib/database/connectToDatabase";
 export async function GET() {
   try {
     const session = await auth();
-    console.log("Session:", JSON.stringify(session, null, 2));
 
     if (!session?.user?.email) {
       console.log("No session or email found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    console.log("Looking for user with email:", session.user.email);
 
     await connectToDatabase();
 
@@ -23,14 +20,7 @@ export async function GET() {
       model: Directory,
     });
 
-    console.log("User found:", user ? "Yes" : "No");
-    console.log("User ID:", user?._id);
-
     if (!user) {
-      // Let's also check if any users exist at all
-      const userCount = await User.countDocuments();
-      console.log("Total users in database:", userCount);
-
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 

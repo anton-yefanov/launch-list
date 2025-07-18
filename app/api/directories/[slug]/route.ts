@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
 import mongoose from "mongoose";
+import { auth } from "@/auth";
 import { User } from "@/models/User";
 import Directory from "@/models/Directory";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
     const session = await auth();
 
-    // Replace with your actual database query
-    // This is a placeholder - you'll need to implement your actual database logic
-    const directory = await fetchDirectoryById(id);
+    const directory = await Directory.findOne({ slug });
 
     if (!directory) {
       return NextResponse.json(
@@ -29,7 +27,7 @@ export async function GET(
     if (session?.user) {
       isInLaunchList = await checkIfDirectoryInUserLaunchList(
         session.user.id as string,
-        id,
+        directory._id.toString(),
       );
     }
 
@@ -43,18 +41,6 @@ export async function GET(
       { error: "Internal server error" },
       { status: 500 },
     );
-  }
-}
-
-async function fetchDirectoryById(id: string) {
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Invalid Directory ID format.");
-  }
-  try {
-    return await Directory.findById(id);
-  } catch (error) {
-    console.error(`Error fetching directory by ID ${id}:`, error);
-    throw new Error("Could not fetch directory due to a database error.");
   }
 }
 

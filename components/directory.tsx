@@ -18,18 +18,7 @@ import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-interface DirectoryType {
-  _id: string;
-  name: string;
-  description: string;
-  url: string;
-  bgColor: string;
-  domainRating: number;
-  viewsPerMonth: number;
-  tags: string[];
-  submitDifficulty: string;
-}
+import { DirectoryType } from "@/types/DirectoryType";
 
 export const Directory = ({
   directory,
@@ -41,12 +30,7 @@ export const Directory = ({
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/website/${directory._id}`);
-  };
-
-  const handleIconClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    router.push(`/website/${directory._id}`);
+    router.push(`/website/${directory.slug}`);
   };
 
   const handleLinkClick = (e: React.MouseEvent) => {
@@ -61,15 +45,14 @@ export const Directory = ({
     <TooltipProvider>
       {/* Mobile version */}
       <div
-        className="flex flex-col select-none bg-white border p-3 rounded-md sm:hidden cursor-pointer hover:bg-gray-50 transition-colors"
+        className="group flex flex-col select-none bg-white border p-3 rounded-md sm:hidden cursor-pointer hover:bg-gray-50 transition-colors"
         onClick={handleCardClick}
       >
         <div className="flex items-start justify-between mb-3">
           <div className="flex gap-3 items-center flex-1 min-w-0">
             <div
               style={{ backgroundColor: directory.bgColor }}
-              className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center group"
-              onClick={handleIconClick}
+              className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center"
             >
               <div className="relative">
                 <div className="bg-white relative rounded-xs text-xs px-0.5 border h-5 w-4 grid place-items-center border-black -rotate-6 z-10">
@@ -189,14 +172,13 @@ export const Directory = ({
 
       {/* Desktop version */}
       <div
-        className="hidden sm:flex cursor-pointer select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md hover:bg-gray-50 transition-colors"
+        className="group hidden sm:flex cursor-pointer select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md hover:bg-gray-50 transition-colors"
         onClick={handleCardClick}
       >
         <div className="flex gap-2">
           <div
             style={{ backgroundColor: directory.bgColor }}
             className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center"
-            onClick={handleIconClick}
           >
             <div className="relative">
               <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">

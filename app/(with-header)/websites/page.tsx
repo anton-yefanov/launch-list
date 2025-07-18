@@ -35,18 +35,7 @@ import { DirectoryTag } from "@/types/DirectoryTag";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
 import { useSession } from "next-auth/react";
 import { CheckedState } from "@radix-ui/react-checkbox";
-
-interface DirectoryType {
-  _id: string;
-  name: string;
-  description: string;
-  url: string;
-  bgColor: string;
-  domainRating: number;
-  viewsPerMonth: number;
-  tags: DirectoryTag[];
-  submitDifficulty: SubmitDifficulty;
-}
+import { DirectoryType } from "@/types/DirectoryType";
 
 interface DirectoriesResponse {
   directories: DirectoryType[];

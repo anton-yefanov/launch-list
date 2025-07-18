@@ -46,7 +46,7 @@ export default function WebsitePage() {
     const fetchDirectory = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/directories/${params.id}`);
+        const response = await fetch(`/api/directories/${params.slug}`);
         const data = await response.json();
         setDirectory(data.directory);
         setIsInLaunchList(data.isInLaunchList || false);
@@ -57,10 +57,10 @@ export default function WebsitePage() {
       }
     };
 
-    if (params.id) {
+    if (params.slug) {
       fetchDirectory();
     }
-  }, [params.id]);
+  }, [params.slug]);
 
   const handleLaunchListToggle = async () => {
     if (!isLoggedIn) {

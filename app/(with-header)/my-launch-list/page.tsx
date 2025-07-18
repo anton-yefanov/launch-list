@@ -9,18 +9,7 @@ import ConfettiExplosion from "react-confetti-explosion";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-
-interface DirectoryType {
-  _id: string;
-  name: string;
-  description: string;
-  url: string;
-  bgColor: string;
-  domainRating: number;
-  viewsPerMonth: number;
-  tags: string[];
-  submitDifficulty: string;
-}
+import { DirectoryType } from "@/types/DirectoryType";
 
 interface LaunchListData {
   launchList: DirectoryType[];

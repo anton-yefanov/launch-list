@@ -19,6 +19,7 @@ export type IDirectory = {
   name: string;
   description: string;
   url: string;
+  slug: string;
   bgColor: string;
   domainRating: number;
   viewsPerMonth: number;
@@ -27,6 +28,17 @@ export type IDirectory = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+// Helper function to generate slug
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+}
 
 const DirectorySchema = new mongoose.Schema<IDirectory>(
   {
@@ -51,6 +63,20 @@ const DirectorySchema = new mongoose.Schema<IDirectory>(
           return /^https?:\/\/.+/.test(v);
         },
         message: "Please enter a valid URL",
+      },
+    },
+    slug: {
+      type: String,
+      required: [true, "Slug is required"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: function (v: string) {
+          return /^[a-z0-9-]+$/.test(v);
+        },
+        message:
+          "Slug can only contain lowercase letters, numbers, and hyphens",
       },
     },
     bgColor: {
@@ -93,6 +119,34 @@ const DirectorySchema = new mongoose.Schema<IDirectory>(
     collection: "directories",
   },
 );
+
+// Auto-generate slug from name before saving (for new documents)
+DirectorySchema.pre("save", async function (next) {
+  if (this.isNew || this.isModified("name")) {
+    if (!this.slug) {
+      const baseSlug = generateSlug(this.name);
+      let slug = baseSlug;
+      let counter = 1;
+
+      // Ensure slug uniqueness
+      while (true) {
+        const existingDirectory = await mongoose.models.Directory.findOne({
+          slug,
+          _id: { $ne: this._id },
+        });
+
+        if (!existingDirectory) {
+          this.slug = slug;
+          break;
+        }
+
+        slug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+    }
+  }
+  next();
+});
 
 DirectorySchema.index({ name: 1 });
 DirectorySchema.index({ domainRating: -1 });
