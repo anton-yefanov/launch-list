@@ -63,7 +63,6 @@ export default function LaunchPage() {
       try {
         const response = await fetch("/api/launches");
         const result = await response.json();
-        console.log(result);
 
         if (result.success && result.data) {
           const {
@@ -328,7 +327,6 @@ const WinnerProduct = ({
   winner: Winner;
   showCup: boolean;
 }) => {
-  console.log(winner.slug);
   return (
     <Link
       href={`/product/${winner.slug}`}

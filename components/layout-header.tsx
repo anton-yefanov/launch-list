@@ -97,13 +97,10 @@ export const LayoutHeader = () => {
               className="rounded"
             />
           </Link>
-          <Link
-            href={
-              isAuth
-                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`
-                : "/login"
-            }
-            target={isAuth ? "_blank" : "_self"}
+          <button
+            onClick={() => {
+              window.location.href = isAuth ? "/submit" : "/login";
+            }}
             className={cn(
               buttonVariants({ variant: "outline" }),
               "active:scale-95 transition-all duration-100",
@@ -111,7 +108,7 @@ export const LayoutHeader = () => {
           >
             <Plus />
             Submit
-          </Link>
+          </button>
         </div>
         <div className="flex items-center gap-2">
           {buttonContent && (

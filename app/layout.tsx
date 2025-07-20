@@ -32,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script src="https://tally.so/widgets/embed.js" />
         <SessionProvider>
           {process.env.NODE_ENV === "production" && (
             <Script
