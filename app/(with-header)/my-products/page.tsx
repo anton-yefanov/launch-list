@@ -8,7 +8,6 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
-  RefreshCw,
   ArrowUpRight,
   Award,
 } from "lucide-react";
@@ -49,10 +48,6 @@ export default function MyStartupsPage() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchStartups();
-  };
-
   if (loading) {
     return (
       <div>
@@ -88,25 +83,6 @@ export default function MyStartupsPage() {
       <div className="flex items-center justify-between px-2.5">
         <h1 className="text-2xl font-semibold mb-4">My products</h1>
       </div>
-
-      {startups.length === 0 ? (
-        <div className="border border-sky-400 items-center justify-between rounded-xl p-3 flex flex-col sm:flex-row bg-sky-200/30">
-          <p className="text-gray-600 mb-4 sm:mb-0 text-center">
-            Just submitted your product? It might take a moment to appear.
-          </p>
-          <div className="space-y-3">
-            <Button
-              onClick={handleRefresh}
-              variant="outline"
-              className="flex items-center gap-2 active:scale-92 transition-all duration-100"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </Button>
-          </div>
-        </div>
-      ) : null}
-
       {startups.length === 0 ? (
         <div className="text-center select-none flex flex-col items-center py-12">
           <Rocket size={50} strokeWidth={1} className="mb-8" />
