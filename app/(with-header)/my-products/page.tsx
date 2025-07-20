@@ -10,6 +10,7 @@ import {
   XCircle,
   RefreshCw,
   ArrowUpRight,
+  Award,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -211,7 +212,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       {startup.status === "launched" && (
         <div className="flex flex-col gap-2">
           <Link
-            href={`/product/${startup._id}`}
+            href={`/product/${startup.slug}`}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",
@@ -220,16 +221,16 @@ const ProductCard = ({ startup }: ProductCardProps) => {
             View
             <ArrowUpRight />
           </Link>
-          {/*<Link*/}
-          {/*  href={`/product/${startup._id}/badges`}*/}
-          {/*  className={cn(*/}
-          {/*    buttonVariants({ variant: "outline", size: "sm" }),*/}
-          {/*    "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",*/}
-          {/*  )}*/}
-          {/*>*/}
-          {/*  Badges*/}
-          {/*  <Award />*/}
-          {/*</Link>*/}
+          <Link
+            href={`/product/${startup.slug}/badges`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",
+            )}
+          >
+            Badges
+            <Award />
+          </Link>
           {/*  size="sm"*/}
           {/*  className="min-w-30 ml-auto active:scale-95 transition-all duration-100"*/}
           {/*  onClick={handleShare}*/}
