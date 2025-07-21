@@ -40,6 +40,31 @@ interface Winner extends Startup {
   place: number;
 }
 
+// Helper function to calculate rankings with ties
+const calculateRankings = (startups: Startup[]): Winner[] => {
+  // Sort by upvotes in descending order
+  const sorted = [...startups].sort((a, b) => b.upvotes - a.upvotes);
+
+  const winners: Winner[] = [];
+  let currentRank = 1;
+
+  for (let i = 0; i < sorted.length; i++) {
+    const startup = sorted[i];
+
+    // If this is not the first item and upvotes are different from previous, update rank
+    if (i > 0 && startup.upvotes !== sorted[i - 1].upvotes) {
+      currentRank = i + 1;
+    }
+
+    winners.push({
+      ...startup,
+      place: currentRank,
+    });
+  }
+
+  return winners;
+};
+
 export default function LaunchPage() {
   const router = useRouter();
 
@@ -53,7 +78,7 @@ export default function LaunchPage() {
 
   const [loading, setLoading] = useState(true);
   const [startups, setStartups] = useState<Startup[]>([]);
-  const [lastWeekStartups, setLastWeekStartups] = useState<Startup[]>([]);
+  const [lastWeekStartups, setLastWeekStartups] = useState<Winner[]>([]);
   const { data: session, status } = useSession();
   const user = session?.user;
   const isAuth = status === "authenticated";
@@ -72,7 +97,12 @@ export default function LaunchPage() {
           } = result.data;
 
           setStartups(currentStartups || []);
-          setLastWeekStartups(lastWeekData || []);
+
+          // Calculate rankings for last week's startups
+          const rankedLastWeek = lastWeekData
+            ? calculateRankings(lastWeekData)
+            : [];
+          setLastWeekStartups(rankedLastWeek);
 
           if (nextLaunchWeek) {
             setLaunchData({
@@ -251,11 +281,11 @@ export default function LaunchPage() {
             Last week winners
           </h2>
           <div className="flex flex-col gap-2">
-            {lastWeekStartups.map((startup, index) => (
+            {lastWeekStartups.map((winner) => (
               <WinnerProduct
-                key={startup.id}
-                winner={{ ...startup, place: index + 1 }}
-                showCup={index < 3}
+                key={winner.id}
+                winner={winner}
+                showCup={winner.place <= 3}
               />
             ))}
           </div>
