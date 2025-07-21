@@ -10,7 +10,7 @@ import {
   ArrowLeft,
   FileText,
 } from "lucide-react";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,16 +24,20 @@ interface StartupPageProps {
   }>;
 }
 
+interface StartupWithUpvoterIds extends IStartup {
+  upvoterIds: string[];
+}
+
 export default function ProductPage({ params }: StartupPageProps) {
   const { slug } = use(params);
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [startup, setStartup] = useState<IStartup | null>(null);
+  const [startup, setStartup] = useState<StartupWithUpvoterIds | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [upvoted, setUpvoted] = useState<boolean>(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
   const [currentUpvotes, setCurrentUpvotes] = useState(0);
+  const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>([]);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(
     null,
@@ -41,6 +45,12 @@ export default function ProductPage({ params }: StartupPageProps) {
   const [isInLaunchWeek, setIsInLaunchWeek] = useState<boolean>(false);
 
   const isAuthenticated = status === "authenticated";
+
+  // Check if current user has upvoted using useMemo for performance
+  const upvoted = useMemo(() => {
+    if (!isAuthenticated || !session?.user?.id) return false;
+    return currentUpvoterIds.includes(session.user.id);
+  }, [currentUpvoterIds, isAuthenticated, session?.user?.id]);
 
   useEffect(() => {
     const fetchStartup = async () => {
@@ -52,6 +62,7 @@ export default function ProductPage({ params }: StartupPageProps) {
         if (result.success && result.data) {
           setStartup(result.data);
           setCurrentUpvotes(result.data.upvotes || 0);
+          setCurrentUpvoterIds(result.data.upvoterIds || []);
           setSelectedScreenshot(result.data.screenshots?.[0]?.url || null);
 
           await checkLaunchWeekStatus(result.data.slug);
@@ -104,27 +115,6 @@ export default function ProductPage({ params }: StartupPageProps) {
     }
   };
 
-  useEffect(() => {
-    const checkUpvoteStatus = async () => {
-      if (!isAuthenticated || !session?.user?.id || !startup) return;
-
-      try {
-        // Use ID for upvote status check since that's what the API expects
-        const response = await fetch(`/api/product/${startup.slug}/upvote`);
-        const result = await response.json();
-
-        if (result.success) {
-          setUpvoted(result.data.hasUpvoted);
-          setCurrentUpvotes(result.data.upvoteCount);
-        }
-      } catch (error) {
-        console.error("Error checking upvote status:", error);
-      }
-    };
-
-    checkUpvoteStatus();
-  }, [slug, isAuthenticated, session?.user?.id, startup]); // Changed dependency from id to slug
-
   const handleUpvoteClick = async () => {
     if (!isInLaunchWeek || !startup) {
       return;
@@ -135,19 +125,23 @@ export default function ProductPage({ params }: StartupPageProps) {
       return;
     }
 
-    if (isUpvoting) return;
+    if (isUpvoting || !session?.user?.id) return;
 
     setIsUpvoting(true);
 
     // Optimistic update
+    const userId = session.user.id;
     const newUpvoted = !upvoted;
     const newCount = newUpvoted ? currentUpvotes + 1 : currentUpvotes - 1;
+    const newUpvoterIds = newUpvoted
+      ? [...currentUpvoterIds, userId]
+      : currentUpvoterIds.filter((id) => id !== userId);
 
-    setUpvoted(newUpvoted);
     setCurrentUpvotes(newCount);
+    setCurrentUpvoterIds(newUpvoterIds);
 
     try {
-      // Use ID for upvote API call
+      // Use slug for upvote API call
       const response = await fetch(`/api/product/${startup.slug}/upvote`, {
         method: "POST",
         headers: {
@@ -158,16 +152,18 @@ export default function ProductPage({ params }: StartupPageProps) {
       const result = await response.json();
 
       if (result.success) {
-        setUpvoted(result.data.hasUpvoted);
         setCurrentUpvotes(result.data.upvoteCount);
+        // Optionally update upvoter IDs from server if your API returns them
       } else {
-        setUpvoted(!newUpvoted);
+        // Revert optimistic update on error
         setCurrentUpvotes(currentUpvotes);
+        setCurrentUpvoterIds(startup.upvoterIds || []);
         console.error("Error upvoting:", result.error);
       }
     } catch (error) {
-      setUpvoted(!newUpvoted);
+      // Revert optimistic update on error
       setCurrentUpvotes(currentUpvotes);
+      setCurrentUpvoterIds(startup.upvoterIds || []);
       console.error("Error upvoting:", error);
     } finally {
       setIsUpvoting(false);

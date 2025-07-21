@@ -2,16 +2,19 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 import { Startup } from "@/models/Startup";
 import LaunchWeek from "@/models/LaunchWeek";
+import mongoose from "mongoose";
 
 interface StartupResponse {
   id: string;
   name: string;
+  slug: string;
   tagline: string;
   logo: string;
   websiteUrl: string;
   submittedBy: string;
   twitterUsername: string;
   upvotes: number;
+  upvoterIds: string[]; // Add this field
   categories: string[];
   submittedAt: Date;
 }
@@ -58,6 +61,10 @@ export async function GET() {
           submittedBy: startup.submittedBy,
           twitterUsername: startup.twitterUsername,
           upvotes: startup.upvotes?.length || 0,
+          upvoterIds:
+            startup.upvotes?.map((id: mongoose.Types.ObjectId) =>
+              id.toString(),
+            ) || [],
           categories: startup.categories,
           submittedAt: startup.submittedAt || startup.createdAt,
         }))
@@ -82,6 +89,10 @@ export async function GET() {
           submittedBy: startup.submittedBy,
           twitterUsername: startup.twitterUsername,
           upvotes: startup.upvotes?.length || 0,
+          upvoterIds:
+            startup.upvotes?.map((id: mongoose.Types.ObjectId) =>
+              id.toString(),
+            ) || [],
           categories: startup.categories,
           submittedAt: startup.submittedAt || startup.createdAt,
         }))

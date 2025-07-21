@@ -88,7 +88,7 @@ export default function SubmitPage() {
           loading="lazy"
           width="100%"
           height="216"
-          title="Submit Your Startup"
+          title="Submit Your product"
           className="rounded-lg"
         />
       </div>

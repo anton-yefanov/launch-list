@@ -1,7 +1,7 @@
-// app/api/product/[slug]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { Startup } from "@/models/Startup";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
+import mongoose from "mongoose";
 
 export async function GET(
   request: NextRequest,
@@ -20,7 +20,6 @@ export async function GET(
       );
     }
 
-    // Only return launched startups to public (unless you want to show all)
     if (startup.status !== "launched") {
       return NextResponse.json(
         { success: false, message: "Startup not found" },
@@ -28,12 +27,15 @@ export async function GET(
       );
     }
 
-    // Convert to object and get upvotes count and categories
     const startupObject = startup.toObject();
 
     const startupData = {
       ...startupObject,
       upvotes: startup.upvoteCount || startup.upvotes?.length || 0,
+      upvoterIds:
+        startup.upvotes?.map((upvote: mongoose.Types.ObjectId) =>
+          upvote._id.toString(),
+        ) || [],
       categories: startup.categories || [],
     };
 

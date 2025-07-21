@@ -16,14 +16,11 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { IStartup } from "@/models/Startup";
-import { useSession } from "next-auth/react";
 
 export default function MyStartupsPage() {
   const [startups, setStartups] = useState<IStartup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { data: session } = useSession();
-  const user = session?.user;
 
   useEffect(() => {
     fetchStartups();
@@ -93,12 +90,13 @@ export default function MyStartupsPage() {
               Launch your product to get a backlink and live on homepage for a
               week
             </p>
-            <Link
-              href={`https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`}
-              className={cn(buttonVariants({ variant: "outline" }))}
+            <Button
+              onClick={() => (window.location.href = "/submit")}
+              variant="outline"
+              className="active:scale-95 transition-all duration-100"
             >
               <Plus /> Add your first product
-            </Link>
+            </Button>
           </>
         </div>
       ) : (
@@ -166,10 +164,10 @@ const ProductCard = ({ startup }: ProductCardProps) => {
         {startup.status === "approved" && (
           <div className="mt-2 p-2 bg-green-50 rounded-md border border-green-200">
             <div className="text-xs text-green-700 font-medium">
-              🎉 Congratulations! Your startup has been approved for launch
+              🎉 Congratulations! Your product has been approved for launch
             </div>
             <div className="text-xs text-green-600 mt-1">
-              You can now launch your startup
+              You can now launch your product
             </div>
           </div>
         )}

@@ -82,13 +82,13 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
       const result = await response.json();
 
       if (result.success) {
-        toast.success("Successfully launched your startup!");
+        toast.success("Successfully launched your product!");
         setOpen(false);
         onLaunchSuccess?.();
         // Redirect to home page instead of launch-success
         router.push("/");
       } else {
-        toast.error(result.error || "Failed to launch startup");
+        toast.error(result.error || "Failed to launch product");
       }
     } catch (error) {
       console.error("Error launching startup:", error);

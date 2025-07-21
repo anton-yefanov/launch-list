@@ -21,6 +21,8 @@ export async function GET(
       );
     }
 
+    console.log(session?.user);
+
     const { slug } = await params;
     const userId = new ObjectId(session.user.id);
 

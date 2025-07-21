@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronUp, Dot, Plus, Rocket } from "lucide-react";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
@@ -32,6 +32,7 @@ interface Startup {
   submittedBy: string;
   twitterUsername?: string;
   upvotes: number;
+  upvoterIds: string[]; // Add this field
   categories: string[];
   submittedAt: string;
 }
@@ -80,8 +81,7 @@ export default function LaunchPage() {
   const [loading, setLoading] = useState(true);
   const [startups, setStartups] = useState<Startup[]>([]);
   const [lastWeekStartups, setLastWeekStartups] = useState<Winner[]>([]);
-  const { data: session, status } = useSession();
-  const user = session?.user;
+  const { status } = useSession();
   const isAuth = status === "authenticated";
 
   useEffect(() => {
@@ -255,24 +255,21 @@ export default function LaunchPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center text-center py-10 text-gray-500">
-          <Rocket size={60} className="mb-4" />
-          <p className="mb-4">No startups launching this week, yet</p>
-          <Link
-            href={
-              isAuth
-                ? `https://tally.so/r/nW6pYJ?email=${user?.email}&redirect=${process.env.NEXT_PUBLIC_URL}/my-products`
-                : "/login"
+        <div className="flex flex-col justify-center items-center text-center py-10">
+          <Rocket size={60} className="mb-4 text-gray-500" />
+          <p className="mb-4 text-gray-500">
+            No startups launching this week, yet
+          </p>
+          <Button
+            variant="outline"
+            onClick={() =>
+              (window.location.href = isAuth ? "/submit" : "/login")
             }
-            target={isAuth ? "_blank" : "_self"}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "text-black active:scale-97 transition-all duration-100",
-            )}
+            className={cn("active:scale-95 transition-all duration-100")}
           >
             <Plus />
             Be the first to launch!
-          </Link>
+          </Button>
         </div>
       )}
 
@@ -415,32 +412,19 @@ const WinnerProduct = ({
 const Product = ({ startup }: { startup: Startup }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [upvoted, setUpvoted] = useState<boolean>(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
   const [currentUpvotes, setCurrentUpvotes] = useState(startup.upvotes);
+  const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>(
+    startup.upvoterIds || [],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const isAuthenticated = status === "authenticated";
 
-  // Check if user has upvoted this startup when component mounts
-  useEffect(() => {
-    const checkUpvoteStatus = async () => {
-      if (!isAuthenticated || !session?.user?.id) return;
-
-      try {
-        const response = await fetch(`/api/product/${startup.slug}/upvote`);
-        const result = await response.json();
-
-        if (result.success) {
-          setUpvoted(result.data.hasUpvoted);
-          setCurrentUpvotes(result.data.upvoteCount);
-        }
-      } catch (error) {
-        console.error("Error checking upvote status:", error);
-      }
-    };
-
-    checkUpvoteStatus();
-  }, [startup.id, isAuthenticated, session?.user?.id]);
+  // Check if current user has upvoted using useMemo for performance
+  const upvoted = useMemo(() => {
+    if (!isAuthenticated || !session?.user?.id) return false;
+    return currentUpvoterIds.includes(session.user.id);
+  }, [currentUpvoterIds, isAuthenticated, session?.user?.id]);
 
   const handleUpvoteClick = async (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the row click
@@ -450,16 +434,20 @@ const Product = ({ startup }: { startup: Startup }) => {
       return;
     }
 
-    if (isLoading) return; // Prevent multiple clicks
+    if (isLoading || !session?.user?.id) return; // Prevent multiple clicks
 
     setIsLoading(true);
 
     // Optimistic update
+    const userId = session.user.id;
     const newUpvoted = !upvoted;
     const newCount = newUpvoted ? currentUpvotes + 1 : currentUpvotes - 1;
+    const newUpvoterIds = newUpvoted
+      ? [...currentUpvoterIds, userId]
+      : currentUpvoterIds.filter((id) => id !== userId);
 
-    setUpvoted(newUpvoted);
     setCurrentUpvotes(newCount);
+    setCurrentUpvoterIds(newUpvoterIds);
 
     try {
       const response = await fetch(`/api/product/${startup.slug}/upvote`, {
@@ -472,19 +460,19 @@ const Product = ({ startup }: { startup: Startup }) => {
       const result = await response.json();
 
       if (result.success) {
-        // Update with actual values from server
-        setUpvoted(result.data.hasUpvoted);
+        // Update with actual values from server if they differ
         setCurrentUpvotes(result.data.upvoteCount);
+        // Optionally update upvoter IDs from server if your API returns them
       } else {
         // Revert optimistic update on error
-        setUpvoted(!newUpvoted);
         setCurrentUpvotes(currentUpvotes);
+        setCurrentUpvoterIds(startup.upvoterIds || []);
         console.error("Error upvoting:", result.error);
       }
     } catch (error) {
       // Revert optimistic update on error
-      setUpvoted(!newUpvoted);
       setCurrentUpvotes(currentUpvotes);
+      setCurrentUpvoterIds(startup.upvoterIds || []);
       console.error("Error upvoting:", error);
     } finally {
       setIsLoading(false);
