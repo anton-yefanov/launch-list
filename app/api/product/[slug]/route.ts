@@ -31,7 +31,6 @@ export async function GET(
 
     const startupData = {
       ...startupObject,
-      upvotes: startup.upvoteCount || startup.upvotes?.length || 0,
       upvoterIds:
         startup.upvotes?.map((upvote: mongoose.Types.ObjectId) =>
           upvote._id.toString(),

@@ -36,7 +36,6 @@ export default function ProductPage({ params }: StartupPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
-  const [currentUpvotes, setCurrentUpvotes] = useState(0);
   const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>([]);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(
@@ -45,6 +44,11 @@ export default function ProductPage({ params }: StartupPageProps) {
   const [isInLaunchWeek, setIsInLaunchWeek] = useState<boolean>(false);
 
   const isAuthenticated = status === "authenticated";
+
+  // Derive upvote count from upvoterIds array
+  const currentUpvotes = useMemo(() => {
+    return currentUpvoterIds.length;
+  }, [currentUpvoterIds]);
 
   // Check if current user has upvoted using useMemo for performance
   const upvoted = useMemo(() => {
@@ -61,7 +65,6 @@ export default function ProductPage({ params }: StartupPageProps) {
 
         if (result.success && result.data) {
           setStartup(result.data);
-          setCurrentUpvotes(result.data.upvotes || 0);
           setCurrentUpvoterIds(result.data.upvoterIds || []);
           setSelectedScreenshot(result.data.screenshots?.[0]?.url || null);
 
@@ -132,12 +135,10 @@ export default function ProductPage({ params }: StartupPageProps) {
     // Optimistic update
     const userId = session.user.id;
     const newUpvoted = !upvoted;
-    const newCount = newUpvoted ? currentUpvotes + 1 : currentUpvotes - 1;
     const newUpvoterIds = newUpvoted
       ? [...currentUpvoterIds, userId]
       : currentUpvoterIds.filter((id) => id !== userId);
 
-    setCurrentUpvotes(newCount);
     setCurrentUpvoterIds(newUpvoterIds);
 
     try {
@@ -152,18 +153,15 @@ export default function ProductPage({ params }: StartupPageProps) {
       const result = await response.json();
 
       if (result.success) {
-        setCurrentUpvotes(result.data.upvoteCount);
-        // Optionally update upvoter IDs from server if your API returns them
+        if (result.data.upvoterIds) {
+          setCurrentUpvoterIds(result.data.upvoterIds);
+        }
       } else {
-        // Revert optimistic update on error
-        setCurrentUpvotes(currentUpvotes);
-        setCurrentUpvoterIds(startup.upvoterIds || []);
+        setCurrentUpvoterIds(currentUpvoterIds);
         console.error("Error upvoting:", result.error);
       }
     } catch (error) {
-      // Revert optimistic update on error
-      setCurrentUpvotes(currentUpvotes);
-      setCurrentUpvoterIds(startup.upvoterIds || []);
+      setCurrentUpvoterIds(currentUpvoterIds);
       console.error("Error upvoting:", error);
     } finally {
       setIsUpvoting(false);
