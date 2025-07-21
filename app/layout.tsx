@@ -35,17 +35,24 @@ export default function RootLayout({
         <Script src="https://tally.so/widgets/embed.js" />
         <SessionProvider>
           {process.env.NODE_ENV === "production" && (
-            <Script
-              id="clarity-script"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `(function(c,l,a,r,i,t,y){
+            <>
+              <Script
+                id="clarity-script"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                  __html: `(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "rxc19ieo33");`,
-              }}
-            />
+                }}
+              />
+              <Script
+                defer
+                src="https://cloud.umami.is/script.js"
+                data-website-id="a71a99b4-a72a-412c-95ee-e7ece1ed0970"
+              />
+            </>
           )}
           <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 pb-8 px-4">
             <div className="max-w-2xl mx-auto">{children}</div>
