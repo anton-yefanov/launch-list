@@ -174,7 +174,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       </div>
       {startup.status === "approved" && (
         <Link
-          href={`/my-products/launch/${startup._id}`}
+          href={`/my-products/launch/${startup.slug}`}
           className={cn(
             buttonVariants({ variant: "default", size: "sm" }),
             "min-w-30 ml-auto active:scale-95 transition-all duration-100 bg-primary-color hover:bg-primary-color/80",
@@ -205,6 +205,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
             Badges
             <Award />
           </Link>
+          {/*<Button*/}
           {/*  size="sm"*/}
           {/*  className="min-w-30 ml-auto active:scale-95 transition-all duration-100"*/}
           {/*  onClick={handleShare}*/}

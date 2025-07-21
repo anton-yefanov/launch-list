@@ -1,4 +1,4 @@
-import LaunchWeek from "@/app/(with-header)/my-products/launch/[startupId]/_components/launch-week";
+import LaunchWeek from "@/app/(with-header)/my-products/launch/[slug]/_components/launch-week";
 
 export type LaunchWeekData = {
   id: string;

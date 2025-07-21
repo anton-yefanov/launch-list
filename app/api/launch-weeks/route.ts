@@ -63,15 +63,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const { startupId, launchWeekId, launchType } = await request.json();
+    const { slug, launchWeekId, launchType } = await request.json();
 
     // Validate required fields
-    if (!startupId || !launchWeekId || !launchType) {
+    if (!slug || !launchWeekId || !launchType) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            "Missing required fields: startupId, launchWeekId, or launchType",
+          error: "Missing required fields: slug, launchWeekId, or launchType",
         },
         { status: 400 },
       );
@@ -101,8 +100,7 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
 
-    // Validate startup exists and is approved
-    const startup = await Startup.findById(startupId);
+    const startup = await Startup.findOne({ slug });
     if (!startup) {
       return NextResponse.json(
         {
@@ -161,7 +159,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const startupObjectId = new ObjectId(startupId);
+    const startupObjectId = new ObjectId(startup._id);
     const isAlreadyLaunched = launchWeek.startupsLaunchIds?.some(
       (id: ObjectId) => id.toString() === startupObjectId.toString(),
     );
@@ -202,7 +200,7 @@ export async function POST(request: Request) {
 
     // Auto-upvote: Ensure the submitter has upvoted their own startup
     const updatedStartup = await Startup.findByIdAndUpdate(
-      startupId,
+      startup.id,
       {
         $addToSet: { upvotes: userId }, // $addToSet prevents duplicates
         launchedWeekId: launchWeekId,
@@ -216,7 +214,7 @@ export async function POST(request: Request) {
       success: true,
       message: "Startup successfully launched",
       data: {
-        startupId,
+        startupId: startup.id,
         launchWeekId,
         launchType,
         upvoteCount: updatedStartup.upvotes.length,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   Dialog,
@@ -15,10 +15,12 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useMobile } from "@/hooks/use-mobile";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LaunchWeekData } from "../page";
 import { toast } from "sonner";
+import Image from "next/image";
+import ConfettiExplosion from "react-confetti-explosion";
 
 type LaunchOption = { id: string; title: string; benefits: string[] };
 
@@ -32,17 +34,78 @@ const LAUNCH_OPTIONS: LaunchOption[] = [
       "Free traffic on your project",
     ],
   },
-  // {
-  //   id: "premium",
-  //   title: "Premium Launch",
-  //   benefits: [
-  //     "Skip queue",
-  //     "Your website on homepage for a week",
-  //     "Badge for your website",
-  //     "High authority backlink, guaranteed",
-  //   ],
-  // },
 ];
+
+interface BadgeSectionProps {
+  slug: string;
+}
+
+// Extracted Badge Section Component
+const BadgeSection = ({ slug }: BadgeSectionProps) => {
+  const [copied, setCopied] = useState(false);
+
+  const embedCode = `<a style={{display: "block", width: "fit-content"}}
+   href="${process.env.NEXT_PUBLIC_URL}/product/${slug}"
+   target="_blank">
+  <img style={{height: "50px"}}
+       src="${process.env.NEXT_PUBLIC_URL}/badges/svg/launch_list_badge_live.svg"
+       alt="Launch List Badge" />
+</a>`;
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      await navigator.clipboard.writeText(embedCode);
+      setCopied(true);
+      toast.success("Badge code copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      toast.error("Failed to copy code");
+    }
+  };
+
+  return (
+    <div className="rounded-lg p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="font-semibold text-2xl">Add badge to your website</h4>
+          <p className="text-muted-foreground text-lg">
+            Build trust and highlight your launch
+          </p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Image
+            src="/badges/svg/launch_list_badge_live.svg"
+            alt="Live now badge"
+            width={180}
+            height={57}
+          />
+          <Button
+            onClick={handleCopy}
+            variant="outline"
+            className="w-full"
+            type="button"
+          >
+            {copied ? (
+              <>
+                <Check size={14} />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Copy size={14} />
+                Copy badge code
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface LaunchWeekProps {
   launchWeekData: LaunchWeekData;
@@ -51,12 +114,15 @@ interface LaunchWeekProps {
 
 const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
   const [open, setOpen] = useState(false);
+  const [congratsOpen, setCongratsOpen] = useState(false);
   const [isLaunching, setIsLaunching] = useState(false);
+  const showConfettiRef = useRef(false);
+  const [confettiKey, setConfettiKey] = useState(0);
   const isMobile = useMobile();
   const params = useParams();
   const router = useRouter();
 
-  const startupId = params.startupId as string;
+  const slug = params.slug as string;
 
   const handleLaunch = async (launchType: "free" | "premium") => {
     if (launchType === "premium") {
@@ -66,6 +132,15 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
 
     setIsLaunching(true);
 
+    // Use ref to control confetti without re-render
+    showConfettiRef.current = true;
+    setConfettiKey((prev) => prev + 1); // Trigger confetti component re-render
+
+    // Hide confetti after 3 seconds
+    setTimeout(() => {
+      showConfettiRef.current = false;
+    }, 3000);
+
     try {
       const response = await fetch("/api/launch-weeks", {
         method: "POST",
@@ -73,7 +148,7 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          startupId,
+          slug,
           launchWeekId: launchWeekData.id,
           launchType,
         }),
@@ -82,11 +157,9 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
       const result = await response.json();
 
       if (result.success) {
-        toast.success("Successfully launched your product!");
         setOpen(false);
+        setCongratsOpen(true);
         onLaunchSuccess?.();
-        // Redirect to home page instead of launch-success
-        router.push("/");
       } else {
         toast.error(result.error || "Failed to launch product");
       }
@@ -96,6 +169,20 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
     } finally {
       setIsLaunching(false);
     }
+  };
+
+  const handleCongratsClose = () => {
+    setCongratsOpen(false);
+    showConfettiRef.current = false;
+    router.push("/my-products");
+  };
+
+  const handleShare = () => {
+    const productUrl = `${process.env.NEXT_PUBLIC_URL || "https://launchlist.co"}/product/${slug}`;
+    const tweetText = `My product is live on @LaunchList_\n\n${productUrl}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+
+    window.open(twitterUrl, "_blank");
   };
 
   // Handle immediate free launch on click
@@ -217,16 +304,118 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
             Free full
           </div>
         )}
-        {/*<Separator orientation="vertical" />*/}
-        {/*<div className="text-sm font-medium text-amber-400 bg-amber-100/60 px-2 rounded">*/}
-        {/*  Premium available*/}
-        {/*</div>*/}
       </div>
     </div>
   );
 
-  // Since we're handling launch immediately, we don't need the dialog/drawer anymore
-  // But keeping the components in case you want to revert or use them elsewhere
+  const CongratsDialog = () => (
+    <>
+      {/* Confetti explosions positioned to cover the whole page */}
+      {showConfettiRef.current && (
+        <>
+          {/* Center confetti */}
+          <div
+            key={`center-${confettiKey}`}
+            className="fixed inset-0 flex items-center justify-center pointer-events-none z-[60]"
+          >
+            <ConfettiExplosion
+              force={0.8}
+              duration={3000}
+              particleCount={50}
+              width={1600}
+              height={1200}
+            />
+          </div>
+          {/* Top-left confetti */}
+          <div
+            key={`top-left-${confettiKey}`}
+            className="fixed top-20 left-20 pointer-events-none z-[60]"
+          >
+            <ConfettiExplosion
+              force={0.6}
+              duration={2500}
+              particleCount={50}
+              width={800}
+              height={600}
+            />
+          </div>
+          {/* Top-right confetti */}
+          <div
+            key={`top-right-${confettiKey}`}
+            className="fixed top-20 right-20 pointer-events-none z-[60]"
+          >
+            <ConfettiExplosion
+              force={0.6}
+              duration={2500}
+              particleCount={50}
+              width={800}
+              height={600}
+            />
+          </div>
+          {/* Bottom-left confetti */}
+          <div
+            key={`bottom-left-${confettiKey}`}
+            className="fixed bottom-20 left-20 pointer-events-none z-[60]"
+          >
+            <ConfettiExplosion
+              force={0.6}
+              duration={2500}
+              particleCount={50}
+              width={800}
+              height={600}
+            />
+          </div>
+          {/* Bottom-right confetti */}
+          <div
+            key={`bottom-right-${confettiKey}`}
+            className="fixed bottom-20 right-20 pointer-events-none z-[60]"
+          >
+            <ConfettiExplosion
+              force={0.6}
+              duration={2500}
+              particleCount={50}
+              width={800}
+              height={600}
+            />
+          </div>
+        </>
+      )}
+
+      <Dialog open={congratsOpen} onOpenChange={handleCongratsClose}>
+        <DialogContent>
+          <DialogHeader className="text-center">
+            <DialogTitle className="text-3xl text-center">
+              Congratulations! 🎉
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 pt-2">
+            <p className="text-center text-muted-foreground">
+              Your product has been successfully launched!
+              <br /> Here&#39;s how you can get bring more attention to it:
+            </p>
+            <BadgeSection slug={slug} />
+            <div className="flex gap-2 pt-2">
+              <Button
+                onClick={handleShare}
+                className="flex-1 bg-primary-color hover:bg-primary-color/90"
+              >
+                Share to 𝕏
+              </Button>
+              <Button
+                onClick={handleCongratsClose}
+                variant="outline"
+                className="flex-1 "
+              >
+                Go to My Products
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+
   if (isMobile) {
     return (
       <>
@@ -241,6 +430,7 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
             </div>
           </DrawerContent>
         </Drawer>
+        <CongratsDialog />
       </>
     );
   }
@@ -256,6 +446,7 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
           <LaunchOptions />
         </DialogContent>
       </Dialog>
+      <CongratsDialog />
     </>
   );
 };
