@@ -40,32 +40,6 @@ interface Winner extends Startup {
   place: number;
 }
 
-// Helper function to assign proper rankings based on upvotes
-const assignRankings = (startups: Startup[]): Winner[] => {
-  // Sort by upvotes in descending order
-  const sorted = [...startups].sort((a, b) => b.upvotes - a.upvotes);
-
-  const winners: Winner[] = [];
-  let currentRank = 1;
-
-  for (let i = 0; i < sorted.length; i++) {
-    const startup = sorted[i];
-
-    // If this isn't the first item and upvotes are different from previous,
-    // update the rank to the current position + 1
-    if (i > 0 && startup.upvotes !== sorted[i - 1].upvotes) {
-      currentRank = i + 1;
-    }
-
-    winners.push({
-      ...startup,
-      place: currentRank,
-    });
-  }
-
-  return winners;
-};
-
 export default function LaunchPage() {
   const router = useRouter();
 
@@ -79,7 +53,7 @@ export default function LaunchPage() {
 
   const [loading, setLoading] = useState(true);
   const [startups, setStartups] = useState<Startup[]>([]);
-  const [lastWeekWinners, setLastWeekWinners] = useState<Winner[]>([]);
+  const [lastWeekStartups, setLastWeekStartups] = useState<Startup[]>([]);
   const { data: session, status } = useSession();
   const user = session?.user;
   const isAuth = status === "authenticated";
@@ -98,12 +72,7 @@ export default function LaunchPage() {
           } = result.data;
 
           setStartups(currentStartups || []);
-
-          // Apply proper ranking to last week's startups
-          if (lastWeekData && lastWeekData.length > 0) {
-            const rankedWinners = assignRankings(lastWeekData);
-            setLastWeekWinners(rankedWinners);
-          }
+          setLastWeekStartups(lastWeekData || []);
 
           if (nextLaunchWeek) {
             setLaunchData({
@@ -276,17 +245,17 @@ export default function LaunchPage() {
         </div>
       )}
 
-      {!loading && lastWeekWinners.length > 0 && (
+      {!loading && lastWeekStartups.length > 0 && (
         <>
           <h2 className="text-3xl font-semibold my-8 px-2.5">
             Last week winners
           </h2>
           <div className="flex flex-col gap-2">
-            {lastWeekWinners.map((winner) => (
+            {lastWeekStartups.map((startup, index) => (
               <WinnerProduct
-                key={winner.id}
-                winner={winner}
-                showCup={winner.place <= 3}
+                key={startup.id}
+                winner={{ ...startup, place: index + 1 }}
+                showCup={index < 3}
               />
             ))}
           </div>
