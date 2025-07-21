@@ -31,8 +31,7 @@ interface Startup {
   websiteUrl: string;
   submittedBy: string;
   twitterUsername?: string;
-  upvotes: number;
-  upvoterIds: string[]; // Add this field
+  upvoterIds: string[];
   categories: string[];
   submittedAt: string;
 }
@@ -43,16 +42,19 @@ interface Winner extends Startup {
 
 // Helper function to calculate rankings with ties
 const calculateRankings = (startups: Startup[]): Winner[] => {
-  // Sort by upvotes in descending order
-  const sorted = [...startups].sort((a, b) => b.upvotes - a.upvotes);
+  // Sort by upvoterIds length in descending order
+  const sorted = [...startups].sort(
+    (a, b) => b.upvoterIds.length - a.upvoterIds.length,
+  );
 
   const winners: Winner[] = [];
   let currentPlace = 1;
   let previousUpvotes: number | null = null;
 
   for (const startup of sorted) {
+    const upvoteCount = startup.upvoterIds.length;
     // If this startup has different upvotes than the previous one, increment place
-    if (previousUpvotes !== null && startup.upvotes !== previousUpvotes) {
+    if (previousUpvotes !== null && upvoteCount !== previousUpvotes) {
       currentPlace++;
     }
 
@@ -61,7 +63,7 @@ const calculateRankings = (startups: Startup[]): Winner[] => {
       place: currentPlace,
     });
 
-    previousUpvotes = startup.upvotes;
+    previousUpvotes = upvoteCount;
   }
 
   return winners;
@@ -403,7 +405,7 @@ const WinnerProduct = ({
         variant="outline"
         className="size-12.5 ml-auto flex flex-col gap-0 hover:bg-background"
       >
-        {winner.upvotes}
+        {winner.upvoterIds.length}
       </Button>
     </Link>
   );
@@ -413,12 +415,14 @@ const Product = ({ startup }: { startup: Startup }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
-  const [currentUpvotes, setCurrentUpvotes] = useState(startup.upvotes);
   const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>(
     startup.upvoterIds || [],
   );
   const [isLoading, setIsLoading] = useState(false);
   const isAuthenticated = status === "authenticated";
+
+  // Derive upvote count from upvoterIds
+  const currentUpvotes = currentUpvoterIds.length;
 
   // Check if current user has upvoted using useMemo for performance
   const upvoted = useMemo(() => {
@@ -441,12 +445,10 @@ const Product = ({ startup }: { startup: Startup }) => {
     // Optimistic update
     const userId = session.user.id;
     const newUpvoted = !upvoted;
-    const newCount = newUpvoted ? currentUpvotes + 1 : currentUpvotes - 1;
     const newUpvoterIds = newUpvoted
       ? [...currentUpvoterIds, userId]
       : currentUpvoterIds.filter((id) => id !== userId);
 
-    setCurrentUpvotes(newCount);
     setCurrentUpvoterIds(newUpvoterIds);
 
     try {
@@ -460,18 +462,18 @@ const Product = ({ startup }: { startup: Startup }) => {
       const result = await response.json();
 
       if (result.success) {
-        // Update with actual values from server if they differ
-        setCurrentUpvotes(result.data.upvoteCount);
-        // Optionally update upvoter IDs from server if your API returns them
+        // If your upvote API returns the updated upvoter IDs, use them
+        // Otherwise, keep the optimistic update
+        if (result.data.upvoterIds) {
+          setCurrentUpvoterIds(result.data.upvoterIds);
+        }
       } else {
         // Revert optimistic update on error
-        setCurrentUpvotes(currentUpvotes);
         setCurrentUpvoterIds(startup.upvoterIds || []);
         console.error("Error upvoting:", result.error);
       }
     } catch (error) {
       // Revert optimistic update on error
-      setCurrentUpvotes(currentUpvotes);
       setCurrentUpvoterIds(startup.upvoterIds || []);
       console.error("Error upvoting:", error);
     } finally {

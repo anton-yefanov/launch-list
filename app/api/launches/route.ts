@@ -13,8 +13,7 @@ interface StartupResponse {
   websiteUrl: string;
   submittedBy: string;
   twitterUsername: string;
-  upvotes: number;
-  upvoterIds: string[]; // Add this field
+  upvoterIds: string[];
   categories: string[];
   submittedAt: Date;
 }
@@ -60,7 +59,6 @@ export async function GET() {
           websiteUrl: startup.websiteUrl,
           submittedBy: startup.submittedBy,
           twitterUsername: startup.twitterUsername,
-          upvotes: startup.upvotes?.length || 0,
           upvoterIds:
             startup.upvotes?.map((id: mongoose.Types.ObjectId) =>
               id.toString(),
@@ -68,7 +66,7 @@ export async function GET() {
           categories: startup.categories,
           submittedAt: startup.submittedAt || startup.createdAt,
         }))
-        .sort((a, b) => b.upvotes - a.upvotes);
+        .sort((a, b) => b.upvoterIds.length - a.upvoterIds.length);
     }
 
     // Get last week startups
@@ -88,7 +86,6 @@ export async function GET() {
           websiteUrl: startup.websiteUrl,
           submittedBy: startup.submittedBy,
           twitterUsername: startup.twitterUsername,
-          upvotes: startup.upvotes?.length || 0,
           upvoterIds:
             startup.upvotes?.map((id: mongoose.Types.ObjectId) =>
               id.toString(),
@@ -96,7 +93,7 @@ export async function GET() {
           categories: startup.categories,
           submittedAt: startup.submittedAt || startup.createdAt,
         }))
-        .sort((a, b) => b.upvotes - a.upvotes);
+        .sort((a, b) => b.upvoterIds.length - a.upvoterIds.length);
     }
 
     return NextResponse.json({
