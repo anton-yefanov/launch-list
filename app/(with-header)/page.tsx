@@ -46,20 +46,21 @@ const calculateRankings = (startups: Startup[]): Winner[] => {
   const sorted = [...startups].sort((a, b) => b.upvotes - a.upvotes);
 
   const winners: Winner[] = [];
-  let currentRank = 1;
+  let currentPlace = 1;
+  let previousUpvotes: number | null = null;
 
-  for (let i = 0; i < sorted.length; i++) {
-    const startup = sorted[i];
-
-    // If this is not the first item and upvotes are different from previous, update rank
-    if (i > 0 && startup.upvotes !== sorted[i - 1].upvotes) {
-      currentRank = i + 1;
+  for (const startup of sorted) {
+    // If this startup has different upvotes than the previous one, increment place
+    if (previousUpvotes !== null && startup.upvotes !== previousUpvotes) {
+      currentPlace++;
     }
 
     winners.push({
       ...startup,
-      place: currentRank,
+      place: currentPlace,
     });
+
+    previousUpvotes = startup.upvotes;
   }
 
   return winners;
