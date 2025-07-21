@@ -26,6 +26,12 @@ interface StartupPageProps {
 
 interface StartupWithUpvoterIds extends IStartup {
   upvoterIds: string[];
+  isInLaunchWeek: boolean;
+  launchWeekInfo?: {
+    startDate: string;
+    endDate: string;
+    _id: string;
+  } | null;
 }
 
 export default function ProductPage({ params }: StartupPageProps) {
@@ -41,7 +47,6 @@ export default function ProductPage({ params }: StartupPageProps) {
   const [selectedScreenshot, setSelectedScreenshot] = useState<string | null>(
     null,
   );
-  const [isInLaunchWeek, setIsInLaunchWeek] = useState<boolean>(false);
 
   const isAuthenticated = status === "authenticated";
 
@@ -56,10 +61,12 @@ export default function ProductPage({ params }: StartupPageProps) {
     return currentUpvoterIds.includes(session.user.id);
   }, [currentUpvoterIds, isAuthenticated, session?.user?.id]);
 
+  // Get launch week status from startup data
+  const isInLaunchWeek = startup?.isInLaunchWeek ?? false;
+
   useEffect(() => {
     const fetchStartup = async () => {
       try {
-        // Use slug-based API endpoint
         const response = await fetch(`/api/product/${slug}`);
         const result = await response.json();
 
@@ -67,8 +74,7 @@ export default function ProductPage({ params }: StartupPageProps) {
           setStartup(result.data);
           setCurrentUpvoterIds(result.data.upvoterIds || []);
           setSelectedScreenshot(result.data.screenshots?.[0]?.url || null);
-
-          await checkLaunchWeekStatus(result.data.slug);
+          // No need for separate launch week status check anymore!
         } else {
           setError(result.message || "Startup not found");
         }
@@ -82,41 +88,6 @@ export default function ProductPage({ params }: StartupPageProps) {
 
     fetchStartup();
   }, [slug]);
-
-  const checkLaunchWeekStatus = async (slug: string) => {
-    try {
-      const response = await fetch(`/api/product/${slug}/launch-week-status`);
-
-      if (!response.ok) {
-        console.error(
-          "API response not ok:",
-          response.status,
-          response.statusText,
-        );
-        setIsInLaunchWeek(true);
-        return;
-      }
-
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        console.error("API did not return JSON, got:", contentType);
-        setIsInLaunchWeek(true);
-        return;
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        setIsInLaunchWeek(result.data.isInLaunchWeek);
-      } else {
-        console.error("API returned error:", result.message);
-        setIsInLaunchWeek(true);
-      }
-    } catch (error) {
-      console.error("Error checking launch week status:", error);
-      setIsInLaunchWeek(true);
-    }
-  };
 
   const handleUpvoteClick = async () => {
     if (!isInLaunchWeek || !startup) {
