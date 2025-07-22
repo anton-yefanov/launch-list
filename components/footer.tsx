@@ -11,6 +11,16 @@ export const Footer = () => {
             className="w-38"
           />
         </a>
+        <a
+          href="https://fazier.com/launches/www.launch-list.org"
+          target="_blank"
+        >
+          <img
+            src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+            width={120}
+            alt="Fazier badge"
+          />
+        </a>
       </div>
       <div className="text-sm flex gap-4  justify-center">
         <Link href="/tos" className="text-gray-600 hover:underline">
