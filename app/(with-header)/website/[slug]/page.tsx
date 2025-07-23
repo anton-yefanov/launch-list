@@ -1,159 +1,71 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { notFound } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Check,
   DollarSign,
   ExternalLink,
-  Plus,
-  Users,
+  Frown,
   Globe,
   Hexagon,
-  Frown,
   Meh,
-  Smile,
-  Check,
-  TrendingUp,
   PawPrint,
-  ArrowLeft,
+  Smile,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DirectoryTag } from "@/types/DirectoryTag";
 import { formatNumber } from "@/lib/formatNumber";
 import { SubmitDifficulty } from "@/types/SubmitDifficulty";
-import { toast } from "sonner";
-import { useSession } from "next-auth/react";
-import { IDirectory } from "@/models/Directory";
+import { auth } from "@/auth";
+import { Metadata } from "next";
+import { BackButton } from "@/app/(with-header)/website/[slug]/_components/back-button";
+import { LaunchListButton } from "@/app/(with-header)/website/[slug]/_components/launch-list-button";
 
-export default function WebsitePage() {
-  const params = useParams();
-  const router = useRouter();
-  const { status } = useSession();
-  const isLoggedIn = status === "authenticated";
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
 
-  const [directory, setDirectory] = useState<IDirectory | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isInLaunchList, setIsInLaunchList] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
+async function getDirectory(slug: string) {
+  try {
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/directories/${slug}`, {
+      cache: "no-store",
+    });
 
-  useEffect(() => {
-    const fetchDirectory = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/directories/${params.slug}`);
-        const data = await response.json();
-        setDirectory(data.directory);
-        setIsInLaunchList(data.isInLaunchList || false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (params.slug) {
-      fetchDirectory();
-    }
-  }, [params.slug]);
-
-  const handleLaunchListToggle = async () => {
-    if (!isLoggedIn) {
-      toast.error("Please sign in to add directories to your launch list");
-      return;
+    if (!response.ok) {
+      return null;
     }
 
-    if (!directory) return;
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching directory:", error);
+    return null;
+  }
+}
 
-    setIsUpdating(true);
-    try {
-      const response = await fetch("/api/user/launch-list", {
-        method: isInLaunchList ? "DELETE" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ directoryIds: [directory._id] }),
-      });
+export default async function WebsitePage({ params }: PageProps) {
+  const session = await auth();
+  const { slug } = await params;
+  const isLoggedIn = !!session;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update launch list");
-      }
+  const data = await getDirectory(slug);
 
-      setIsInLaunchList(!isInLaunchList);
-      toast(
-        isInLaunchList
-          ? "Website removed from Launch List"
-          : "Website added to Launch List",
-        !isInLaunchList
-          ? {
-              description: "View now or later",
-              action: {
-                label: "View",
-                onClick: () => router.push("/my-launch-list"),
-              },
-            }
-          : undefined,
-      );
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to update launch list",
-      );
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div>
-        <div className="mb-6">
-          <Skeleton className="h-10 w-32 mb-4" />
-        </div>
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-16 w-16 rounded-lg" />
-            <div className="flex-1">
-              <Skeleton className="h-6 w-48 mb-2" />
-              <Skeleton className="h-4 w-96" />
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-3">
-            {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-20 rounded-lg" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+  if (!data || !data.directory) {
+    notFound();
   }
 
-  if (error || !directory) {
-    return (
-      <div>
-        <div className="text-center py-8">
-          <p className="text-red-600 mb-4">{error || "Directory not found!"}</p>
-          <Button onClick={() => router.back()} variant="outline">
-            <ArrowLeft className="size-4 mr-2" />
-            Go Back
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const { directory, isInLaunchList } = data;
 
   return (
     <div>
       <div>
-        <Button onClick={() => router.back()} variant="ghost" className="mb-4">
-          <ArrowLeft className="size-4 mr-2" />
-          Back
-        </Button>
+        <BackButton />
       </div>
 
       <div className="space-y-6">
@@ -170,9 +82,13 @@ export default function WebsitePage() {
             </div>
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{directory.name}</h1>
+            {/* Use SEO H1 if available, fallback to name */}
+            <h1 className="text-2xl font-bold">
+              {directory.h1 || directory.name}
+            </h1>
+            {/* Use new 'about' field if available, fallback to description */}
             <p className="text-base text-muted-foreground">
-              {directory.description}
+              {directory.about || directory.description}
             </p>
           </div>
         </div>
@@ -219,7 +135,9 @@ export default function WebsitePage() {
         <div>
           <h2 className="font-semibold mb-3 text-lg">Features & Pricing</h2>
           <div className="flex flex-wrap gap-2">
-            {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
+            {directory.tags.find(
+              (tag: DirectoryTag) => tag === DirectoryTag.FreeLaunch,
+            ) && (
               <Badge
                 variant="secondary"
                 className="text-green-500 bg-green-100/70"
@@ -229,7 +147,7 @@ export default function WebsitePage() {
               </Badge>
             )}
             {directory.tags.find(
-              (tag) => tag === DirectoryTag.PaidFeatures,
+              (tag: DirectoryTag) => tag === DirectoryTag.PaidFeatures,
             ) && (
               <Badge
                 variant="secondary"
@@ -246,14 +164,16 @@ export default function WebsitePage() {
               </Badge>
             )}
             {directory.tags.find(
-              (tag) => tag === DirectoryTag.SmallStartups,
+              (tag: DirectoryTag) => tag === DirectoryTag.SmallStartups,
             ) && (
               <Badge variant="secondary" className="text-sky-400 bg-sky-100">
                 <PawPrint className="size-3 mr-1" />
                 Perfect for small startups
               </Badge>
             )}
-            {directory.tags.find((tag) => tag === DirectoryTag.AI) && (
+            {directory.tags.find(
+              (tag: DirectoryTag) => tag === DirectoryTag.AI,
+            ) && (
               <Badge
                 variant="secondary"
                 className="text-purple-400 bg-purple-100"
@@ -270,32 +190,17 @@ export default function WebsitePage() {
         <div>
           <h2 className="font-semibold mb-3 text-lg">About</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            {directory.description}
+            {/* Use the new 'about' field, fallback to description */}
+            {directory.about || directory.description}
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
-          <Button
-            onClick={handleLaunchListToggle}
-            disabled={isUpdating}
-            className={cn(
-              "flex-1",
-              isInLaunchList
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-primary-color hover:bg-primary-color/90",
-            )}
-          >
-            {isInLaunchList ? (
-              <Check className="size-4 mr-2" />
-            ) : (
-              <Plus className="size-4 mr-2" />
-            )}
-            {isUpdating
-              ? "Updating..."
-              : isInLaunchList
-                ? "Added to Launch List"
-                : "Add to Launch List"}
-          </Button>
+          <LaunchListButton
+            directory={directory}
+            isLoggedIn={isLoggedIn}
+            initialIsInLaunchList={isInLaunchList}
+          />
           <Link
             href={directory.url}
             className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
@@ -320,3 +225,23 @@ const getSubmitDifficultyIcon = (it: SubmitDifficulty) => {
       return <Smile className="size-5 text-green-600" />;
   }
 };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getDirectory(slug);
+
+  if (!data?.directory) {
+    return {
+      title: "Directory Not Found",
+    };
+  }
+
+  const directory = data.directory;
+
+  return {
+    title: directory.seoTitle || directory.name,
+    description: directory.seoDescription || directory.description,
+  };
+}

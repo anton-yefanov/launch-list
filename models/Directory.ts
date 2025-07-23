@@ -18,7 +18,7 @@ export enum SubmitDifficulty {
 export type IDirectory = {
   _id: string;
   name: string;
-  description: string;
+  description: string; // Keep for backward compatibility, but will be replaced by 'about'
   url: string;
   slug: string;
   bgColor: string;
@@ -26,6 +26,13 @@ export type IDirectory = {
   viewsPerMonth: number;
   tags: DirectoryTag[];
   submitDifficulty: SubmitDifficulty;
+
+  // New SEO fields
+  seoTitle: string;
+  seoDescription: string;
+  h1: string;
+  about: string;
+
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -102,6 +109,32 @@ const DirectorySchema = new mongoose.Schema<IDirectory>(
       type: String,
       enum: Object.values(SubmitDifficulty),
       required: [true, "Submit difficulty is required"],
+    },
+
+    // New SEO fields
+    seoTitle: {
+      type: String,
+      required: false, // Will be required after migration
+      trim: true,
+      maxlength: [60, "SEO title cannot exceed 60 characters"],
+    },
+    seoDescription: {
+      type: String,
+      required: false, // Will be required after migration
+      trim: true,
+      maxlength: [160, "SEO description cannot exceed 160 characters"],
+    },
+    h1: {
+      type: String,
+      required: false, // Will be required after migration
+      trim: true,
+      maxlength: [100, "H1 cannot exceed 100 characters"],
+    },
+    about: {
+      type: String,
+      required: false, // Will be required after migration
+      trim: true,
+      maxlength: [1000, "About cannot exceed 1000 characters"],
     },
   },
   {
