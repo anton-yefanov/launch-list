@@ -67,9 +67,8 @@ export default async function WebsitePage({ params }: PageProps) {
       <div>
         <BackButton />
       </div>
-
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center gap-4">
           <div
             style={{ backgroundColor: directory.bgColor }}
             className="shrink-0 text-black font-extrabold p-3 size-16 border rounded-lg grid place-items-center select-none"
@@ -81,7 +80,7 @@ export default async function WebsitePage({ params }: PageProps) {
               <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12" />
             </div>
           </div>
-          <div className="flex-1">
+          <div className="flex-1 text-center">
             <h1 className="text-2xl font-bold">{directory.h1}</h1>
             <p className="text-base text-muted-foreground">
               {directory.description}
