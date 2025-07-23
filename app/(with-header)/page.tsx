@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Footer } from "@/components/footer";
 import { formatNumber } from "@/lib/formatNumber";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface LaunchWeek {
   id: string;
@@ -83,8 +84,6 @@ export default function LaunchPage() {
   const [loading, setLoading] = useState(true);
   const [startups, setStartups] = useState<Startup[]>([]);
   const [lastWeekStartups, setLastWeekStartups] = useState<Winner[]>([]);
-  const { status } = useSession();
-  const isAuth = status === "authenticated";
 
   useEffect(() => {
     const fetchLaunchData = async () => {
@@ -212,24 +211,25 @@ export default function LaunchPage() {
           </div>
         </div>
       </div>
-
       <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-semibold">Launching now</h1>
         </div>
         <div className="flex flex-col gap-2 items-center">
-          <div className="text-xs">
-            {launchData.nextLaunchWeek ? "Next launch week in" : "Loading..."}
-          </div>
-          {!loading && launchData.countdownTarget > 0 && (
+          {loading ? (
+            <Skeleton className="w-[108px] h-[16px]" />
+          ) : (
+            <div className="text-xs">Next launch week in</div>
+          )}
+
+          {loading ? (
+            <Skeleton className="w-[245px] h-[54px]" />
+          ) : (
             <FlipClockCountdown
               to={launchData.countdownTarget}
               renderOnServer
               className={scss.flipclock}
             />
-          )}
-          {loading && (
-            <div className="text-sm text-gray-500">Loading countdown...</div>
           )}
         </div>
       </div>
@@ -257,24 +257,8 @@ export default function LaunchPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center text-center py-10">
-          <Rocket size={60} className="mb-4 text-gray-500" />
-          <p className="mb-4 text-gray-500">
-            No startups launching this week, yet
-          </p>
-          <Button
-            variant="outline"
-            onClick={() =>
-              (window.location.href = isAuth ? "/submit" : "/login")
-            }
-            className={cn("active:scale-95 transition-all duration-100")}
-          >
-            <Plus />
-            Be the first to launch!
-          </Button>
-        </div>
+        <EmptyState />
       )}
-
       {!loading && lastWeekStartups.length > 0 && (
         <>
           <h2 className="text-3xl font-semibold my-8 px-2.5">
@@ -538,5 +522,25 @@ const Product = ({ startup }: { startup: Startup }) => {
         }
       />
     </>
+  );
+};
+
+const EmptyState = () => {
+  const { status } = useSession();
+  const isAuth = status === "authenticated";
+
+  return (
+    <div className="flex flex-col justify-center items-center text-center py-10">
+      <Rocket size={60} className="mb-4 text-gray-500" />
+      <p className="mb-4 text-gray-500">No startups launching this week, yet</p>
+      <Button
+        variant="outline"
+        onClick={() => (window.location.href = isAuth ? "/submit" : "/login")}
+        className={cn("active:scale-95 transition-all duration-100")}
+      >
+        <Plus />
+        Be the first to launch!
+      </Button>
+    </div>
   );
 };

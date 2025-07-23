@@ -43,6 +43,7 @@ export const LayoutHeader = () => {
   const { data: session, status } = useSession();
   const user = session?.user;
   const isAuth = status === "authenticated";
+  const isLoading = status === "loading";
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const isMobile = useMobile();
 
@@ -111,17 +112,21 @@ export const LayoutHeader = () => {
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {buttonContent && (
-            <Link
-              href={buttonContent.href}
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "group active:scale-95 transition-all duration-100",
-              )}
-            >
-              {buttonContent.icon}
-              {buttonContent.text}
-            </Link>
+          {isLoading ? (
+            <Skeleton className="w-[122px] h-[36px]" />
+          ) : (
+            buttonContent && (
+              <Link
+                href={buttonContent.href}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "group active:scale-95 transition-all duration-100",
+                )}
+              >
+                {buttonContent.icon}
+                {buttonContent.text}
+              </Link>
+            )
           )}
 
           {status === "loading" ? (
