@@ -137,7 +137,7 @@ export default function WebsitePage() {
     return (
       <div>
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">{error || "Directory not found"}</p>
+          <p className="text-red-600 mb-4">{error || "Directory not found!"}</p>
           <Button onClick={() => router.back()} variant="outline">
             <ArrowLeft className="size-4 mr-2" />
             Go Back
