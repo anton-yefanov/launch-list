@@ -33,7 +33,7 @@ interface PageProps {
 
 async function getDirectory(slug: string) {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/directories/${slug}`, {
       cache: "no-store",
     });
@@ -82,13 +82,9 @@ export default async function WebsitePage({ params }: PageProps) {
             </div>
           </div>
           <div className="flex-1">
-            {/* Use SEO H1 if available, fallback to name */}
-            <h1 className="text-2xl font-bold">
-              {directory.h1 || directory.name}
-            </h1>
-            {/* Use new 'about' field if available, fallback to description */}
+            <h1 className="text-2xl font-bold">{directory.h1}</h1>
             <p className="text-base text-muted-foreground">
-              {directory.about || directory.description}
+              {directory.description}
             </p>
           </div>
         </div>
