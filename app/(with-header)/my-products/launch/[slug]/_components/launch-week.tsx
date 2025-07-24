@@ -310,10 +310,8 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
 
   const CongratsDialog = () => (
     <>
-      {/* Confetti explosions positioned to cover the whole page */}
       {showConfettiRef.current && (
         <>
-          {/* Center confetti */}
           <div
             key={`center-${confettiKey}`}
             className="fixed inset-0 flex items-center justify-center pointer-events-none z-[60]"
@@ -326,7 +324,6 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
               height={1200}
             />
           </div>
-          {/* Top-left confetti */}
           <div
             key={`top-left-${confettiKey}`}
             className="fixed top-20 left-20 pointer-events-none z-[60]"
@@ -339,7 +336,6 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
               height={600}
             />
           </div>
-          {/* Top-right confetti */}
           <div
             key={`top-right-${confettiKey}`}
             className="fixed top-20 right-20 pointer-events-none z-[60]"
@@ -352,7 +348,6 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
               height={600}
             />
           </div>
-          {/* Bottom-left confetti */}
           <div
             key={`bottom-left-${confettiKey}`}
             className="fixed bottom-20 left-20 pointer-events-none z-[60]"
@@ -365,7 +360,6 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
               height={600}
             />
           </div>
-          {/* Bottom-right confetti */}
           <div
             key={`bottom-right-${confettiKey}`}
             className="fixed bottom-20 right-20 pointer-events-none z-[60]"
@@ -385,7 +379,7 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
         <DialogContent>
           <DialogHeader className="text-center">
             <DialogTitle className="text-3xl text-center">
-              Congratulations! 🎉
+              It&#39;s Launched! 🎉
             </DialogTitle>
           </DialogHeader>
 

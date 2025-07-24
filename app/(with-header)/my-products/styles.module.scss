@@ -1,0 +1,48 @@
+// Container for the button
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  width: fit-content;
+  height: fit-content;
+  border-radius: 8px;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.rotatingButton {
+  height: 32px;
+  padding-inline: 12px;
+  outline: none;
+  border: 2px solid transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: inherit;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  background:
+    linear-gradient(#38b6ff, #38b6ff) padding-box,
+    conic-gradient(
+        from var(--angle, 0deg),
+        transparent,
+        #ffffff 10%,
+        transparent 20%
+      )
+      border-box;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  }
+}

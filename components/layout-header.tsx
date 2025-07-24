@@ -98,18 +98,16 @@ export const LayoutHeader = () => {
               className="rounded"
             />
           </Link>
-          <button
+          <Button
+            variant="outline"
             onClick={() => {
               window.location.href = isAuth ? "/submit" : "/login";
             }}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "active:scale-95 transition-all duration-100",
-            )}
+            className="active:scale-95 transition-all duration-100"
           >
             <Plus />
             Submit
-          </button>
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           {isLoading ? (
