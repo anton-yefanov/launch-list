@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import BlogPost from "@/models/BlogPost";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 import scss from "./styles.module.scss";
+import { Dot } from "lucide-react";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -93,9 +94,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <h1 className="text-4xl font-bold mb-4 text-gray-900">
               {post.title}
             </h1>
-            <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div>by Launch List</div>
+              <Dot size={12} className="text-gray-400" />
               <time dateTime={post.createdAt.toISOString()}>
-                {new Date(post.createdAt).toLocaleDateString()}
+                {new Date(post.createdAt).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
               </time>
               {post.readingTime && <span>{post.readingTime} min read</span>}
             </div>

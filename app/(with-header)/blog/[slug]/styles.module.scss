@@ -1,5 +1,5 @@
 .telegraphContent {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   line-height: 1.7;
   color: #374151;
 }
@@ -17,9 +17,15 @@
   color: #111827;
 }
 
-.telegraphContent h1 { font-size: 2.25rem; }
-.telegraphContent h2 { font-size: 1.875rem; }
-.telegraphContent h3 { font-size: 1.5rem; }
+.telegraphContent h1 {
+  font-size: 2.25rem;
+}
+.telegraphContent h2 {
+  font-size: 1.875rem;
+}
+.telegraphContent h3 {
+  font-size: 1.5rem;
+}
 
 .telegraphContent p {
   margin-bottom: 1.5rem;
@@ -27,11 +33,14 @@
 }
 
 .telegraphContent a {
-  color: #3b82f6;
-  text-decoration: underline;
-  text-decoration-color: #93c5fd;
+  color: #214f85;
   text-underline-offset: 3px;
   transition: color 0.2s ease;
+  font-weight: 600;
+
+  &:hover {
+    color: var(--primary-color) !important;
+  }
 }
 
 .telegraphContent a:hover {
@@ -54,7 +63,7 @@
   border-radius: 0.5rem;
   overflow-x: auto;
   margin: 1.5rem 0;
-  font-family: 'Fira Code', monospace;
+  font-family: "Fira Code", monospace;
 }
 
 .telegraphContent blockquote {
