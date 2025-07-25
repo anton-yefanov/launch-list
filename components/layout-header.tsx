@@ -16,6 +16,7 @@ import {
   Mail,
   MessageCircle,
   Scroll,
+  Pencil,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
@@ -145,6 +146,17 @@ export const LayoutHeader = () => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
+                {user?.role === "ADMIN" ? (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`${process.env.NEXT_PUBLIC_URL}/websites/edit`}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Pencil className="size-4" />
+                      Edit websites
+                    </Link>
+                  </DropdownMenuItem>
+                ) : null}
                 {user?.role === "ADMIN" ? (
                   <DropdownMenuItem asChild>
                     <Link
