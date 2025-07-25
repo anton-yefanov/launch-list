@@ -74,10 +74,10 @@ export default async function WebsitePage({ params }: PageProps) {
             className="shrink-0 text-black font-extrabold p-3 size-16 border rounded-lg grid place-items-center select-none"
           >
             <div className="relative">
-              <div className="bg-white relative rounded-xs text-lg h-8 w-7.5 p-0 grid place-items-center border border-black -rotate-6 z-10">
+              <div className="bg-white relative rounded text-lg size-8 p-0 grid place-items-center border border-black -rotate-6 z-10">
                 {directory.name[0]}
               </div>
-              <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12" />
+              <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded -rotate-12" />
             </div>
           </div>
           <div className="flex-1 text-center">

@@ -300,10 +300,10 @@ const Directory = ({
           className={`${bgColor} text-black font-extrabold p-2 size-10 border rounded-md grid place-items-center`}
         >
           <div className="relative">
-            <div className="bg-white relative rounded-xs text-sm px-1 border border-black -rotate-6 z-10">
+            <div className="bg-white relative rounded text-xs grid place-items-center px-1 border border-black size-5 -rotate-6 z-10">
               {title[0]}
             </div>
-            <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12" />
+            <div className="absolute size-full bg-black -left-0.5 top-[1px] rounded -rotate-12" />
           </div>
         </div>
         <div className="flex flex-col">

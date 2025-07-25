@@ -181,10 +181,10 @@ export const Directory = ({
             className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-2 size-12 border rounded-md grid place-items-center"
           >
             <div className="relative">
-              <div className="bg-white relative rounded-xs text-sm px-1 border h-6 w-5.5 grid place-items-center border-black -rotate-6 z-10">
+              <div className="bg-white relative grid place-items-center rounded text-sm px-1 border size-6 border-black -rotate-6 z-10">
                 {directory.name[0].toUpperCase()}
               </div>
-              <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
+              <div className="absolute size-full bg-black -left-0.5 top-[1px] rounded -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
             </div>
           </div>
           <div className="flex flex-col">
