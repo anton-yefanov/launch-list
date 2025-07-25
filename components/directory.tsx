@@ -8,11 +8,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Check,
   DollarSign,
   TrendingUp,
   PawPrint,
   ArrowUpRight,
+  Rocket,
 } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
@@ -55,10 +55,10 @@ export const Directory = ({
               className="shrink-0 transition-all cursor-pointer text-black font-extrabold p-1.5 size-10 border rounded-md grid place-items-center"
             >
               <div className="relative">
-                <div className="bg-white relative rounded-xs text-xs px-0.5 border h-5 w-4 grid place-items-center border-black -rotate-6 z-10">
+                <div className="bg-white relative rounded text-xs px-0.5 border size-5 grid place-items-center border-black -rotate-6 z-10">
                   {directory.name[0].toUpperCase()}
                 </div>
-                <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded-xs -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
+                <div className="absolute size-full bg-black -left-0.5 top-0.5 rounded -rotate-12 group-hover:-rotate-6 transition-transform duration-150 ease-in-out" />
               </div>
             </div>
             <div className="flex flex-col flex-1 min-w-0">
@@ -156,10 +156,9 @@ export const Directory = ({
             {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
               <Tooltip>
                 <TooltipTrigger>
-                  <Check
-                    className="size-8 p-1.5 text-green-400 bg-green-100 rounded-full border-2 border-white relative"
-                    size={20}
-                  />
+                  <div className="size-8 place-items-center grid rounded-full border-2 border-white text-green-400 bg-green-100 relative">
+                    <Rocket size={16} />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent side="top">
                   <p>Launch for Free</p>
@@ -265,10 +264,9 @@ export const Directory = ({
             {directory.tags.find((tag) => tag === DirectoryTag.FreeLaunch) && (
               <Tooltip>
                 <TooltipTrigger>
-                  <Check
-                    className="size-6 p-1 text-green-500 bg-green-100/70 rounded-full border-2 border-white relative"
-                    size={25}
-                  />
+                  <div className="size-6 place-items-center grid rounded-full border-2 border-white text-green-400 bg-green-100/70 relative">
+                    <Rocket size={12} />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
                   <p>Launch for Free</p>
@@ -277,7 +275,7 @@ export const Directory = ({
             )}
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-center justify-center min-w-[70px]">
               <div className="grid place-items-center h-fit w-10">
                 <span className="font-bold text-sm">
                   {formatNumber(directory.viewsPerMonth)}

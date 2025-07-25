@@ -3,7 +3,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  Check,
   DollarSign,
   ExternalLink,
   Frown,
@@ -11,6 +10,7 @@ import {
   Hexagon,
   Meh,
   PawPrint,
+  Rocket,
   Smile,
   TrendingUp,
   Users,
@@ -137,7 +137,7 @@ export default async function WebsitePage({ params }: PageProps) {
                 variant="secondary"
                 className="text-green-500 bg-green-100/70"
               >
-                <Check className="size-3 mr-1" />
+                <Rocket className="size-3 mr-1" />
                 Launch for Free
               </Badge>
             )}
