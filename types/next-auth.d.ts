@@ -7,6 +7,8 @@ declare module "next-auth" {
     user: {
       id: string;
       role: "REGULAR" | "ADMIN";
+      launchListCount: number;
+      launchedDirectoriesCount: number;
       name?: string | null;
       email?: string | null;
       image?: string | null;
@@ -17,5 +19,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     role?: "REGULAR" | "ADMIN";
+    launchListCount?: number;
+    launchedDirectoriesCount?: number;
   }
 }

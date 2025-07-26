@@ -4,12 +4,18 @@ import { Directory } from "@/components/directory";
 import { useMemo, useState, useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { File } from "lucide-react";
+import { File, Trash2 } from "lucide-react";
 import ConfettiExplosion from "react-confetti-explosion";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DirectoryType } from "@/types/DirectoryType";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 interface LaunchListData {
   launchList: DirectoryType[];
@@ -83,6 +89,38 @@ export default function MyLaunchListPage() {
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Failed to update status",
+      );
+    }
+  };
+
+  // Remove from launch list
+  const removeFromLaunchList = async (directoryId: string) => {
+    try {
+      const response = await fetch("/api/user/launch-list/remove", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          directoryId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to remove from launch list");
+      }
+
+      // Remove from local state
+      setLaunchList((prev) => prev.filter((dir) => dir._id !== directoryId));
+      setLaunchedDirectories((prev) => prev.filter((id) => id !== directoryId));
+
+      toast.success("Removed from launch list");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Failed to remove from launch list",
       );
     }
   };
@@ -161,6 +199,7 @@ export default function MyLaunchListPage() {
                 directory={directory}
                 isLaunched={launchedDirectories.includes(directory._id)}
                 onToggleLaunched={toggleLaunched}
+                onRemoveFromLaunchList={removeFromLaunchList}
               />
             ))}
           </>
@@ -174,64 +213,92 @@ const LaunchListItem = ({
   directory,
   isLaunched,
   onToggleLaunched,
+  onRemoveFromLaunchList,
 }: {
   directory: DirectoryType;
   isLaunched: boolean;
   onToggleLaunched: (directoryId: string, currentStatus: boolean) => void;
+  onRemoveFromLaunchList: (directoryId: string) => void;
 }) => {
   const [isExploding, setIsExploding] = useState(false);
 
   const LaunchedButton = useMemo(() => {
     return (
-      <div className="relative">
-        <Button
-          className={`min-w-26 justify-start relative active:scale-95 transition-all duration-100 items-center ${
-            isLaunched
-              ? "bg-green-600 hover:bg-green-600/80"
-              : "bg-primary-color hover:bg-primary-color/90"
-          }`}
-          variant="outline"
-          onClick={() => {
-            if (!isLaunched) {
-              setIsExploding(true);
-              setTimeout(() => setIsExploding(false), 1000);
-            }
-            onToggleLaunched(directory._id, isLaunched);
-          }}
-        >
-          {isExploding && (
-            <ConfettiExplosion
-              force={0.4}
-              duration={2000}
-              particleCount={30}
-              width={400}
-              className="absolute top-0 left-0"
-            />
-          )}
-          <div
-            className={`w-4 h-4 rounded border-2 border-white bg-white flex items-center justify-center ${
-              isLaunched ? "bg-white" : "bg-transparent"
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <Button
+            className={`min-w-26 justify-start relative active:scale-95 transition-all duration-100 items-center ${
+              isLaunched
+                ? "bg-green-600 hover:bg-green-600/80"
+                : "bg-primary-color hover:bg-primary-color/90"
             }`}
+            variant="outline"
+            onClick={() => {
+              if (!isLaunched) {
+                setIsExploding(true);
+                setTimeout(() => setIsExploding(false), 1000);
+              }
+              onToggleLaunched(directory._id, isLaunched);
+            }}
           >
-            {isLaunched && (
-              <svg
-                className="w-3 h-3 text-primary-color"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            {isExploding && (
+              <ConfettiExplosion
+                force={0.4}
+                duration={2000}
+                particleCount={30}
+                width={400}
+                className="absolute top-0 left-0"
+              />
             )}
-          </div>
-          <div className="text-white">{isLaunched ? "Done!" : "Launch"}</div>
-        </Button>
+            <div
+              className={`w-4 h-4 rounded border-2 border-white bg-white flex items-center justify-center ${
+                isLaunched ? "bg-white" : "bg-transparent"
+              }`}
+            >
+              {isLaunched && (
+                <svg
+                  className="w-3 h-3 text-primary-color"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+            </div>
+            <div className="text-white">{isLaunched ? "Done!" : "Launch"}</div>
+          </Button>
+        </div>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="p-2 h-9 w-9 border-red-200 hover:bg-red-50 hover:border-red-300 active:scale-95 transition-all duration-100"
+                onClick={() => onRemoveFromLaunchList(directory._id)}
+              >
+                <Trash2 size={14} className="text-red-500" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>Remove from Launch List</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     );
-  }, [isLaunched, isExploding, directory._id, onToggleLaunched]);
+  }, [
+    isLaunched,
+    isExploding,
+    directory._id,
+    onToggleLaunched,
+    onRemoveFromLaunchList,
+  ]);
 
   return (
     <Directory

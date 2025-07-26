@@ -66,8 +66,12 @@ export const LayoutHeader = () => {
         href: "/websites",
         icon: <List />,
         text: isMobile ? "Browse" : "Browse collection",
+        showCounter: false,
       };
     } else {
+      const launchedCount = user?.launchedDirectoriesCount || 0;
+      const launchListCount = user?.launchListCount || 0;
+
       return {
         href: isMyLaunchListPage ? "/websites" : "/my-launch-list",
         icon: isMyLaunchListPage ? <List /> : <File />,
@@ -76,9 +80,18 @@ export const LayoutHeader = () => {
             ? "Browse"
             : "Browse collection"
           : "Launch List",
+        showCounter: !isMyLaunchListPage,
+        counter: `${launchedCount}/${launchListCount}`,
       };
     }
-  }, [isAuth, isMobile, isMyLaunchListPage, isWebsitesPage]);
+  }, [
+    isAuth,
+    isMobile,
+    isMyLaunchListPage,
+    isWebsitesPage,
+    user?.launchedDirectoriesCount,
+    user?.launchListCount,
+  ]);
 
   const buttonContent = getButtonContent();
 
@@ -123,7 +136,14 @@ export const LayoutHeader = () => {
                 )}
               >
                 {buttonContent.icon}
-                {buttonContent.text}
+                <span className="flex items-center gap-1">
+                  {buttonContent.text}
+                  {/*{buttonContent.showCounter && (*/}
+                  {/*  <span className="ml-1 px-1.5 py-0.5 text-xs bg-muted rounded text-muted-foreground font-mono">*/}
+                  {/*    {buttonContent.counter}*/}
+                  {/*  </span>*/}
+                  {/*)}*/}
+                </span>
               </Link>
             )
           )}
