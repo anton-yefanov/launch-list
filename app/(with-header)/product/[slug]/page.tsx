@@ -11,6 +11,7 @@ import UpvoteButton from "@/app/(with-header)/product/[slug]/_components/upvote-
 import ScreenshotGallery, {
   Screenshot,
 } from "@/app/(with-header)/product/[slug]/_components/screenshot-gallery";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 interface StartupPageProps {
   params: Promise<{
@@ -143,6 +144,7 @@ export default async function ProductPage({ params }: StartupPageProps) {
       />
 
       <div>
+        <ScrollToTop />
         <div className="mb-4">
           <BackButton />
         </div>

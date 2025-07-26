@@ -1,8 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 export default function Loading() {
   return (
     <div>
+      <ScrollToTop />
       <div>
         {/* Back button skeleton */}
         <Skeleton className="h-10 w-20 mb-4" />

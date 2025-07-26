@@ -24,6 +24,7 @@ import { auth } from "@/auth";
 import { Metadata } from "next";
 import { BackButton } from "@/app/(with-header)/website/[slug]/_components/back-button";
 import { LaunchListButton } from "@/app/(with-header)/website/[slug]/_components/launch-list-button";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 interface PageProps {
   params: Promise<{
@@ -64,6 +65,7 @@ export default async function WebsitePage({ params }: PageProps) {
 
   return (
     <div>
+      <ScrollToTop />
       <div>
         <BackButton />
       </div>
