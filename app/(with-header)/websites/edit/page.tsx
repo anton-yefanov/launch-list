@@ -551,7 +551,11 @@ export default function AdminEditWebsitesPage() {
       <div className="flex gap-2">
         <Tooltip>
           <TooltipTrigger
-            onClick={() => handleEdit(directory)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleEdit(directory);
+            }}
             className={cn(
               buttonVariants({
                 variant: "outline",
@@ -570,7 +574,11 @@ export default function AdminEditWebsitesPage() {
 
         <Tooltip>
           <TooltipTrigger
-            onClick={() => setDeleteConfirmId(directory._id)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDeleteConfirmId(directory._id);
+            }}
             className={cn(
               buttonVariants({
                 variant: "destructive",

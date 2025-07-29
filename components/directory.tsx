@@ -27,6 +27,7 @@ export const Directory = ({
   buttonComponent: ReactNode;
 }) => {
   const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
   };
 
