@@ -154,7 +154,7 @@ export default async function WebsitePage({ params }: PageProps) {
                 Website offers Paid features
               </Badge>
             )}
-            {directory.viewsPerMonth >= 50000 && (
+            {directory.viewsPerMonth >= 20000 && (
               <Badge variant="secondary" className="text-rose-400 bg-rose-100">
                 <TrendingUp className="size-3 mr-1" />
                 High Traffic

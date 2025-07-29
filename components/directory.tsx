@@ -107,7 +107,7 @@ export const Directory = ({
                 </TooltipContent>
               </Tooltip>
             )}
-            {directory.viewsPerMonth >= 50000 && (
+            {directory.viewsPerMonth >= 20000 && (
               <Tooltip>
                 <TooltipTrigger>
                   <TrendingUp
@@ -214,7 +214,7 @@ export const Directory = ({
                 </TooltipContent>
               </Tooltip>
             )}
-            {directory.viewsPerMonth >= 50000 && (
+            {directory.viewsPerMonth >= 20000 && (
               <Tooltip>
                 <TooltipTrigger>
                   <TrendingUp
