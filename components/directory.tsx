@@ -16,9 +16,8 @@ import {
 } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { DirectoryTag } from "@/types/DirectoryTag";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { DirectoryType } from "@/types/DirectoryType";
+import Link from "next/link";
 
 export const Directory = ({
   directory,
@@ -27,26 +26,23 @@ export const Directory = ({
   directory: DirectoryType;
   buttonComponent: ReactNode;
 }) => {
-  const router = useRouter();
-
-  const handleCardClick = () => {
-    router.push(`/website/${directory.slug}`);
-  };
-
-  const handleLinkClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+  };
+
+  const handleDirectoryNameClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(directory.url, "_blank");
   };
 
   return (
     <TooltipProvider>
       {/* Mobile version */}
-      <div
+      <Link
+        href={`/website/${directory.slug}`}
+        target="_blank"
         className="group flex flex-col select-none bg-white border p-3 rounded-md sm:hidden cursor-pointer hover:bg-gray-50 transition-colors"
-        onClick={handleCardClick}
       >
         <div className="flex items-start justify-between mb-3">
           <div className="flex gap-3 items-center flex-1 min-w-0">
@@ -62,17 +58,15 @@ export const Directory = ({
               </div>
             </div>
             <div className="flex flex-col flex-1 min-w-0">
-              <Link
-                href={directory.url}
-                target="_blank"
-                className="flex gap-1 items-center group w-fit"
-                onClick={handleLinkClick}
+              <div
+                className="flex gap-1 items-center group w-fit cursor-pointer hover:underline"
+                onClick={handleDirectoryNameClick}
               >
                 <div className="font-semibold text-base truncate">
                   {directory.name}
                 </div>
                 <ArrowUpRight size={12} className="shrink-0" />
-              </Link>
+              </div>
               <div className="text-xs text-gray-600">
                 Launch to get backlink
               </div>
@@ -167,12 +161,13 @@ export const Directory = ({
             )}
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Desktop version */}
-      <div
+      <Link
+        href={`/website/${directory.slug}`}
+        target="_blank"
         className="group hidden sm:flex cursor-pointer select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md hover:bg-gray-50 transition-colors"
-        onClick={handleCardClick}
       >
         <div className="flex gap-2">
           <div
@@ -187,18 +182,16 @@ export const Directory = ({
             </div>
           </div>
           <div className="flex flex-col">
-            <Link
-              href={directory.url}
-              target="_blank"
-              className="flex gap-1 group items-center group w-fit"
-              onClick={handleLinkClick}
+            <div
+              className="flex gap-1 group items-center group w-fit cursor-pointer"
+              onClick={handleDirectoryNameClick}
             >
               <div className="font-semibold text-lg">{directory.name}</div>
               <ArrowUpRight
                 size={12}
                 className="sm:hidden sm:group-hover:flex"
               />
-            </Link>
+            </div>
             <div className="text-xs">
               {`Launch here to get a ${directory.domainRating >= 50 ? "high authority " : ""}backlink`}
             </div>
@@ -292,7 +285,7 @@ export const Directory = ({
           </div>
           <div onClick={handleButtonClick}>{buttonComponent}</div>
         </div>
-      </div>
+      </Link>
     </TooltipProvider>
   );
 };
