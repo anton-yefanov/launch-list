@@ -18,7 +18,7 @@ export enum SubmitDifficulty {
 export type IDirectory = {
   _id: string;
   name: string;
-  description: string; // Keep for backward compatibility, but will be replaced by 'about'
+  description: string;
   url: string;
   slug: string;
   bgColor: string;

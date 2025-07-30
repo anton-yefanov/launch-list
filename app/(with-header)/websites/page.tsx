@@ -7,6 +7,8 @@ import {
   FilePlus,
   FilterIcon as Funnel,
   ListFilter,
+  Search,
+  X,
 } from "lucide-react";
 import {
   Tooltip,
@@ -24,6 +26,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Directory } from "@/components/directory";
 import { LoginDialog } from "@/components/login-dialog";
@@ -86,6 +89,7 @@ export default function CollectionPage() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { status } = useSession();
   const isAuth = status === "authenticated";
   const hasSortActive = sortBy !== "none";
@@ -137,6 +141,11 @@ export default function CollectionPage() {
 
   const clearAllFilters = () => {
     setFilters(initialFilterState);
+    setSearchTerm("");
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
   };
 
   const hasActiveFilters = useMemo(() => {
@@ -151,12 +160,25 @@ export default function CollectionPage() {
     );
   }, [filters]);
 
+  const hasActiveSearch = searchTerm.trim().length > 0;
+
   const filteredAndSortedDirectories = useMemo(() => {
     let filtered = directories;
 
-    // Apply filters
+    // Apply search filter
+    if (hasActiveSearch) {
+      const searchLower = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(
+        (directory) =>
+          directory.name.toLowerCase().includes(searchLower) ||
+          directory.description?.toLowerCase().includes(searchLower) ||
+          directory.url.toLowerCase().includes(searchLower),
+      );
+    }
+
+    // Apply other filters
     if (hasActiveFilters) {
-      filtered = directories.filter((directory) => {
+      filtered = filtered.filter((directory) => {
         // High traffic filter
         if (
           filters.highTraffic &&
@@ -222,7 +244,14 @@ export default function CollectionPage() {
           return 0;
       }
     });
-  }, [directories, sortBy, filters, hasActiveFilters]);
+  }, [
+    directories,
+    sortBy,
+    filters,
+    hasActiveFilters,
+    searchTerm,
+    hasActiveSearch,
+  ]);
 
   const addAllToLaunchList = async () => {
     const directoriesToAdd = filteredAndSortedDirectories.filter(
@@ -389,18 +418,6 @@ export default function CollectionPage() {
   return (
     <TooltipProvider>
       <div>
-        {/*<div className="grid grid-cols-1 sm:grid-cols-3 gap-2">*/}
-        {/*  <Card title="I launched on 100+ websites" category="Article" />*/}
-        {/*  <Card*/}
-        {/*    title="Best directories for Small Startups (75+)"*/}
-        {/*    category="Collection"*/}
-        {/*  />*/}
-        {/*  <Card*/}
-        {/*    title="Best directories for Small Startups (75+)"*/}
-        {/*    category="Collection"*/}
-        {/*  />*/}
-        {/*</div>*/}
-        {/*<FeaturedSection />*/}
         <div className="flex items-center justify-between pb-2 sticky top-17 bg-background z-20">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             {loading ? (
@@ -408,6 +425,11 @@ export default function CollectionPage() {
             ) : (
               <div className="text-xl font-semibold">
                 {filteredAndSortedDirectories.length} Websites
+                {(hasActiveSearch || hasActiveFilters) && (
+                  <span className="text-sm font-normal text-muted-foreground ml-2">
+                    (filtered from {directories.length})
+                  </span>
+                )}
               </div>
             )}
             <Button
@@ -458,7 +480,7 @@ export default function CollectionPage() {
                   disabled={loading}
                   className={cn(
                     "size-8 active:scale-95 transition-all duration-100",
-                    hasActiveFilters &&
+                    (hasActiveFilters || hasActiveSearch) &&
                       "border-sky-300 bg-sky-200/30 hover:bg-sky-300/20",
                   )}
                 >
@@ -469,7 +491,7 @@ export default function CollectionPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Filters</h4>
-                    {hasActiveFilters && (
+                    {(hasActiveFilters || hasActiveSearch) && (
                       <Button
                         variant="ghost"
                         size="sm"
@@ -597,6 +619,28 @@ export default function CollectionPage() {
             </DropdownMenu>
           </div>
         </div>
+        <div className="mb-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground size-4" />
+            <Input
+              type="text"
+              placeholder="Search directories by name, description, or URL..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-10"
+            />
+            {hasActiveSearch && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearSearch}
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </div>
         <div className="flex flex-col gap-2 mt-1">
           {loading ? (
             <>
@@ -606,13 +650,39 @@ export default function CollectionPage() {
             </>
           ) : (
             <>
-              {filteredAndSortedDirectories.map((directory) => (
-                <Directory
-                  key={directory._id}
-                  directory={directory}
-                  buttonComponent={AddButton(directory._id)}
-                />
-              ))}
+              {filteredAndSortedDirectories.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    {hasActiveSearch || hasActiveFilters
+                      ? "No directories match your search criteria."
+                      : "No directories found."}
+                  </p>
+                  {(hasActiveSearch || hasActiveFilters) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAllFilters}
+                      className="mt-2"
+                    >
+                      Clear filters
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                filteredAndSortedDirectories.map((directory, index) => (
+                  <div key={directory._id}>
+                    <Directory
+                      directory={directory}
+                      buttonComponent={AddButton(directory._id)}
+                    />
+                    {/* Show banner after every 10 directories (index 9, 19, 29, etc.) */}
+                    {(index + 1) % 10 === 0 &&
+                      index < filteredAndSortedDirectories.length - 1 && (
+                        <SubmitBanner />
+                      )}
+                  </div>
+                ))
+              )}
             </>
           )}
         </div>
@@ -634,22 +704,21 @@ export default function CollectionPage() {
   );
 }
 
-// const Card = ({ title, category }: { title: string; category: string }) => {
-//   return (
-//     <div className="relative bg-gradient-to-br from-white to-purple-50/70 rounded-lg border overflow-hidden select-none">
-//       <Image
-//         src="/me.png"
-//         alt="star"
-//         width={100}
-//         height={30}
-//         draggable={false}
-//         className="absolute inset-0 w-full h-full object-cover select-none"
-//       />
-//       <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
-//       <div className="relative z-10 p-4 pt-14 pb-2 h-full flex flex-col justify-end">
-//         <div className="font-semibold text-white">{title}</div>
-//         <div className="text-xs mt-1 text-white/90">{category}</div>
-//       </div>
-//     </div>
-//   );
-// };
+const SubmitBanner = () => {
+  return (
+    <a
+      href={`${process.env.NEXT_PUBLIC_URL}/submit/website`}
+      className="block w-full p-4 mt-2 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg hover:from-blue-100 hover:to-purple-100 transition-colors duration-200 group"
+    >
+      <div className="text-center">
+        <p className="text-sm font-medium text-blue-900 group-hover:text-blue-800">
+          Own a directory? Add your website here and contribute to Launch List
+          community
+        </p>
+        <p className="text-xs text-blue-600 mt-1 group-hover:text-blue-500">
+          Click to submit your directory →
+        </p>
+      </div>
+    </a>
+  );
+};

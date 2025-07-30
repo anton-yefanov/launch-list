@@ -15,6 +15,7 @@ import {
   Rocket,
   Mail,
   MessageCircle,
+  CakeSliceIcon,
   Scroll,
   Pencil,
 } from "lucide-react";
@@ -115,7 +116,7 @@ export const LayoutHeader = () => {
           <Button
             variant="outline"
             onClick={() => {
-              window.location.href = isAuth ? "/submit" : "/login";
+              window.location.href = isAuth ? "/submit/product" : "/login";
             }}
             className="active:scale-95 transition-all duration-100"
           >
@@ -169,6 +170,17 @@ export const LayoutHeader = () => {
                 {user?.role === "ADMIN" ? (
                   <DropdownMenuItem asChild>
                     <Link
+                      href={`${process.env.NEXT_PUBLIC_URL}/websites/review`}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <CakeSliceIcon className="size-4" />
+                      Review websites
+                    </Link>
+                  </DropdownMenuItem>
+                ) : null}
+                {user?.role === "ADMIN" ? (
+                  <DropdownMenuItem asChild>
+                    <Link
                       href={`${process.env.NEXT_PUBLIC_URL}/websites/edit`}
                       className="flex items-center gap-2 cursor-pointer"
                     >
@@ -188,6 +200,7 @@ export const LayoutHeader = () => {
                     </Link>
                   </DropdownMenuItem>
                 ) : null}
+                {user?.role === "ADMIN" ? <DropdownMenuSeparator /> : null}
                 <DropdownMenuItem asChild>
                   <Link
                     href="/my-products"

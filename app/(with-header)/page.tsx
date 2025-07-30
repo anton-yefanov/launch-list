@@ -535,7 +535,9 @@ const EmptyState = () => {
       <p className="mb-4 text-gray-500">No startups launching this week, yet</p>
       <Button
         variant="outline"
-        onClick={() => (window.location.href = isAuth ? "/submit" : "/login")}
+        onClick={() =>
+          (window.location.href = isAuth ? "/submit/product" : "/login")
+        }
         className={cn("active:scale-95 transition-all duration-100")}
       >
         <Plus />

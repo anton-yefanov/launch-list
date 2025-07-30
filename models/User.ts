@@ -6,10 +6,11 @@ export type IUser = {
   name: string;
   email: string;
   image?: string;
-  startups: string[];
+  startups: mongoose.Schema.Types.ObjectId[];
   twitterUsername?: string;
-  launchList: string[];
-  launchedDirectories: string[];
+  launchList: mongoose.Schema.Types.ObjectId[];
+  launchedDirectories: mongoose.Schema.Types.ObjectId[];
+  submittedDirectories: mongoose.Schema.Types.ObjectId[];
 };
 
 const UserSchema = new mongoose.Schema(
@@ -35,6 +36,12 @@ const UserSchema = new mongoose.Schema(
         ref: "Directory",
       },
     ],
+    submittedDirectories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubmittedDirectory",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -44,6 +51,7 @@ const UserSchema = new mongoose.Schema(
 UserSchema.index({ twitterUsername: 1 });
 UserSchema.index({ launchList: 1 });
 UserSchema.index({ launchedDirectories: 1 });
+UserSchema.index({ submittedDirectories: 1 });
 
 export const User =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

@@ -91,7 +91,7 @@ export default function MyStartupsPage() {
               week
             </p>
             <Button
-              onClick={() => (window.location.href = "/submit")}
+              onClick={() => (window.location.href = "/submit/product")}
               variant="outline"
               className="active:scale-95 transition-all duration-100"
             >
