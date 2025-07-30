@@ -365,6 +365,7 @@ const SubmittedDirectoryCard = ({
 export default function AdminSubmittedDirectoriesPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  // Initialize with empty array to prevent undefined errors
   const [submittedDirectories, setSubmittedDirectories] = useState<
     ISubmittedDirectory[]
   >([]);
@@ -398,11 +399,26 @@ export default function AdminSubmittedDirectoriesPage() {
       try {
         setLoading(true);
         const response = await fetch("/api/admin/submitted-directories");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data: SubmittedDirectoriesResponse = await response.json();
-        setSubmittedDirectories(data.submittedDirectories);
+
+        // Ensure we always set an array, even if the response is malformed
+        if (data && Array.isArray(data.submittedDirectories)) {
+          setSubmittedDirectories(data.submittedDirectories);
+        } else {
+          console.warn("Invalid response format:", data);
+          setSubmittedDirectories([]);
+        }
       } catch (err) {
+        console.error("Error fetching submitted directories:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
         toast.error("Failed to load submitted directories");
+        // Keep empty array on error
+        setSubmittedDirectories([]);
       } finally {
         setLoading(false);
       }
@@ -754,7 +770,7 @@ export default function AdminSubmittedDirectoriesPage() {
               <Skeleton className="h-[28px] w-[200px] my-auto" />
             ) : (
               <div className="text-xl font-semibold">
-                Submitted Directories: {submittedDirectories.length}
+                Submitted Directories: {submittedDirectories?.length || 0}
               </div>
             )}
           </div>

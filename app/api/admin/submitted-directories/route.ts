@@ -34,7 +34,6 @@ export async function GET(request: Request) {
     const [submittedDirectories, total] = await Promise.all([
       SubmittedDirectory.find(query)
         .populate("submittedBy", "name email")
-        .populate("reviewedBy", "name email")
         .sort({ submittedAt: -1 })
         .skip(skip)
         .limit(limit)
