@@ -33,12 +33,11 @@
 }
 
 .telegraphContent a {
-  color: #214f85;
   text-underline-offset: 3px;
-  transition: color 0.2s ease;
-  font-weight: 600;
+  color: var(--primary-color);
 
   &:hover {
+    text-decoration: underline;
     color: var(--primary-color) !important;
   }
 }
