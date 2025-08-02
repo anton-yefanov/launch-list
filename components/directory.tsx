@@ -42,7 +42,6 @@ export const Directory = ({
       {/* Mobile version */}
       <Link
         href={`/website/${directory.slug}`}
-        target="_blank"
         className="group flex flex-col select-none bg-white border p-3 rounded-md sm:hidden cursor-pointer hover:bg-gray-50 transition-colors"
       >
         <div className="flex items-start justify-between mb-3">
