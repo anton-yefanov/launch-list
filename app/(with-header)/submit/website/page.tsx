@@ -97,10 +97,8 @@ export default function SubmitProductPage() {
         <div className="flex flex-col sm:flex-row items-center gap-4 bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
           <p className="text-blue-800 text-sm leading-relaxed">
             To submit your website to Launch List, embed our badge on your
-            website&#39;s homepage. This helps us verify your submission and
-            shows your support for the Launch List community. Copy the code
-            below and add it to your website before completing the submission
-            form.
+            website&#39;s homepage. Copy the code below and add it to your
+            website before completing the submission form.
           </p>
           {/* Badge Section */}
           <div className="flex flex-col shrink-0 items-center justify-center gap-2 mt-4 mb-2 pl-1.5">
