@@ -105,7 +105,7 @@ export const LayoutHeader = () => {
             className="shrink-0 select-none active:scale-95 transition-all duration-100"
           >
             <Image
-              src="/logo.svg"
+              src="/logo_clear.svg"
               alt="logo"
               width={36}
               height={36}
