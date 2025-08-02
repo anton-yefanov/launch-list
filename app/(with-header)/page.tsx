@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ChevronUp, Dot, Plus, Rocket } from "lucide-react";
-import { useState, useEffect, Fragment, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 import "@leenguyen/react-flip-clock-countdown/dist/index.css";
@@ -13,7 +13,6 @@ import { LoginDialog } from "@/components/login-dialog";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Footer } from "@/components/footer";
-import { formatNumber } from "@/lib/formatNumber";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface LaunchWeek {
@@ -71,8 +70,6 @@ const calculateRankings = (startups: Startup[]): Winner[] => {
 };
 
 export default function LaunchPage() {
-  const router = useRouter();
-
   const [launchData, setLaunchData] = useState<{
     nextLaunchWeek: LaunchWeek | null;
     countdownTarget: number;
@@ -137,80 +134,81 @@ export default function LaunchPage() {
   return (
     <div>
       {/*<FeaturedSection />*/}
-      <div className="border bg-sky-50/10 rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group relative">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(0,0,0,0.15) 1px, transparent 0)`,
-            backgroundSize: "20px 20px",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-white/40" />
+      {/*<div className="border bg-sky-50/10 rounded-lg p-8 grid overflow-hidden grid-cols-1 sm:grid-cols-2 group relative">*/}
+      {/*  <div*/}
+      {/*    className="absolute inset-0 opacity-30"*/}
+      {/*    style={{*/}
+      {/*      backgroundImage: `radial-gradient(circle at 2px 2px, rgba(0,0,0,0.15) 1px, transparent 0)`,*/}
+      {/*      backgroundSize: "20px 20px",*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-white/40" />*/}
 
-        <div className="flex flex-col items-center sm:items-start relative z-10">
-          <div className="text-3xl text-center sm:text-left font-medium mb-4">
-            Don&#39;t forget
-            <br /> to launch
-            <br /> <b>everywhere!</b>
-          </div>
-          <Link
-            href="/websites"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "px-16 bg-primary-color hover:bg-primary-color/90 hover:scale-102 active:scale-95 transition-all duration-120",
-            )}
-          >
-            Browse all
-          </Link>
-        </div>
-        <div className="h-40 w-full relative z-10">
-          <div
-            onClick={() => {
-              router.push("/websites");
-            }}
-            className="h-50 bg-gradient-to-br from-white to-sky-100/80 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"
-          >
-            <div className="flex gap-1.5 mb-2">
-              <div className="shrink-0">
-                <Image
-                  src="/star_icon.png"
-                  alt="star"
-                  width={20}
-                  height={20}
-                  draggable={false}
-                  className="select-none"
-                />
-              </div>
-              <span className="text-sm select-none font-semibold">
-                Best websites to launch in 2025
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Directory
-                title="Product Hunt"
-                viewsPerMonth={500000}
-                domainRating={91}
-                bgColor="bg-rose-600"
-                benefits={["Free", "High authority"]}
-              />
-              <Directory
-                title="Y Combinator"
-                viewsPerMonth={1000000}
-                domainRating={89}
-                bgColor="bg-orange-600"
-                benefits={["Free", "Tech audience"]}
-              />
-              <Directory
-                title="DevPost"
-                viewsPerMonth={100000}
-                domainRating={86}
-                bgColor="bg-slate-600"
-                benefits={["Free", "Small startups"]}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      {/*  <div className="flex flex-col items-center sm:items-start relative z-10">*/}
+      {/*    <div className="text-3xl text-center sm:text-left font-medium mb-4">*/}
+      {/*      Don&#39;t forget*/}
+      {/*      <br /> to launch*/}
+      {/*      <br /> <b>everywhere!</b>*/}
+      {/*    </div>*/}
+      {/*    <Link*/}
+      {/*      href="/websites"*/}
+      {/*      className={cn(*/}
+      {/*        buttonVariants({ variant: "default" }),*/}
+      {/*        "px-16 bg-primary-color hover:bg-primary-color/90 hover:scale-102 active:scale-95 transition-all duration-120",*/}
+      {/*      )}*/}
+      {/*    >*/}
+      {/*      Browse all*/}
+      {/*    </Link>*/}
+      {/*  </div>*/}
+      {/*  <div className="h-40 w-full relative z-10">*/}
+      {/*    <div*/}
+      {/*      onClick={() => {*/}
+      {/*        router.push("/websites");*/}
+      {/*      }}*/}
+      {/*      className="h-50 bg-gradient-to-br from-white to-sky-100/80 border p-4 shadow-lg sm:-bottom-2 -bottom-6 group-hover:-bottom-0 group-hover:shadow-xl rounded-t-lg -right-0 relative transition-all duration-100"*/}
+      {/*    >*/}
+      {/*      <div className="flex gap-1.5 mb-2">*/}
+      {/*        <div className="shrink-0">*/}
+      {/*          <Image*/}
+      {/*            src="/star_icon.png"*/}
+      {/*            alt="star"*/}
+      {/*            width={20}*/}
+      {/*            height={20}*/}
+      {/*            draggable={false}*/}
+      {/*            className="select-none"*/}
+      {/*          />*/}
+      {/*        </div>*/}
+      {/*        <span className="text-sm select-none font-semibold">*/}
+      {/*          Best websites to launch in 2025*/}
+      {/*        </span>*/}
+      {/*      </div>*/}
+      {/*      <div className="flex flex-col gap-1">*/}
+      {/*        <Directory*/}
+      {/*          title="Product Hunt"*/}
+      {/*          viewsPerMonth={500000}*/}
+      {/*          domainRating={91}*/}
+      {/*          bgColor="bg-rose-600"*/}
+      {/*          benefits={["Free", "High authority"]}*/}
+      {/*        />*/}
+      {/*        <Directory*/}
+      {/*          title="Y Combinator"*/}
+      {/*          viewsPerMonth={1000000}*/}
+      {/*          domainRating={89}*/}
+      {/*          bgColor="bg-orange-600"*/}
+      {/*          benefits={["Free", "Tech audience"]}*/}
+      {/*        />*/}
+      {/*        <Directory*/}
+      {/*          title="DevPost"*/}
+      {/*          viewsPerMonth={100000}*/}
+      {/*          domainRating={86}*/}
+      {/*          bgColor="bg-slate-600"*/}
+      {/*          benefits={["Free", "Small startups"]}*/}
+      {/*        />*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
+      <HeroBanner />
       <div className="flex justify-between items-center px-2.5 my-4 flex-col-reverse gap-2 sm:flex-row">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-semibold">Launching now</h1>
@@ -279,60 +277,6 @@ export default function LaunchPage() {
     </div>
   );
 }
-
-const Directory = ({
-  title,
-  viewsPerMonth,
-  domainRating,
-  bgColor = "bg-primary-color",
-  benefits,
-}: {
-  title: string;
-  viewsPerMonth: number;
-  domainRating: number;
-  bgColor?: string;
-  benefits: string[];
-}) => {
-  return (
-    <div className="flex select-none justify-between gap-1.5 bg-white border p-1 pr-3 rounded-md">
-      <div className="flex gap-1.5">
-        <div
-          className={`${bgColor} text-black font-extrabold p-2 size-10 border rounded-md grid place-items-center`}
-        >
-          <div className="relative">
-            <div className="bg-white relative rounded text-xs grid place-items-center px-1 border border-black size-5 -rotate-6 z-10">
-              {title[0]}
-            </div>
-            <div className="absolute size-full bg-black -left-0.5 top-[1px] rounded -rotate-12" />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="text-sm font-semibold">{title}</div>
-          <div className="flex items-center">
-            {benefits.map((b, i) => (
-              <Fragment key={i}>
-                <div className="text-xs">{b}</div>
-                {i !== benefits.length - 1 && <Dot size={12} />}
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <div className="grid place-items-center">
-          <span className="font-bold h-[10px]">
-            {formatNumber(viewsPerMonth)}
-          </span>
-          <span className="text-[8px]">Views</span>
-        </div>
-        <div className="grid place-items-center">
-          <span className="font-bold h-[10px]">{domainRating}</span>
-          <span className="text-[8px]">DR</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const WinnerProduct = ({
   winner,
@@ -543,6 +487,117 @@ const EmptyState = () => {
         <Plus />
         Be the first to launch!
       </Button>
+    </div>
+  );
+};
+
+const HeroBanner = () => {
+  const { status } = useSession();
+  const isAuth = status === "authenticated";
+
+  // Typewriter animation state
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+
+  const words = ["traffic", "backlink", "feedback"];
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined;
+
+    const animate = () => {
+      const currentWord = words[currentWordIndex];
+
+      if (isDeleting) {
+        // Deleting phase
+        if (displayText.length > 0) {
+          setDisplayText(currentWord.slice(0, displayText.length - 1));
+          timeout = setTimeout(animate, 50); // Faster deletion
+        } else {
+          // Finished deleting, move to next word
+          setIsDeleting(false);
+          setIsTyping(true);
+          setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        }
+      } else {
+        // Typing phase
+        if (displayText.length < currentWord.length) {
+          setDisplayText(currentWord.slice(0, displayText.length + 1));
+          timeout = setTimeout(animate, 100); // Normal typing speed
+        } else {
+          // Finished typing, wait then start deleting
+          setIsTyping(false);
+          timeout = setTimeout(() => {
+            setIsDeleting(true);
+          }, 2000); // Pause before deleting
+        }
+      }
+    };
+
+    timeout = setTimeout(animate, isDeleting ? 50 : 100);
+
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+      if (cursorInterval) clearInterval(cursorInterval);
+    };
+  }, [currentWordIndex, displayText, isDeleting, isTyping]);
+
+  return (
+    <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 bg-gradient-to-b from-[#00449D] to-[#2FB2FF]">
+      <Image
+        src="/logo_clear.svg"
+        alt="logo"
+        width={50}
+        height={50}
+        draggable={false}
+        className="rounded mx-auto mb-6"
+      />
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
+        Launch your Product Today
+      </h1>
+      <h2 className="text-lg sm:text-2xl font-bold text-white">
+        Get free{" "}
+        <span className="inline-block" style={{ minWidth: "110px" }}>
+          <span className="text-white">{displayText}</span>
+          <span
+            className={`inline-block w-0.5 h-4 bg-white ml-1 ${
+              showCursor ? "opacity-100" : "opacity-0"
+            } transition-opacity duration-200`}
+          />
+        </span>{" "}
+        for Your Website
+      </h2>
+      <div className="w-full flex flex-col gap-3 mt-10 px-2 sm:px-30">
+        <Button
+          variant="outline"
+          onClick={() => {
+            window.location.href = isAuth ? "/submit/product" : "/login";
+          }}
+          className="cursor-pointer flex-1 hover:scale-102 transition-all duration-100 active:scale-98 border-white"
+        >
+          Submit to Launch List
+          <Image
+            src="/logo_clear.svg"
+            alt="logo"
+            width={20}
+            height={20}
+            draggable={false}
+            className="rounded"
+          />
+        </Button>
+        <Link
+          href="/websites"
+          className="text-sm hover:underline w-fit text-white mx-auto"
+        >
+          Explore launch websites
+        </Link>
+      </div>
     </div>
   );
 };
