@@ -584,7 +584,7 @@ const HeroBanner = () => {
           </span>{" "}
           for Your Website
         </h2>
-        <div className="w-full flex flex-col gap-3 mt-10 px-2 sm:px-40">
+        <div className="w-full flex flex-col gap-3 mt-10 px-2 sm:px-34">
           <Button
             variant="outline"
             onClick={() => {
