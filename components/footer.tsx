@@ -21,13 +21,12 @@ export const Footer = () => {
             alt="Fazier badge"
           />
         </a>
-        <a href="https://yo.directory/" target="_blank">
+        <a target="_blank" href="https://startupbenchmarks.com">
           <img
-            src="https://cdn.prod.website-files.com/65c1546fa73ea974db789e3d/65e1e171f89ebfa7bd0129ac_yodirectory-featured.png"
-            alt="yo.directory"
-            style={{ width: 150, height: 54 }}
-            width="150"
+            style={{ height: 54 }}
             height="54"
+            src="https://startupbenchmarks.com/assets/images/badge.png"
+            alt="Startup Benchmarks Featured Badge"
           />
         </a>
       </div>
