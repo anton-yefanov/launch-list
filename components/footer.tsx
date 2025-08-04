@@ -11,24 +11,6 @@ export const Footer = () => {
             className="w-38"
           />
         </a>
-        <a
-          href="https://fazier.com/launches/www.launch-list.org"
-          target="_blank"
-        >
-          <img
-            src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
-            width={120}
-            alt="Fazier badge"
-          />
-        </a>
-        <a target="_blank" href="https://startupbenchmarks.com">
-          <img
-            style={{ height: 54 }}
-            height="54"
-            src="https://startupbenchmarks.com/assets/images/badge.png"
-            alt="Startup Benchmarks Featured Badge"
-          />
-        </a>
       </div>
       <div className="text-sm flex gap-4  justify-center">
         <Link href="/blog" className="text-gray-600 hover:underline">

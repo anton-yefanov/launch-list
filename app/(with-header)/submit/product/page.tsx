@@ -28,8 +28,11 @@ export default function SubmitProductPage() {
         const result = await response.json();
         if (response.ok && result.success) {
           console.log("Submission successful:", result);
-          // Redirect to my-products page
-          router.push(`${process.env.NEXT_PUBLIC_URL}/my-products`);
+          // Redirect to select launch week
+          const redirectUrl = result.aiReview.approved
+            ? `${process.env.NEXT_PUBLIC_URL}/my-products/launch/${result.slug}`
+            : `${process.env.NEXT_PUBLIC_URL}/my-products`;
+          router.push(redirectUrl);
         } else {
           console.error("Submission failed:", result);
           alert(
