@@ -195,8 +195,6 @@ export default function CommentsSection({ startupId }: CommentsSectionProps) {
     const marginLeft = depth > 0 ? `ml-${Math.min(depth * 6, 24)}` : "";
     const avatarSize = depth === 0 ? "h-8 w-8" : "h-6 w-6";
     const textSize = depth === 0 ? "text-sm" : "text-sm";
-    const replyButtonSize = depth === 0 ? "h-7 px-2" : "h-6 px-2 text-xs";
-    const upvoteIconSize = depth === 0 ? "h-4 w-4" : "h-3 w-3";
 
     return (
       <div key={comment._id} className={`${marginLeft}`}>
@@ -222,18 +220,18 @@ export default function CommentsSection({ startupId }: CommentsSectionProps) {
               {comment.content}
             </p>
 
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2 text-sm">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleUpvote(comment._id)}
-                className={`${replyButtonSize} ${
+                className={`h-7 px-2 ${
                   session && comment.upvoters.includes(session.user.id)
                     ? "text-orange-600 bg-orange-50"
                     : "text-gray-500"
                 }`}
               >
-                <ChevronUp className={`${upvoteIconSize} mr-1`} />
+                <ChevronUp className="size-4" />
                 {comment.upvoters.length}
               </Button>
 
@@ -242,9 +240,9 @@ export default function CommentsSection({ startupId }: CommentsSectionProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => setReplyingTo(comment._id)}
-                  className={`${replyButtonSize} text-gray-500`}
+                  className={`h-7 px-2 text-gray-500`}
                 >
-                  <Reply className={`${upvoteIconSize} mr-1`} />
+                  <Reply className="size-4" />
                   Reply
                 </Button>
               )}
