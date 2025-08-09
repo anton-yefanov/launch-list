@@ -4,12 +4,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { HelpCircle, Loader2 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Loader2 } from "lucide-react";
 
 export default function SubmitProductPage() {
   const router = useRouter();
@@ -84,17 +79,17 @@ export default function SubmitProductPage() {
           <h1 className="text-3xl text-white font-bold mt-2 mb-1 pl-1.5">
             New Launch on Launch List
           </h1>
-          <h2 className="text-white relative font-md">
-            Top 3 products receive winner badges and a dofollow backlink
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="size-3 ml-1 inline" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Remove from Launch List</p>
-              </TooltipContent>
-            </Tooltip>
-          </h2>
+          {/*<h2 className="text-white relative font-md">*/}
+          {/*  Top 3 products receive winner badges and a dofollow backlink*/}
+          {/*  <Tooltip>*/}
+          {/*    <TooltipTrigger asChild>*/}
+          {/*      <HelpCircle className="size-3 ml-1 inline" />*/}
+          {/*    </TooltipTrigger>*/}
+          {/*    <TooltipContent side="bottom">*/}
+          {/*      <p>Remove from Launch List</p>*/}
+          {/*    </TooltipContent>*/}
+          {/*  </Tooltip>*/}
+          {/*</h2>*/}
         </div>
       </div>
       <div className="bg-background">
