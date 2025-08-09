@@ -675,11 +675,8 @@ export default function CollectionPage() {
                       directory={directory}
                       buttonComponent={AddButton(directory._id)}
                     />
-                    {/* Show banner after every 10 directories (index 9, 19, 29, etc.) */}
-                    {(index + 1) % 10 === 0 &&
-                      index < filteredAndSortedDirectories.length - 1 && (
-                        <SubmitBanner />
-                      )}
+                    {/* Show banner only once after the 10th directory */}
+                    {index === 9 && <SubmitBanner />}
                   </div>
                 ))
               )}
