@@ -1,21 +1,23 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink, User, Tag, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { IStartup } from "@/models/Startup";
-import { useParams, notFound } from "next/navigation";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import BackButton from "@/app/(with-header)/product/[slug]/_components/back-button";
 import UpvoteButton from "@/app/(with-header)/product/[slug]/_components/upvote-button";
 import ScreenshotGallery, {
   Screenshot,
 } from "@/app/(with-header)/product/[slug]/_components/screenshot-gallery";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import CommentsSection from "@/app/(with-header)/product/[slug]/_components/comments-section";
+
+interface StartupPageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
 
 interface StartupWithUpvoterIds extends IStartup {
   upvoterIds: string[];
@@ -29,8 +31,6 @@ interface StartupWithUpvoterIds extends IStartup {
 
 async function getStartup(slug: string): Promise<StartupWithUpvoterIds | null> {
   try {
-    console.log(slug);
-    console.log(process.env.NEXT_PUBLIC_URL);
     const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/product/${slug}`, {
       cache: "no-store",
@@ -53,104 +53,58 @@ async function getStartup(slug: string): Promise<StartupWithUpvoterIds | null> {
   }
 }
 
-function LoadingSkeleton() {
-  return (
-    <div>
-      <ScrollToTop />
-      <div className="mb-4">
-        <BackButton />
-      </div>
+export async function generateMetadata({
+  params,
+}: StartupPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const startup = await getStartup(slug);
 
-      <div className="bg-white rounded-lg pb-4">
-        <div className="flex flex-col sm:flex-row gap-6 mb-8">
-          <div className="shrink-0">
-            <Skeleton className="w-20 h-20 rounded-lg" />
-          </div>
-
-          <div className="flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div className="flex-1">
-                <div className="mb-2">
-                  <Skeleton className="h-8 w-[110px] mb-2" />
-                </div>
-
-                <div className="mb-3">
-                  <Skeleton className="h-6 w-[210px] mb-2" />
-                </div>
-
-                <div className="flex flex-wrap gap-4">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-32" />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-10 w-full sm:w-32" />
-                <Skeleton className="h-10 w-full sm:w-32" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Screenshot skeleton */}
-        <Skeleton className="h-80 mb-8 w-full rounded-lg" />
-
-        {/* Description skeleton */}
-        <div className="mb-8">
-          <Skeleton className="h-6 w-32 mb-4" />
-          <div className="bg-gray-50 rounded-lg p-4">
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-3/4 mb-2" />
-            <Skeleton className="h-4 w-5/6" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function ProductPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
-  console.log("params.slug", slug);
-
-  const [startup, setStartup] = useState<StartupWithUpvoterIds | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchStartup = async () => {
-      try {
-        setLoading(true);
-        const startupData = await getStartup(slug);
-
-        console.log(startupData);
-        if (!startupData) {
-          setError("Startup not found");
-          return;
-        }
-
-        setStartup(startupData);
-      } catch (err) {
-        console.error("Error fetching startup:", err);
-        setError("Failed to load startup");
-      } finally {
-        setLoading(false);
-      }
+  if (!startup) {
+    return {
+      title: "Startup Not Found ‒ Launch List",
+      description: "The startup you are looking for could not be found.",
     };
-
-    fetchStartup();
-  }, [slug]);
-
-  if (loading) {
-    return <LoadingSkeleton />;
   }
 
-  if (error || !startup) {
-    console.log("error || !startup", startup, error);
+  const title = `${startup.name} ‒ Launch List`;
+  const description = startup.description;
+  const imageUrl = startup.logo?.url;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: `${startup.name} logo`,
+            },
+          ]
+        : [],
+      siteName: "Launch List",
+    },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+export default async function ProductPage({ params }: StartupPageProps) {
+  const { slug } = await params;
+  const startup = await getStartup(slug);
+
+  if (!startup) {
     notFound();
   }
 
@@ -297,7 +251,6 @@ export default function ProductPage() {
             </div>
           )}
         </div>
-        <CommentsSection startupId={startup._id} />
       </div>
     </>
   );
