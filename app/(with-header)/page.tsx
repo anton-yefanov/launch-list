@@ -25,6 +25,7 @@ export interface Winner extends Startup {
   place: number;
 }
 
+// Helper function to calculate rankings with ties
 const calculateRankings = (startups: Startup[]): Winner[] => {
   // Sort by upvoterIds length in descending order
   const sorted = [...startups].sort(
@@ -57,8 +58,14 @@ async function fetchLaunchData() {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/launches`,
-      { cache: "no-store" },
+      {
+        next: { revalidate: 300 },
+      },
     );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch launch data");
+    }
 
     const result = await response.json();
 
@@ -100,6 +107,9 @@ async function fetchLaunchData() {
   }
 }
 
+// Force dynamic rendering to handle session and real-time data
+export const dynamic = "force-dynamic";
+
 export default async function LaunchPage() {
   const { startups, lastWeekStartups, countdownTarget } =
     await fetchLaunchData();
@@ -119,6 +129,7 @@ export default async function LaunchPage() {
           />
         </div>
       </div>
+
       {startups.length > 0 ? (
         <div className="flex flex-col gap-2">
           {startups.map((startup: Startup) => (
@@ -128,6 +139,7 @@ export default async function LaunchPage() {
       ) : (
         <EmptyState />
       )}
+
       {lastWeekStartups.length > 0 && (
         <>
           <h2 className="text-3xl font-semibold my-8 px-2.5">
