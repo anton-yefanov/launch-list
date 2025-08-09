@@ -546,7 +546,7 @@ const HeroBanner = () => {
       if (timeout) clearTimeout(timeout);
       if (cursorInterval) clearInterval(cursorInterval);
     };
-  }, [currentWordIndex, displayText, isDeleting, isTyping, words]);
+  }, [currentWordIndex, displayText, isDeleting, isTyping]);
 
   return (
     <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 bg-gradient-to-b from-[#00449D] to-[#2FB2FF] relative overflow-hidden">
