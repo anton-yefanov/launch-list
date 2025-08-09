@@ -57,7 +57,6 @@ export default function MyLaunchListPage() {
     fetchLaunchList();
   }, []);
 
-  // Toggle launched status
   const toggleLaunched = async (
     directoryId: string,
     currentStatus: boolean,
