@@ -29,6 +29,8 @@ interface StartupWithUpvoterIds extends IStartup {
 
 async function getStartup(slug: string): Promise<StartupWithUpvoterIds | null> {
   try {
+    console.log(slug);
+    console.log(process.env.NEXT_PUBLIC_URL);
     const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/product/${slug}`, {
       cache: "no-store",
@@ -111,6 +113,7 @@ function LoadingSkeleton() {
 export default function ProductPage() {
   const params = useParams();
   const slug = params?.slug as string;
+  console.log("params.slug", slug);
 
   const [startup, setStartup] = useState<StartupWithUpvoterIds | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,6 +127,7 @@ export default function ProductPage() {
         setLoading(true);
         const startupData = await getStartup(slug);
 
+        console.log(startupData);
         if (!startupData) {
           setError("Startup not found");
           return;
@@ -146,6 +150,7 @@ export default function ProductPage() {
   }
 
   if (error || !startup) {
+    console.log("error || !startup", startup, error);
     notFound();
   }
 
