@@ -12,6 +12,7 @@ import ScreenshotGallery, {
   Screenshot,
 } from "@/app/(with-header)/product/[slug]/_components/screenshot-gallery";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import CommentsSection from "@/app/(with-header)/product/[slug]/_components/comments-section";
 
 interface StartupPageProps {
   params: Promise<{
@@ -51,53 +52,6 @@ async function getStartup(slug: string): Promise<StartupWithUpvoterIds | null> {
     console.error("Error fetching startup:", error);
     return null;
   }
-}
-
-export async function generateMetadata({
-  params,
-}: StartupPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const startup = await getStartup(slug);
-
-  if (!startup) {
-    return {
-      title: "Startup Not Found ‒ Launch List",
-      description: "The startup you are looking for could not be found.",
-    };
-  }
-
-  const title = `${startup.name} ‒ Launch List`;
-  const description = startup.description;
-  const imageUrl = startup.logo?.url;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      url: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
-      images: imageUrl
-        ? [
-            {
-              url: imageUrl,
-              width: 1200,
-              height: 630,
-              alt: `${startup.name} logo`,
-            },
-          ]
-        : [],
-      siteName: "Launch List",
-    },
-    alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
 }
 
 export default async function ProductPage({ params }: StartupPageProps) {
@@ -251,7 +205,55 @@ export default async function ProductPage({ params }: StartupPageProps) {
             </div>
           )}
         </div>
+        <CommentsSection startupId={startup._id} />
       </div>
     </>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: StartupPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const startup = await getStartup(slug);
+
+  if (!startup) {
+    return {
+      title: "Startup Not Found ‒ Launch List",
+      description: "The startup you are looking for could not be found.",
+    };
+  }
+
+  const title = `${startup.name} ‒ Launch List`;
+  const description = startup.description;
+  const imageUrl = startup.logo?.url;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: `${startup.name} logo`,
+            },
+          ]
+        : [],
+      siteName: "Launch List",
+    },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_URL}/product/${slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
