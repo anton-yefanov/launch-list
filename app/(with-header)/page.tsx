@@ -60,7 +60,7 @@ async function fetchLaunchData() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/launches`,
       {
-        next: { revalidate: 300 },
+        cache: "no-store",
       },
     );
 
