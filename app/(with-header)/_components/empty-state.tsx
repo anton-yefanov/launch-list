@@ -1,3 +1,5 @@
+"use client";
+
 import { useSession } from "next-auth/react";
 import { Plus, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";

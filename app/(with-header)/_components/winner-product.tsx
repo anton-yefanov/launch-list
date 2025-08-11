@@ -13,7 +13,8 @@ export const WinnerProduct = ({
 }) => {
   return (
     <Link
-      href={`/app/(with-header)/_components/product.tsx/${winner.slug}`}
+      href={`/product/${winner.slug}`}
+      target="_blank"
       className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-4 select-none"
     >
       <div className="shrink-0">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { ChevronUp, Dot } from "lucide-react";
@@ -9,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LoginDialog } from "@/components/login-dialog";
 import { Startup } from "@/app/(with-header)/page";
+import Link from "next/link";
 
 export const Product = ({ startup }: { startup: Startup }) => {
   const { data: session, status } = useSession();
-  const router = useRouter();
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
   const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>(
     startup.upvoterIds || [],
@@ -80,15 +79,12 @@ export const Product = ({ startup }: { startup: Startup }) => {
     }
   };
 
-  const handleRowClick = () => {
-    router.push(`/product/${startup.slug}`);
-  };
-
   return (
     <>
-      <div
+      <Link
+        href={`/product/${startup.slug}`}
+        target="_blank"
         className="rounded-lg p-2.5 flex gap-4 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
-        onClick={handleRowClick}
       >
         <div className="shrink-0">
           <Image
@@ -128,7 +124,7 @@ export const Product = ({ startup }: { startup: Startup }) => {
           <ChevronUp strokeWidth={2} />
           {currentUpvotes}
         </Button>
-      </div>
+      </Link>
       <LoginDialog
         open={loginDialogOpen}
         onOpenChange={setLoginDialogOpen}
