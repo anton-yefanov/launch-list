@@ -186,7 +186,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
       {startup.status === "launched" && (
         <div className="flex flex-col gap-2">
           <Link
-            href={`/app/(with-header)/_components/product.tsx/${startup.slug}`}
+            href={`/product/${startup.slug}`}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",
@@ -196,7 +196,7 @@ const ProductCard = ({ startup }: ProductCardProps) => {
             <ArrowUpRight />
           </Link>
           <Link
-            href={`/app/(with-header)/_components/product.tsx/${startup.slug}/badges`}
+            href={`/product/${startup.slug}/badges`}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "justify-between min-w-26 ml-auto active:scale-95 transition-all duration-100",

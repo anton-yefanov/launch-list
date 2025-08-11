@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LoginDialog } from "@/components/login-dialog";
 import { Startup } from "@/app/(with-header)/page";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Product = ({ startup }: { startup: Startup }) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
   const [currentUpvoterIds, setCurrentUpvoterIds] = useState<string[]>(
@@ -29,7 +30,7 @@ export const Product = ({ startup }: { startup: Startup }) => {
   }, [currentUpvoterIds, isAuthenticated, session?.user?.id]);
 
   const handleUpvoteClick = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering the row click
+    e.stopPropagation();
 
     if (!isAuthenticated) {
       setLoginDialogOpen(true);
@@ -79,10 +80,16 @@ export const Product = ({ startup }: { startup: Startup }) => {
     }
   };
 
+  const onClickStartup = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`/product/${startup.slug}`);
+  };
+
   return (
     <>
-      <Link
-        href={`/product/${startup.slug}`}
+      <div
+        onClick={onClickStartup}
         className="rounded-lg p-2.5 flex gap-4 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
       >
         <div className="shrink-0">
@@ -123,7 +130,7 @@ export const Product = ({ startup }: { startup: Startup }) => {
           <ChevronUp strokeWidth={2} />
           {currentUpvotes}
         </Button>
-      </Link>
+      </div>
       <LoginDialog
         open={loginDialogOpen}
         onOpenChange={setLoginDialogOpen}
