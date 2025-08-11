@@ -14,7 +14,6 @@ export const WinnerProduct = ({
   return (
     <Link
       href={`/product/${winner.slug}`}
-      target="_blank"
       className="hover:bg-sidebar relative rounded-lg p-2.5 flex gap-4 select-none"
     >
       <div className="shrink-0">

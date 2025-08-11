@@ -83,7 +83,6 @@ export const Product = ({ startup }: { startup: Startup }) => {
     <>
       <Link
         href={`/product/${startup.slug}`}
-        target="_blank"
         className="rounded-lg p-2.5 flex gap-4 select-none hover:bg-gray-100/50 cursor-pointer transition-colors"
       >
         <div className="shrink-0">
