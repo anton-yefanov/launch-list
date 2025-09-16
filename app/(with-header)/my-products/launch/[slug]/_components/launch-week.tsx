@@ -15,7 +15,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useMobile } from "@/hooks/use-mobile";
-import { Check, Loader2, Copy } from "lucide-react";
+import { Check, Loader2, Copy, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LaunchWeekData } from "../page";
 import { toast } from "sonner";
@@ -40,7 +40,6 @@ interface BadgeSectionProps {
   slug: string;
 }
 
-// Extracted Badge Section Component
 const BadgeSection = ({ slug }: BadgeSectionProps) => {
   const [copied, setCopied] = useState(false);
 
@@ -69,11 +68,15 @@ const BadgeSection = ({ slug }: BadgeSectionProps) => {
 
   return (
     <div className="rounded-lg p-4 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-6 justify-between">
         <div>
-          <h4 className="font-semibold text-2xl">Add badge to your website</h4>
+          <h4 className="flex items-center gap-2 mb-2 font-medium text-2xl">
+            <Lock /> Secure <b>dofollow</b> backlink
+          </h4>
           <p className="text-muted-foreground text-lg">
-            Build trust and highlight your launch
+            Add our badge to your website. Even if you don&#39;t end up in top
+            3, your website will <b>still receive dofollow backlink</b> from
+            Launch List
           </p>
         </div>
         <div className="flex flex-col gap-2">
@@ -86,7 +89,7 @@ const BadgeSection = ({ slug }: BadgeSectionProps) => {
           <Button
             onClick={handleCopy}
             variant="outline"
-            className="w-full"
+            className="w-full min-w-[180px]"
             type="button"
           >
             {copied ? (
@@ -384,17 +387,13 @@ const LaunchWeek = ({ launchWeekData, onLaunchSuccess }: LaunchWeekProps) => {
           </DialogHeader>
 
           <div className="space-y-4 pt-2">
-            <p className="text-center text-muted-foreground">
-              Your product has been successfully launched!
-              <br /> Here&#39;s how you can get bring more attention to it:
-            </p>
             <BadgeSection slug={slug} />
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={handleShare}
                 className="flex-1 bg-primary-color hover:bg-primary-color/90"
               >
-                Share to 𝕏
+                Share on 𝕏
               </Button>
               <Button
                 onClick={handleCongratsClose}
