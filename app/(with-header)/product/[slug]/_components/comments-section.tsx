@@ -202,7 +202,7 @@ export default function CommentsSection({ startupId }: CommentsSectionProps) {
           <Avatar className={`${avatarSize} shrink-0`}>
             <AvatarImage src={comment.author.image} />
             <AvatarFallback>
-              {comment.author.name.charAt(0).toUpperCase()}
+              {comment?.author?.name?.charAt?.(0)?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
