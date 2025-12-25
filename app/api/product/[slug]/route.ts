@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Startup } from "@/models/Startup";
-import LaunchWeek from "@/models/LaunchWeek"; // Import the LaunchWeek model
+import LaunchWeek from "@/models/LaunchWeek";
 import { connectToDatabase } from "@/lib/database/connectToDatabase";
 import mongoose from "mongoose";
 
-// Helper function to check if current date is within launch week period
 function isCurrentlyInLaunchWeek(startDate: Date, endDate: Date): boolean {
   const now = new Date();
   return now >= startDate && now <= endDate;
