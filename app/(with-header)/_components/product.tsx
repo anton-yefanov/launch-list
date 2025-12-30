@@ -104,7 +104,7 @@ export const Product = ({ startup }: { startup: Startup }) => {
         </div>
         <div className="flex flex-col">
           <div className="font-semibold">{startup.name}</div>
-          <div>{startup.tagline}</div>
+          <div className="wrap-anywhere">{startup.tagline}</div>
           <div className="flex text-xs items-center flex-wrap mt-1">
             <div>by {startup.submittedBy}</div>
             {startup.categories.map((category, index) => (
