@@ -217,7 +217,7 @@ export default async function LaunchPage() {
       />
 
       <div>
-        <ServiceBanner />
+        {/*<ServiceBanner />*/}
         <HeroBanner />
 
         {/* Main content with semantic HTML */}
