@@ -2,7 +2,6 @@ import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 import scss from "./styles.module.scss";
 import { Footer } from "@/components/footer";
 import { HeroBanner } from "@/app/(with-header)/_components/hero-banner";
-import { ServiceBanner } from "@/app/(with-header)/_components/service-banner";
 import { EmptyState } from "@/app/(with-header)/_components/empty-state";
 import { Product } from "@/app/(with-header)/_components/product";
 import { WinnerProduct } from "@/app/(with-header)/_components/winner-product";
