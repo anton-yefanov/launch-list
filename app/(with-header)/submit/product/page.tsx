@@ -4,7 +4,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Rocket } from "lucide-react";
 
 export default function SubmitProductPage() {
   const router = useRouter();
@@ -67,20 +67,15 @@ export default function SubmitProductPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 bg-gradient-to-b from-[#00449D] to-[#2FB2FF] relative overflow-hidden">
-        <div
-          className="absolute z-1 inset-0 opacity-20"
-          style={{
-            backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
-            backgroundSize: "20px 20px",
-          }}
-        />
+      <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 relative overflow-hidden">
         <div className="z-2">
-          <h1 className="text-3xl text-white font-bold mt-2 mb-1 pl-1.5">
-            New Launch on Launch List
+          <h1 className="flex text-3xl justify-center items-center gap-2 font-bold mt-2 mb-1 pl-1.5">
+            New Launch on Launch List <Rocket />
           </h1>
-          <h2 className="text-white relative font-md">
-            Top 3 products receive winner badges and a <b>dofollow</b> backlink
+          <h2 className="relative font-md">
+            <b>
+              Top 3 products receive Winner Badges and high-authority Backlink
+            </b>
           </h2>
         </div>
       </div>

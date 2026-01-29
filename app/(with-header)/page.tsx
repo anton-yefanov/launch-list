@@ -5,7 +5,7 @@ import { HeroBanner } from "@/app/(with-header)/_components/hero-banner";
 import { EmptyState } from "@/app/(with-header)/_components/empty-state";
 import { Product } from "@/app/(with-header)/_components/product";
 import { WinnerProduct } from "@/app/(with-header)/_components/winner-product";
-import { CountdownTimer } from "@/app/(with-header)/_components/countdown-timer";
+import { CountdownTimer } from "@/components/ui/countdown-timer";
 import { Metadata } from "next";
 
 export interface Startup {
