@@ -166,7 +166,6 @@ export const Directory = ({
       {/* Desktop version */}
       <Link
         href={`/website/${directory.slug}`}
-        target="_blank"
         className="group hidden sm:flex cursor-pointer select-none justify-between gap-1.5 bg-white border p-2 pr-4 rounded-md hover:bg-gray-50 transition-colors"
       >
         <div className="flex gap-2">

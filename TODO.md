@@ -1,9 +1,10 @@
-- [ ] Add website authority badge to main page with link to proof
+- [x] Add website authority badge to main page with link to proof
 - [ ] Change LaunchWeek mongo collection to not use it (calculate on the fly)
-- [ ] Make directory open without "_blank", so back button work
-- [ ] Remove "Own a directory..." text from directory page
-- [ ] Restrict adding products with same URL
+- [x] Make directory open without "_blank", so back button work
+- [x] Remove "Own a directory..." text from directory page
+- [x] Restrict adding products with same URL
 - [ ] Add banner to directories page explaining what this page is about
 - [ ] Launch Analytics
 - [ ] Start collecting emails for newsletter
 - [ ] Add pricing page
+- [ ] Add autofill submit form with AI

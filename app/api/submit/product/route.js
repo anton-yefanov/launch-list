@@ -6,6 +6,19 @@ import { auth } from "@/auth";
 import { generateSlug } from "@/utils/generateSlug";
 import { reviewStartup } from "@/lib/ai/startupApproval";
 
+function normalizeUrl(url) {
+  try {
+    const parsed = new URL(url);
+    // Remove www prefix and trailing slash, lowercase the hostname
+    let hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    let pathname = parsed.pathname.replace(/\/+$/, "") || "";
+    return `${hostname}${pathname}`;
+  } catch {
+    // If URL parsing fails, just lowercase and trim
+    return url.toLowerCase().trim();
+  }
+}
+
 async function ensureUniqueSlug(baseSlug, excludeId) {
   let slug = baseSlug;
   let counter = 1;
@@ -100,6 +113,24 @@ export async function POST(request) {
       !startupData.submitterEmail
     ) {
       throw new Error("Missing required startup fields");
+    }
+
+    // Check for duplicate URL
+    const normalizedUrl = normalizeUrl(startupData.websiteUrl);
+    const allStartups = await Startup.find({}, { websiteUrl: 1 });
+    const duplicateStartup = allStartups.find(
+      (s) => normalizeUrl(s.websiteUrl) === normalizedUrl,
+    );
+
+    if (duplicateStartup) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A product with this URL already exists",
+          code: "DUPLICATE_URL",
+        },
+        { status: 400 },
+      );
     }
 
     let user = await User.findOne({ email: startupData.submitterEmail });

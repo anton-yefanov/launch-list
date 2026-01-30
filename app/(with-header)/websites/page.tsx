@@ -669,14 +669,12 @@ export default function CollectionPage() {
                   )}
                 </div>
               ) : (
-                filteredAndSortedDirectories.map((directory, index) => (
+                filteredAndSortedDirectories.map((directory) => (
                   <div key={directory._id}>
                     <Directory
                       directory={directory}
                       buttonComponent={AddButton(directory._id)}
                     />
-                    {/* Show banner only once after the 10th directory */}
-                    {index === 9 && <SubmitBanner />}
                   </div>
                 ))
               )}

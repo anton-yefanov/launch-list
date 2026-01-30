@@ -4,16 +4,19 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Rocket } from "lucide-react";
+import { Loader2, Rocket, AlertCircle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function SubmitProductPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleFormSubmission = async (payload: any) => {
       if (isSubmitting) return;
       setIsSubmitting(true);
+      setError(null);
 
       try {
         console.log("Submitting form data:", payload);
@@ -35,13 +38,13 @@ export default function SubmitProductPage() {
           router.push(redirectUrl);
         } else {
           console.error("Submission failed:", result);
-          alert(
-            `Submission failed: ${result.error || result.details || "Unknown error"}`,
-          );
+          setError(result.error || result.details || "Unknown error");
         }
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert("An error occurred while submitting the form. Please try again.");
+        setError(
+          "An error occurred while submitting the form. Please try again.",
+        );
       } finally {
         setIsSubmitting(false);
       }
@@ -66,19 +69,21 @@ export default function SubmitProductPage() {
   }, [isSubmitting, router]);
 
   return (
-    <div className="min-h-screen">
-      <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 relative overflow-hidden">
-        <div className="z-2">
-          <h1 className="flex text-3xl justify-center items-center gap-2 font-bold mt-2 mb-1 pl-1.5">
-            New Launch on Launch List <Rocket />
-          </h1>
-          <h2 className="relative font-md">
-            <b>
-              Top 3 products receive Winner Badges and high-authority Backlink
-            </b>
-          </h2>
+    <div>
+      {!error && (
+        <div className="select-none rounded-2xl shadow-none text-center py-10 px-10 relative overflow-hidden">
+          <div className="z-2">
+            <h1 className="flex text-3xl justify-center items-center gap-2 font-bold mt-2 mb-1 pl-1.5">
+              New Launch on Launch List <Rocket />
+            </h1>
+            <h2 className="relative font-md">
+              <b>
+                Top 3 products receive Winner Badges and high-authority Backlink
+              </b>
+            </h2>
+          </div>
         </div>
-      </div>
+      )}
       <div className="bg-background">
         {isSubmitting && (
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -95,14 +100,31 @@ export default function SubmitProductPage() {
             </Card>
           </div>
         )}
-        <iframe
-          data-tally-src="https://tally.so/embed/nW6pYJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-          loading="lazy"
-          width="100%"
-          height="216"
-          title="Submit Your product"
-          className="rounded-lg"
-        />
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="flex flex-col items-center gap-4 max-w-md text-center">
+              <AlertCircle className="size-12 text-destructive" />
+              <p className="text-lg font-medium text-destructive">{error}</p>
+              <Button
+                variant="outline"
+                onClick={() => window.location.reload()}
+                className="mt-2"
+              >
+                <RefreshCw className="size-4 mr-1" />
+                Refresh Page
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <iframe
+            data-tally-src="https://tally.so/embed/nW6pYJ?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+            loading="lazy"
+            width="100%"
+            height="216"
+            title="Submit Your product"
+            className="rounded-lg"
+          />
+        )}
       </div>
       <Script
         src="https://tally.so/widgets/embed.js"
