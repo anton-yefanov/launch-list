@@ -8,3 +8,4 @@
 - [ ] Start collecting emails for newsletter
 - [ ] Add pricing page
 - [ ] Add autofill submit form with AI
+- [ ] Make badges animated
